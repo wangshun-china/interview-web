@@ -5,26 +5,38 @@
 
     <!-- Main Content -->
     <main class="relative z-10">
-      <HeroSection />
-      <ProjectsSection />
-      <TechStackSection />
+      <LogViewer v-if="currentView === 'logs'" />
+      <template v-else>
+        <HeroSection />
+        <ProjectsSection />
+        <TechStackSection />
+      </template>
     </main>
 
     <!-- Footer -->
     <footer class="py-8 text-center text-cyber-primary/50 text-sm border-t border-cyber-primary/10">
       <p>© 2025 Wang Shun | Built with Vue 3 + Vite + TailwindCSS</p>
+      <p v-if="currentView !== 'logs'" class="mt-2">
+        <a href="/?view=logs" class="text-cyber-primary hover:underline">查看访问日志</a>
+      </p>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import HeroSection from './components/HeroSection.vue'
 import ProjectsSection from './components/ProjectsSection.vue'
 import TechStackSection from './components/TechStackSection.vue'
+import LogViewer from './components/LogViewer.vue'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 let animationId: number
+
+const currentView = computed(() => {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('view') || ''
+})
 
 onMounted(() => {
   const canvas = canvasRef.value

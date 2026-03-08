@@ -5,3 +5,33 @@ services:
     restart: always
     ports:
       - "80:80"
+    volumes:
+      - ./logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - app-network
+
+  log-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.log-server
+    container_name: wangshun-log-server
+    restart: always
+    volumes:
+      - ./logs:/var/log/nginx:ro
+    ports:
+      - "3000:3000"
+    environment:
+      - LOG_FILE=/var/log/nginx/access.log
+    depends_on:
+      - portfolio
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

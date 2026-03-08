@@ -24,7 +24,7 @@ services:
     volumes:
       - ./logs:/var/log/nginx:ro
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       - LOG_FILE=/var/log/nginx/access.log
     depends_on:

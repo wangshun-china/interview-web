@@ -17,7 +17,9 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:42.193.105.133)",
       "mcp__chrome-devtools__click",
-      "mcp__chrome-devtools__evaluate_script"
+      "mcp__chrome-devtools__evaluate_script",
+      "Bash(pnpm build:*)",
+      "Bash(docker build:*)"
     ]
   }
 }

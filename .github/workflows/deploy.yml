@@ -123,28 +123,5 @@ jobs:
             # 等待容器启动
             sleep 5
 
-            # 更新 nginx 配置，添加 /api 代理
-            sudo docker exec wangshun-portfolio sh -c 'cat > /etc/nginx/conf.d/default.conf' << 'NGINX'
-            server {
-                listen 80;
-                server_name localhost;
-
-                location / {
-                    root /usr/share/nginx/html;
-                    index index.html index.htm;
-                    try_files $uri $uri/ /index.html;
-                }
-
-                location /api/ {
-                    proxy_pass http://wangshun-log-server:3000;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                }
-            }
-            NGINX
-
-            # 重载 nginx
-            sudo docker exec wangshun-portfolio nginx -s reload
-
             sudo docker image prune -f
             echo "Portfolio deployed successfully!"

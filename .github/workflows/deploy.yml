@@ -31,12 +31,19 @@ jobs:
           username: aliyun4384550071
           password: "wangshun817"
 
-      - name: Build and Push Docker Image
+      - name: Build and Push Docker Images
         working-directory: resume
         run: |
+          # Build and push frontend
           IMAGE_TAG=crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com/wangshun_build/wangshun_portfolio:latest
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
+
+          # Build and push log-server
+          LOG_SERVER_IMAGE_TAG=crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com/wangshun_build/wangshun_log_server:latest
+          cd ..
+          docker build -f Dockerfile.log-server -t $LOG_SERVER_IMAGE_TAG .
+          docker push $LOG_SERVER_IMAGE_TAG
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
@@ -57,7 +64,7 @@ jobs:
             mkdir -p /home/ubuntu/wangshun-portfolio
             cd /home/ubuntu/wangshun-portfolio
 
-            # 写入最新的 docker-compose.yml
+            # 写入完整的 docker-compose.yml（包含 log-server）
             cat << 'EOF' > docker-compose.yml
             services:
               portfolio:
@@ -66,7 +73,38 @@ jobs:
                 restart: always
                 ports:
                   - "80:80"
+                volumes:
+                  - ./logs:/var/log/nginx
+                logging:
+                  driver: "json-file"
+                  options:
+                    max-size: "10m"
+                    max-file: "3"
+                networks:
+                  - app-network
+
+              log-server:
+                image: crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com/wangshun_build/wangshun_log_server:latest
+                container_name: wangshun-log-server
+                restart: always
+                volumes:
+                  - ./logs:/var/log/nginx:ro
+                ports:
+                  - "3000:3000"
+                environment:
+                  - LOG_FILE=/var/log/nginx/access.log
+                depends_on:
+                  - portfolio
+                networks:
+                  - app-network
+
+            networks:
+              app-network:
+                driver: bridge
             EOF
+
+            # 创建日志目录
+            mkdir -p logs
 
             # 硬编码登录阿里云 (保证拉取权限)
             sudo docker login crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com -u aliyun4384550071 -p wangshun817

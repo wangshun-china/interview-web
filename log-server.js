@@ -6,42 +6,52 @@ const url = require('url');
 const PORT = 3000;
 const LOG_FILE = process.env.LOG_FILE || '/var/log/nginx/access.log';
 
-// 解析JSON日志行
+// 解析日志行（支持JSON和标准Nginx格式）
 function parseLogs(logText) {
   const lines = logText.trim().split('\n').filter(line => line.trim());
   const logs = [];
 
   for (const line of lines) {
     try {
-      const entry = JSON.parse(line);
-      // 提取IP地址
-      const ip = entry.remote_addr || '-';
-      // 解析请求
-      const requestMatch = entry.request?.match(/^(GET|POST|PUT|DELETE|HEAD|OPTIONS)\s+(\S+)/);
-      const method = requestMatch ? requestMatch[1] : '-';
-      const path = requestMatch ? requestMatch[2] : entry.request || '-';
-      // 状态码
-      const status = parseInt(entry.status) || 0;
-      // User Agent
-      const ua = entry.http_user_agent || '-';
-      // 时间
-      const time = entry.time_local || '-';
+      // 尝试解析JSON格式
+      if (line.startsWith('{')) {
+        const entry = JSON.parse(line);
+        const ip = entry.remote_addr || '-';
+        const requestMatch = entry.request?.match(/^(GET|POST|PUT|DELETE|HEAD|OPTIONS)\s+(\S+)/);
+        const method = requestMatch ? requestMatch[1] : '-';
+        const path = requestMatch ? requestMatch[2] : entry.request || '-';
+        const status = parseInt(entry.status) || 0;
+        const ua = entry.http_user_agent || '-';
+        const time = entry.time_local || '-';
 
-      logs.push({
-        ip,
-        method,
-        path,
-        status,
-        ua,
-        time,
-        raw: entry
-      });
+        logs.push({ ip, method, path, status, ua, time, raw: entry });
+      } else {
+        // 解析标准Nginx Combined格式
+        // 127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326 "http://example.com" "Mozilla/5.0"
+        const match = line.match(/^(\S+)\s+\S+\s+\S+\s+\[([^\]]+)\]\s+"([^"]+)"\s+(\d+)\s+(\d+|-)\s+"([^"]*)"\s+"([^"]*)"/);
+        if (match) {
+          const [, ip, time, request, status, , referer, ua] = match;
+          const requestMatch = request.match(/^(GET|POST|PUT|DELETE|HEAD|OPTIONS)\s+(\S+)/);
+          const method = requestMatch ? requestMatch[1] : '-';
+          const path = requestMatch ? requestMatch[2] : request;
+
+          logs.push({
+            ip,
+            method,
+            path,
+            status: parseInt(status) || 0,
+            ua,
+            time,
+            raw: { time_local: time, remote_addr: ip, request, status, http_user_agent: ua }
+          });
+        }
+      }
     } catch (e) {
-      // 非JSON格式的行，跳过
+      // 跳过无法解析的行
     }
   }
 
-  return logs.reverse(); // 最新在前
+  return logs.reverse();
 }
 
 // 读取日志文件

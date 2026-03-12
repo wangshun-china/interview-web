@@ -12,6 +12,50 @@ const GEOLITE_DB = process.env.GEOLITE_DB || '/app/GeoLite2-City.mmdb';
 let geoipReader = null;
 const uaParser = new UAParser();
 
+// 静态资源后缀（过滤掉）
+const STATIC_EXTENSIONS = [
+  '.css', '.js', '.mjs', '.ts', '.map',
+  '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp', '.avif',
+  '.woff', '.woff2', '.ttf', '.eot', '.otf',
+  '.mp4', '.webm', '.mp3', '.wav', '.ogg'
+];
+
+// 判断是否为静态资源
+function isStaticResource(path) {
+  const lowerPath = path.toLowerCase().split('?')[0];
+  return STATIC_EXTENSIONS.some(ext => lowerPath.endsWith(ext));
+}
+
+// UTC 时间转北京时间
+function toBeijingTime(nginxTime) {
+  // Nginx 格式: 12/Mar/2026:11:06:40 +0000
+  try {
+    // 替换为标准格式
+    const normalized = nginxTime.replace(/(\d{2})\/(\w{3})\/(\d{4}):(\d{2}):(\d{2}):(\d{2})/, '$2 $1, $3 $4:$5:$6');
+    const date = new Date(normalized);
+
+    // 检查是否有效日期
+    if (isNaN(date.getTime())) {
+      return nginxTime; // 返回原始值
+    }
+
+    // 加8小时得到北京时间
+    const bjTime = new Date(date.getTime() + 8 * 60 * 60 * 1000);
+
+    // 格式化: 2026-03-12 19:06:40
+    const year = bjTime.getUTCFullYear();
+    const month = String(bjTime.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(bjTime.getUTCDate()).padStart(2, '0');
+    const hour = String(bjTime.getUTCHours()).padStart(2, '0');
+    const minute = String(bjTime.getUTCMinutes()).padStart(2, '0');
+    const second = String(bjTime.getUTCSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+  } catch (e) {
+    return nginxTime;
+  }
+}
+
 // 初始化 GeoIP 数据库
 async function initGeoIP() {
   try {
@@ -115,9 +159,18 @@ function parseLogs(logText) {
       const requestMatch = entry.request?.match(/^(GET|POST|PUT|DELETE|HEAD|OPTIONS)\s+(\S+)/);
       const method = requestMatch ? requestMatch[1] : '-';
       const reqPath = requestMatch ? requestMatch[2] : entry.request || '-';
+
+      // 过滤静态资源请求
+      if (isStaticResource(reqPath)) {
+        continue;
+      }
+
       const status = parseInt(entry.status) || 0;
       const ua = entry.http_user_agent || '-';
-      const time = entry.time_local || '-';
+      const rawTime = entry.time_local || '-';
+
+      // 转换为北京时间
+      const time = toBeijingTime(rawTime);
 
       // 解析地理位置和设备信息
       const geo = lookupGeo(ip);
@@ -259,7 +312,11 @@ const server = http.createServer(async (req, res) => {
       }
 
       const logs = parseLogs(logText);
-      const today = new Date().toISOString().split('T')[0];
+
+      // 获取北京时间日期
+      const now = new Date();
+      const bjTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+      const today = `${bjTime.getUTCFullYear()}-${String(bjTime.getUTCMonth() + 1).padStart(2, '0')}-${String(bjTime.getUTCDate()).padStart(2, '0')}`;
 
       const countries = {};
       const devices = { mobile: 0, tablet: 0, desktop: 0, unknown: 0 };
@@ -275,7 +332,7 @@ const server = http.createServer(async (req, res) => {
 
       const stats = {
         total: logs.length,
-        today: logs.filter(l => l.time.includes(today.replace(/-/g, '/')) || l.time.includes(today)).length,
+        today: logs.filter(l => l.time.startsWith(today)).length,
         uniqueIps: new Set(logs.map(l => l.ip)).size,
         topCountries: Object.entries(countries).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([country, count]) => ({ country, count })),
         deviceBreakdown: devices

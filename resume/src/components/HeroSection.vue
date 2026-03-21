@@ -86,6 +86,17 @@
         </span>
       </div>
 
+      <!-- AI Workflow Badge -->
+      <div class="max-w-2xl mx-auto mb-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-accent-light)]/50 to-[var(--color-bg-alt)] border border-[var(--color-border)]">
+        <div class="flex items-center gap-2 mb-2">
+          <Zap class="w-4 h-4 text-[var(--color-accent)]" />
+          <span class="text-sm font-semibold text-[var(--color-accent)]">AI 辅助开发</span>
+        </div>
+        <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+          平时用 AI 辅助开发：<span class="text-[var(--color-accent)]">Gemini 3.1 Pro</span> 和 <span class="text-[var(--color-secondary)]">GPT 5.4 Thinking</span> 讨论需求和方案，我和 <span class="text-[var(--color-tertiary)]">Claude Code / Codex</span> 一起写代码、review 和 debug。代码写完 GitHub Actions 自动部署，DeepSeek 做代码审查。
+        </p>
+      </div>
+
       <!-- Scroll indicator -->
       <div class="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
         <ChevronDown class="w-6 h-6 text-[var(--color-accent)]/60" />
@@ -96,7 +107,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { GraduationCap, Contact, Mail, Github, MapPin, ChevronDown } from 'lucide-vue-next'
+import { GraduationCap, Contact, Mail, Github, MapPin, ChevronDown, Zap } from 'lucide-vue-next'
 
 const roles = [
   'Cloud Native Developer',

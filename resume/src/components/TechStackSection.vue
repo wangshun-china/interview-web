@@ -108,16 +108,19 @@
             <div class="text-3xl font-bold text-[#D97757] mb-2">Cloud Native</div>
             <p class="text-[#666666] text-sm">微服务架构设计与实现</p>
             <p class="text-[#666666] text-sm">RPC 框架与分布式治理</p>
+            <p class="text-[#666666] text-sm">控制面/数据面分离架构</p>
           </div>
           <div class="p-4 border-x border-[#E5E3DD]">
             <div class="text-3xl font-bold text-[#8B7355] mb-2">Full Stack</div>
             <p class="text-[#666666] text-sm">前后端全栈开发能力</p>
             <p class="text-[#666666] text-sm">从原型到生产的完整交付</p>
+            <p class="text-[#666666] text-sm">CI/CD 自动化流水线</p>
           </div>
           <div class="p-4">
             <div class="text-3xl font-bold text-[#7B68A6] mb-2">AI Agent</div>
             <p class="text-[#666666] text-sm">LangChain4j 工作流编排</p>
             <p class="text-[#666666] text-sm">LLM 驱动的自动化系统</p>
+            <p class="text-[#666666] text-sm">AI 辅助开发实践</p>
           </div>
         </div>
       </div>
@@ -129,43 +132,45 @@
 import { Server, Monitor, Brain, Wrench } from 'lucide-vue-next'
 
 const backendTechs = [
-  { name: 'Java 21', level: '精通' },
-  { name: 'Spring Boot 3', level: '精通' },
-  { name: 'Dubbo 3', level: '熟练' },
-  { name: 'Netty 4', level: '熟练' },
-  { name: 'Nacos', level: '熟练' },
-  { name: 'ByteBuddy', level: '熟练' },
-  { name: 'Python', level: '熟练' },
-  { name: 'MySQL', level: '熟练' },
-  { name: 'Redis/Redisson', level: '熟练' },
-  { name: 'Caffeine', level: '熟练' },
+  { name: 'Java 21', level: '熟悉' },
+  { name: 'Spring Boot 3', level: '熟悉' },
+  { name: 'Dubbo 3', level: '熟悉' },
+  { name: 'Netty 4', level: '熟悉' },
+  { name: 'Nacos', level: '熟悉' },
+  { name: 'ByteBuddy', level: '熟悉' },
+  { name: 'Python', level: '熟悉' },
+  { name: 'MySQL', level: '熟悉' },
+  { name: 'Redis/Redisson', level: '熟悉' },
+  { name: 'Caffeine', level: '熟悉' },
 ]
 
 const frontendTechs = [
-  { name: 'Vue 3', level: '精通' },
-  { name: 'TypeScript', level: '熟练' },
-  { name: 'TailwindCSS', level: '熟练' },
-  { name: 'Vite', level: '熟练' },
-  { name: 'Element Plus', level: '熟练' },
-  { name: 'SSE', level: '熟练' },
+  { name: 'Vue 3', level: '熟悉' },
+  { name: 'TypeScript', level: '熟悉' },
+  { name: 'TailwindCSS', level: '熟悉' },
+  { name: 'Vite', level: '熟悉' },
+  { name: 'Element Plus', level: '熟悉' },
+  { name: 'SSE', level: '熟悉' },
 ]
 
 const aiTechs = [
-  { name: 'LangChain4j', level: '熟练' },
-  { name: 'LangGraph4j', level: '熟练' },
-  { name: 'Claude API', level: '熟练' },
-  { name: 'Gemini API', level: '熟练' },
-  { name: 'AST 分析', level: '熟练' },
-  { name: 'Prompt Engineering', level: '熟练' },
+  { name: 'LangChain4j', level: '熟悉' },
+  { name: 'LangGraph4j', level: '熟悉' },
+  { name: 'Claude API', level: '熟悉' },
+  { name: 'Gemini 3.1 Pro', level: '熟悉' },
+  { name: 'GPT 5.4 Thinking', level: '熟悉' },
+  { name: 'DeepSeek', level: '熟悉' },
+  { name: 'Prompt Engineering', level: '熟悉' },
+  { name: 'Tool Calling', level: '熟悉' },
 ]
 
 const devopsTechs = [
-  { name: 'Docker', level: '精通' },
-  { name: 'GitHub App', level: '熟练' },
-  { name: 'GitHub Actions', level: '熟练' },
-  { name: 'CI/CD', level: '熟练' },
-  { name: 'Nginx', level: '熟练' },
-  { name: 'Linux', level: '熟练' },
+  { name: 'Docker', level: '熟悉' },
+  { name: 'GitHub App', level: '熟悉' },
+  { name: 'GitHub Actions', level: '熟悉' },
+  { name: 'CI/CD', level: '熟悉' },
+  { name: 'Nginx', level: '熟悉' },
+  { name: 'Linux', level: '熟悉' },
   { name: 'Kubernetes', level: '了解' },
 ]
 </script>

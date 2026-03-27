@@ -65,7 +65,7 @@ jobs:
     name: Deploy to ECS
     needs: build
     runs-on: self-hosted
-    
+    steps:
       - name: Deploy
         run: |
           mkdir -p wangshun-portfolio/logs

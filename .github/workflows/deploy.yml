@@ -4,6 +4,15 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
+    inputs:
+      target_env:
+        description: '请选择要部署的目标服务器 (默认推送到阿里云)'
+        required: true
+        default: 'aliyun'
+        type: choice
+        options:
+          - aliyun
+          - wsl
 
 env:
   REGISTRY: crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com
@@ -62,9 +71,9 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Deploy to ECS
+    name: Deploy to ${{ github.event.inputs.target_env || 'aliyun' }}
     needs: build
-    runs-on: self-hosted
+    runs-on: [self-hosted, "${{ github.event.inputs.target_env || 'aliyun' }}"]
     steps:
       - name: Deploy
         run: |
@@ -76,7 +85,7 @@ jobs:
             portfolio:
               image: crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com/wangshun_build/wangshun_portfolio:latest
               container_name: wangshun-portfolio
-              restart: always
+              restart: unless-stopped
               ports:
                 - "80:80"
               volumes:
@@ -87,7 +96,7 @@ jobs:
             log-server:
               image: crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com/wangshun_build/wangshun_log_server:latest
               container_name: wangshun-log-server
-              restart: always
+              restart: unless-stopped
               volumes:
                 - ./logs:/var/log/nginx:ro
               ports:

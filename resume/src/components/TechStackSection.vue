@@ -1,7 +1,7 @@
 <template>
-  <section id="tech-stack" class="min-h-screen py-20 relative">
+  <section id="tech-stack" class="py-20 relative">
     <!-- Section header -->
-    <div class="container mx-auto px-4 mb-16">
+    <div class="w-full px-12 md:px-20 lg:px-32 mb-16">
       <div class="flex items-center gap-4 mb-4">
         <div class="h-px flex-1 bg-gradient-to-r from-transparent to-[#D97757]/30"></div>
         <span class="text-[#8B7355] text-sm font-mono">03</span>
@@ -13,8 +13,8 @@
       <p class="text-center text-[#666666] text-lg">Tech Stack</p>
     </div>
 
-    <div class="container mx-auto px-4">
-      <div class="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+    <div class="w-full px-12 md:px-20 lg:px-32">
+      <div class="grid lg:grid-cols-2 gap-12">
         <!-- Backend & Cloud Native -->
         <div class="card rounded-2xl p-8">
           <div class="flex items-center gap-3 mb-8">
@@ -100,36 +100,13 @@
         </div>
       </div>
 
-      <!-- Skills radar description -->
-      <div class="mt-16 card rounded-2xl p-8 max-w-4xl mx-auto">
-        <h3 class="text-xl font-bold text-[#222222] mb-6 text-center">能力概览</h3>
-        <div class="grid md:grid-cols-3 gap-6 text-center">
-          <div class="p-4">
-            <div class="text-3xl font-bold text-[#D97757] mb-2">Cloud Native</div>
-            <p class="text-[#666666] text-sm">微服务架构设计与实现</p>
-            <p class="text-[#666666] text-sm">RPC 框架与分布式治理</p>
-            <p class="text-[#666666] text-sm">控制面/数据面分离架构</p>
-          </div>
-          <div class="p-4 border-x border-[#E5E3DD]">
-            <div class="text-3xl font-bold text-[#8B7355] mb-2">Full Stack</div>
-            <p class="text-[#666666] text-sm">前后端全栈开发能力</p>
-            <p class="text-[#666666] text-sm">从原型到生产的完整交付</p>
-            <p class="text-[#666666] text-sm">CI/CD 自动化流水线</p>
-          </div>
-          <div class="p-4">
-            <div class="text-3xl font-bold text-[#7B68A6] mb-2">AI Agent</div>
-            <p class="text-[#666666] text-sm">LangChain4j 工作流编排</p>
-            <p class="text-[#666666] text-sm">LLM 驱动的自动化系统</p>
-            <p class="text-[#666666] text-sm">AI 辅助开发实践</p>
-          </div>
-        </div>
-      </div>
+
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { Server, Monitor, Brain, Wrench } from 'lucide-vue-next'
+import { Server, Monitor, Brain, Wrench, Zap } from 'lucide-vue-next'
 
 const backendTechs = [
   { name: 'Java 21', level: '熟悉' },

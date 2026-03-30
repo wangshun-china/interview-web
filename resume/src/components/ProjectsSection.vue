@@ -1,7 +1,7 @@
 <template>
   <section id="projects" class="pt-8 pb-16 relative">
     <!-- Section header -->
-    <div class="container mx-auto px-4 mb-8">
+    <div class="w-full px-12 md:px-20 lg:px-32 mb-8">
       <div class="flex items-center gap-4 mb-3">
         <div class="h-px flex-1 bg-gradient-to-r from-transparent to-[var(--color-border)]"></div>
         <span class="text-[var(--color-text-muted)] text-sm font-mono">02</span>
@@ -13,7 +13,7 @@
       <p class="text-center text-[var(--color-text-muted)] text-lg">Project Showcase</p>
     </div>
 
-    <div class="container mx-auto px-4 space-y-10">
+    <div class="w-full px-12 md:px-20 lg:px-32 space-y-10">
       <!-- ==================== Project 1: AI Coder (第一个项目) ==================== -->
       <div class="project-featured card card-elevated rounded-3xl overflow-hidden border-2 border-[var(--color-accent-light)] relative">
         <!-- Featured badge -->
@@ -247,7 +247,7 @@
               <div class="space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <p><span class="text-[var(--color-text)] font-medium">Netty：</span>做网络通信最常用的框架，NIO 模型性能好，封装了各种边界情况。</p>
                 <p><span class="text-[var(--color-text)] font-medium">自研注册中心：</span>Spring Boot + MySQL 实现，控制面和业务解耦，不依赖 Nacos 等第三方组件。</p>
-                <p><span class="text-[var(--color-text)] font-medium">多种序列化：</span>支持 JSON、Kryo、Protostuff 三种，默认 Kryo，比 JSON 快 3-5 倍，通过 SPI 可扩展。</p>
+                <p><span class="text-[var(--color-text)] font-medium">多种序列化：</span>支持 JSON、Kryo 两种，默认 Kryo，比 JSON 快 3-5 倍，通过 SPI 可扩展。</p>
                 <p><span class="text-[var(--color-text)] font-medium">ByteBuddy：</span>动态代理比 JDK 原生的快，能在运行时生成代理类，让调用远程方法像调本地方法一样。</p>
                 <p><span class="text-[var(--color-text)] font-medium">自定义协议：</span>自己设计协议头，包含魔数、版本、消息类型、数据长度，解决 TCP 粘包问题。</p>
                 <p><span class="text-[var(--color-text)] font-medium">Vue 3 + Vue Flow：</span>前端需要一个拓扑图展示服务调用关系，Vue Flow 刚好能用。</p>
@@ -581,7 +581,7 @@
             <!-- Links -->
             <div class="flex flex-wrap gap-3">
               <a
-                href="https://github.com/wangshun-china/AutoGuard-AI-Reviewer"
+                href="https://github.com/xixi-box/AutoGuard-AI-Reviewer"
                 target="_blank"
                 class="btn btn-primary inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-sm"
               >
@@ -681,29 +681,28 @@
           </div>
         </div>
 
-        <!-- AI Workflow -->
-        <div class="p-4 rounded-xl bg-gradient-to-r from-[var(--color-accent-light)]/30 to-[var(--color-bg-alt)] border border-[var(--color-border)]">
+        <!-- Deployment Architecture -->
+        <div class="mt-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-secondary-light)]/30 to-[var(--color-bg-alt)] border border-[var(--color-border)]">
           <div class="flex items-center gap-2 mb-3">
-            <Zap class="w-5 h-5 text-[var(--color-accent)]" />
-            <span class="text-sm font-semibold text-[var(--color-accent)]">AI 辅助开发工作流</span>
+            <Server class="w-5 h-5 text-[var(--color-secondary)]" />
+            <span class="text-sm font-semibold text-[var(--color-secondary)]">部署架构演进</span>
           </div>
           <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mb-3">
-            这三个项目都是用 AI 辅助开发的。我的工作流大概是这样：
+            创建了 <a href="https://github.com/wangshun-china" target="_blank" class="text-[var(--color-secondary)] hover:underline font-medium">wangshun-china</a> Organization，将项目迁移后使用 GitHub Actions Runner 进行部署：
           </p>
-          <div class="grid md:grid-cols-3 gap-3 text-xs">
+          <div class="grid md:grid-cols-2 gap-3 text-xs mb-3">
             <div class="p-3 rounded-lg bg-white border border-[var(--color-border-light)]">
-              <div class="font-semibold text-[var(--color-text)] mb-1">1. 需求讨论</div>
-              <div class="text-[var(--color-text-muted)]">和 Gemini 3.1 Pro 或 GPT 5.4 Thinking 讨论需求，确定技术方案</div>
+              <div class="font-semibold text-[var(--color-text)] mb-1">阿里云部署</div>
+              <div class="text-[var(--color-text-muted)]">Self-hosted Runner 直接部署在阿里云 ECS 上，适合生产环境</div>
             </div>
             <div class="p-3 rounded-lg bg-white border border-[var(--color-border-light)]">
-              <div class="font-semibold text-[var(--color-text)] mb-1">2. 代码实现</div>
-              <div class="text-[var(--color-text-muted)]">我和 Claude Code / Codex 一起写代码、review 和 debug</div>
-            </div>
-            <div class="p-3 rounded-lg bg-white border border-[var(--color-border-light)]">
-              <div class="font-semibold text-[var(--color-text)] mb-1">3. 自动化部署</div>
-              <div class="text-[var(--color-text-muted)]">GitHub Actions 自动构建部署，DeepSeek 做代码审查</div>
+              <div class="font-semibold text-[var(--color-text)] mb-1">本地 WSL + FRP 内网穿透</div>
+              <div class="text-[var(--color-text-muted)]">Runner 部署在本地 WSL，通过 frp 内网穿透，阿里云只做转发，低配服务器即可，大幅节省成本</div>
             </div>
           </div>
+          <p class="text-xs text-[var(--color-text-muted)]">
+            期间整理了相关部署和内网穿透文件成模板，放在了 <a href="https://github.com/xixi-box/template" target="_blank" class="text-[var(--color-accent)] hover:underline">github.com/xixi-box/template</a>
+          </p>
         </div>
       </div>
     </div>

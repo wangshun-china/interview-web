@@ -231,8 +231,18 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Section spacing */
 section {
-  min-height: 100vh;
   padding: 4rem 1rem;
+}
+
+/* Hero section - compressed to show projects on first screen */
+#hero {
+  min-height: 65vh;
+}
+
+/* Projects and TechStack sections */
+#projects,
+#tech-stack {
+  min-height: auto;
 }
 
 /* Animation Utilities */

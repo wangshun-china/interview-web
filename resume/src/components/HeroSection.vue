@@ -1,12 +1,12 @@
 <template>
-  <section id="hero" class="min-h-screen flex items-center justify-center relative bg-pattern">
+  <section id="hero" class="min-h-[65vh] flex items-center justify-center relative bg-pattern">
     <!-- Decorative elements -->
     <div class="absolute top-20 left-10 w-32 h-32 border border-[var(--color-accent)]/20 rounded-full animate-pulse-slow"></div>
     <div class="absolute bottom-20 right-10 w-48 h-48 border border-[var(--color-secondary)]/20 rounded-full animate-pulse-slow" style="animation-delay: 1s;"></div>
     <div class="absolute top-1/3 right-1/4 w-2 h-2 bg-[var(--color-accent)]/40 rounded-full animate-float"></div>
     <div class="absolute bottom-1/3 left-1/4 w-3 h-3 bg-[var(--color-secondary)]/40 rounded-full animate-float" style="animation-delay: 2s;"></div>
 
-    <div class="container mx-auto px-4 text-center relative z-10">
+    <div class="w-full px-12 md:px-20 lg:px-32 text-center relative z-10">
       <!-- Status badge -->
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 border border-[var(--color-border)] mb-6 animate-fade-in">
         <span class="w-2 h-2 bg-[var(--color-tertiary)] rounded-full animate-pulse"></span>
@@ -29,10 +29,10 @@
         </p>
       </div>
 
-      <!-- Core info cards - 居中对称布局 -->
-      <div class="flex flex-col md:flex-row justify-center gap-6 max-w-3xl mx-auto mb-8">
+      <!-- Core info cards - 两端对齐布局 -->
+      <div class="flex flex-col md:flex-row justify-between gap-8 mb-6">
         <!-- Education -->
-        <div class="card card-elevated p-5 text-left flex-1 max-w-md">
+        <div class="card card-elevated p-5 text-left flex-1">
           <div class="flex items-center gap-2 mb-3">
             <GraduationCap class="w-5 h-5 text-[var(--color-accent)]" />
             <span class="text-[var(--color-accent)] font-semibold">Education</span>
@@ -51,7 +51,7 @@
         </div>
 
         <!-- Contact -->
-        <div class="card card-elevated p-5 text-left flex-1 max-w-md">
+        <div class="card card-elevated p-5 text-left flex-1">
           <div class="flex items-center gap-2 mb-3">
             <Contact class="w-5 h-5 text-[var(--color-secondary)]" />
             <span class="text-[var(--color-secondary)] font-semibold">Contact</span>
@@ -73,6 +73,17 @@
         </div>
       </div>
 
+      <!-- AI Workflow -->
+      <div class="w-full mb-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-accent-light)]/50 to-[var(--color-bg-alt)] border border-[var(--color-border)]">
+        <div class="flex items-center gap-2 mb-2">
+          <Zap class="w-4 h-4 text-[var(--color-accent)]" />
+          <span class="text-sm font-semibold text-[var(--color-accent)]">AI Developer Workflow</span>
+        </div>
+        <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+          平时用 AI 辅助开发，长期订阅 Code Plan，<span class="text-[var(--color-accent)]">Gemini 3.1 Pro</span> <span class="text-[var(--color-accent)]">Claude sonnet4.6</span>  和 <span class="text-[var(--color-secondary)]">GPT 5.4 Thinking</span> 讨论需求和方案，我和 <span class="text-[var(--color-tertiary)]">Claude Code / Codex</span> 一起写代码、review 和 debug。代码写完 GitHub Actions 。
+        </p>
+      </div>
+
       <!-- Role badges -->
       <div class="flex flex-wrap justify-center gap-3 mb-8">
         <span class="tag">
@@ -86,20 +97,12 @@
         </span>
       </div>
 
-      <!-- AI Workflow Badge -->
-      <div class="max-w-2xl mx-auto mb-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-accent-light)]/50 to-[var(--color-bg-alt)] border border-[var(--color-border)]">
-        <div class="flex items-center gap-2 mb-2">
-          <Zap class="w-4 h-4 text-[var(--color-accent)]" />
-          <span class="text-sm font-semibold text-[var(--color-accent)]">AI 辅助开发</span>
-        </div>
-        <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-          平时用 AI 辅助开发：<span class="text-[var(--color-accent)]">Gemini 3.1 Pro</span> 和 <span class="text-[var(--color-secondary)]">GPT 5.4 Thinking</span> 讨论需求和方案，我和 <span class="text-[var(--color-tertiary)]">Claude Code / Codex</span> 一起写代码、review 和 debug。代码写完 GitHub Actions 自动部署，DeepSeek 做代码审查。
-        </p>
-      </div>
-
       <!-- Scroll indicator -->
-      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
-        <ChevronDown class="w-6 h-6 text-[var(--color-accent)]/60" />
+      <div class="mt-4 flex flex-col items-center gap-2 cursor-pointer" @click="scrollToProjects">
+        <span class="text-sm text-[var(--color-text-muted)]">下滑查看项目经历</span>
+        <div class="animate-bounce">
+          <ChevronDown class="w-6 h-6 text-[var(--color-accent)]" />
+        </div>
       </div>
     </div>
   </section>
@@ -147,6 +150,13 @@ const typeWriter = () => {
   setTimeout(typeWriter, typingSpeed)
 }
 
+const scrollToProjects = () => {
+  const projectsSection = document.getElementById('projects')
+  if (projectsSection) {
+    projectsSection.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
 onMounted(() => {
   typeWriter()
 })
@@ -164,6 +174,19 @@ onMounted(() => {
 
 .typewriter-text {
   display: inline;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--color-accent);
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
 }
 
 @keyframes pulse-slow {

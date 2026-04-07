@@ -71,9 +71,9 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Deploy to ${{ github.event.inputs.target_env || 'aliyun' }}
+    name: Deploy to ${{ github.event.inputs.target_env || 'wsl' }}
     needs: build
-    runs-on: [self-hosted, "${{ github.event.inputs.target_env || 'aliyun' }}"]
+    runs-on: [self-hosted, "${{ github.event.inputs.target_env || 'wsl' }}"]
     steps:
       - name: Deploy
         run: |

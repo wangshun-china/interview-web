@@ -42,6 +42,10 @@
               <p class="text-[var(--color-text)] font-medium">上海海洋大学 · 硕士</p>
               <p class="text-[var(--color-text-muted)]">计算机技术 (2025.09 - 2028.06)</p>
               <p class="text-[var(--color-secondary)] text-xs mt-1">研究方向：基于 3DGS 的无人机影像实时三维建模</p>
+                <a href="https://xixi-box.github.io/grad/" target="_blank" class="inline-flex items-center gap-1 mt-2 text-xs text-[var(--color-accent)] hover:underline">
+                  <span>研究进度</span>
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
             </div>
             <div class="border-t border-[var(--color-border-light)] pt-2">
               <p class="text-[var(--color-text)] font-medium">山东理工大学 · 本科</p>

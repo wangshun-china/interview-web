@@ -84,7 +84,9 @@
           <span class="text-sm font-semibold text-[var(--color-accent)]">AI Developer Workflow</span>
         </div>
         <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-          平时用 AI 辅助开发，长期订阅 Code Plan，<span class="text-[var(--color-accent)]">Gemini 3.1 Pro</span> <span class="text-[var(--color-accent)]">Claude sonnet4.6</span>  和 <span class="text-[var(--color-secondary)]">GPT 5.4 Thinking</span> 讨论需求和方案，我和 <span class="text-[var(--color-tertiary)]">Claude Code / Codex</span> 一起写代码、review 和 debug。代码写完 GitHub Actions 。
+          长期使用 AI 辅助完成需求拆解、方案评审、代码实现、Review 和 Debug。
+          关注的不只是“让模型写代码”，更重视工程边界、可观测性、部署流程和安全护栏。
+          代码完成后通过 GitHub Actions、Docker 和 Nginx 自动构建发布。
         </p>
       </div>
 

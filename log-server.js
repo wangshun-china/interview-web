@@ -1,18 +1,52 @@
 const http = require('http');
 const fs = require('fs');
-const path = require('path');
 const url = require('url');
 const maxmind = require('maxmind');
 const UAParser = require('ua-parser-js');
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
 const LOG_FILE = process.env.LOG_FILE || '/var/log/nginx/access.log';
+const LOG_FILES = process.env.LOG_FILES || '';
 const GEOLITE_DB = process.env.GEOLITE_DB || '/app/GeoLite2-City.mmdb';
+const MAX_LOG_LINES = Number(process.env.MAX_LOG_LINES || 12000);
+const ADMIN_TOKEN = process.env.LOG_ADMIN_TOKEN || '';
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+const FILTER_SCANS = process.env.FILTER_SCANS !== 'false';
+const DEFAULT_SERVICE_PORT = process.env.DEFAULT_SERVICE_PORT || '80';
 
 let geoipReader = null;
 const uaParser = new UAParser();
 
-// 静态资源后缀（过滤掉）
+const SERVICE_PORTS = {
+  '80': { label: '首页', key: 'home' },
+  '3000': { label: 'RPC', key: 'rpc' },
+  '8888': { label: 'Code', key: 'code' }
+};
+
+function parseLogSources() {
+  if (!LOG_FILES.trim()) {
+    return [{ port: DEFAULT_SERVICE_PORT, path: LOG_FILE }];
+  }
+
+  return LOG_FILES
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean)
+    .map(item => {
+      const separator = item.indexOf(':');
+      if (separator === -1) {
+        return { port: DEFAULT_SERVICE_PORT, path: item };
+      }
+      return {
+        port: item.slice(0, separator).trim() || DEFAULT_SERVICE_PORT,
+        path: item.slice(separator + 1).trim()
+      };
+    })
+    .filter(item => item.path);
+}
+
+const LOG_SOURCES = parseLogSources();
+
 const STATIC_EXTENSIONS = [
   '.css', '.js', '.mjs', '.ts', '.map',
   '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp', '.avif',
@@ -20,43 +54,63 @@ const STATIC_EXTENSIONS = [
   '.mp4', '.webm', '.mp3', '.wav', '.ogg'
 ];
 
-// 判断是否为静态资源
-function isStaticResource(path) {
-  const lowerPath = path.toLowerCase().split('?')[0];
+const BOT_PATTERNS = [
+  /bot/i, /spider/i, /crawler/i, /slurp/i, /bingpreview/i,
+  /headless/i, /monitor/i, /uptime/i, /curl/i, /wget/i
+];
+
+const SUSPICIOUS_PATH_PATTERNS = [
+  /^\/robots\.txt$/i,
+  /^\/\.env/i,
+  /^\/\.git/i,
+  /^\/\.well-known\/security\.txt$/i,
+  /^\/sdk\/weblanguage/i,
+  /^\/anthropic\/v1\/models/i,
+  /^\/geoserver/i,
+  /^\/webui/i,
+  /^\/wp-/i,
+  /^\/wordpress/i,
+  /^\/phpmyadmin/i,
+  /^\/admin/i,
+  /^\/boaform/i,
+  /^\/cgi-bin/i,
+  /^\/manager\/html/i
+];
+
+function isStaticResource(requestPath) {
+  const lowerPath = requestPath.toLowerCase().split('?')[0];
   return STATIC_EXTENSIONS.some(ext => lowerPath.endsWith(ext));
 }
 
-// UTC 时间转北京时间
-function toBeijingTime(nginxTime) {
-  // Nginx 格式: 12/Mar/2026:11:06:40 +0000
-  try {
-    // 替换为标准格式
-    const normalized = nginxTime.replace(/(\d{2})\/(\w{3})\/(\d{4}):(\d{2}):(\d{2}):(\d{2})/, '$2 $1, $3 $4:$5:$6');
-    const date = new Date(normalized);
-
-    // 检查是否有效日期
-    if (isNaN(date.getTime())) {
-      return nginxTime; // 返回原始值
-    }
-
-    // 加8小时得到北京时间
-    const bjTime = new Date(date.getTime() + 8 * 60 * 60 * 1000);
-
-    // 格式化: 2026-03-12 19:06:40
-    const year = bjTime.getUTCFullYear();
-    const month = String(bjTime.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(bjTime.getUTCDate()).padStart(2, '0');
-    const hour = String(bjTime.getUTCHours()).padStart(2, '0');
-    const minute = String(bjTime.getUTCMinutes()).padStart(2, '0');
-    const second = String(bjTime.getUTCSeconds()).padStart(2, '0');
-
-    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-  } catch (e) {
-    return nginxTime;
+function parseNginxTime(nginxTime) {
+  if (!nginxTime || nginxTime === '-') {
+    return { label: '-', timestamp: 0 };
   }
+
+  const normalized = nginxTime.replace(
+    /(\d{2})\/(\w{3})\/(\d{4}):(\d{2}):(\d{2}):(\d{2})/,
+    '$2 $1, $3 $4:$5:$6'
+  );
+  const date = new Date(normalized);
+
+  if (Number.isNaN(date.getTime())) {
+    return { label: nginxTime, timestamp: 0 };
+  }
+
+  const bjTime = new Date(date.getTime() + 8 * 60 * 60 * 1000);
+  const year = bjTime.getUTCFullYear();
+  const month = String(bjTime.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(bjTime.getUTCDate()).padStart(2, '0');
+  const hour = String(bjTime.getUTCHours()).padStart(2, '0');
+  const minute = String(bjTime.getUTCMinutes()).padStart(2, '0');
+  const second = String(bjTime.getUTCSeconds()).padStart(2, '0');
+
+  return {
+    label: `${year}-${month}-${day} ${hour}:${minute}:${second}`,
+    timestamp: date.getTime()
+  };
 }
 
-// 初始化 GeoIP 数据库
 async function initGeoIP() {
   try {
     if (fs.existsSync(GEOLITE_DB)) {
@@ -70,13 +124,11 @@ async function initGeoIP() {
   }
 }
 
-// IP 地理位置查询
 function lookupGeo(ip) {
   if (!geoipReader || !ip || ip === '-') {
     return null;
   }
 
-  // 跳过内网 IP
   if (ip.startsWith('127.') || ip.startsWith('10.') || ip.startsWith('192.168.') || ip.match(/^172\.(1[6-9]|2[0-9]|3[01])\./)) {
     return { country: '本地网络', region: '-', city: '-' };
   }
@@ -92,23 +144,24 @@ function lookupGeo(ip) {
       latitude: result.location?.latitude || null,
       longitude: result.location?.longitude || null
     };
-  } catch (err) {
+  } catch {
     return null;
   }
 }
 
-// 解析 User-Agent
 function parseUserAgent(ua) {
   if (!ua || ua === '-') {
-    return { type: 'unknown', os: '-', browser: '-', device: '-' };
+    return { type: 'unknown', os: '-', browser: '-', device: '-', bot: false };
   }
 
   uaParser.setUA(ua);
   const result = uaParser.getResult();
+  const bot = BOT_PATTERNS.some(pattern => pattern.test(ua));
 
-  // 判断设备类型
   let deviceType = 'desktop';
-  if (result.device.type === 'mobile') {
+  if (bot) {
+    deviceType = 'bot';
+  } else if (result.device.type === 'mobile') {
     deviceType = 'mobile';
   } else if (result.device.type === 'tablet') {
     deviceType = 'tablet';
@@ -118,238 +171,444 @@ function parseUserAgent(ua) {
     deviceType = 'wearable';
   }
 
-  // 简化浏览器名称
   const browserName = result.browser.name || '-';
   const browserVersion = result.browser.version ? `${result.browser.name} ${result.browser.major || result.browser.version.split('.')[0]}` : browserName;
-
-  // 简化操作系统
   const osName = result.os.name || '-';
   const osVersion = result.os.version ? `${result.os.name} ${result.os.version}` : osName;
 
   return {
     type: deviceType,
     os: osVersion,
-    browser: browserVersion,
-    device: result.device.model || result.device.vendor || '-'
+    browser: bot ? 'Bot / Crawler' : browserVersion,
+    device: result.device.model || result.device.vendor || '-',
+    bot
   };
 }
 
-// 解析日志行
-function parseLogs(logText) {
-  const lines = logText.trim().split('\n').filter(line => line.trim());
+function maskIp(ip) {
+  if (!ip || ip === '-') return '-';
+  if (ip.includes(':')) {
+    const parts = ip.split(':');
+    return `${parts.slice(0, 3).join(':')}:****`;
+  }
+  const parts = ip.split('.');
+  if (parts.length !== 4) return ip;
+  return `${parts[0]}.${parts[1]}.${parts[2]}.*`;
+}
+
+function normalizeEntry(line, sourcePort = DEFAULT_SERVICE_PORT) {
+  if (line.startsWith('{')) {
+    return { ...JSON.parse(line), source_port: sourcePort };
+  }
+
+  const match = line.match(/^(\S+)\s+\S+\s+\S+\s+\[([^\]]+)\]\s+"([^"]+)"\s+(\d+)\s+(\d+|-)\s+"([^"]*)"\s+"([^"]*)"(?:\s+([\d.]+))?/);
+  if (!match) return null;
+
+  const [, ip, time, request, status, bytes, referer, ua, requestTime] = match;
+  return {
+    remote_addr: ip,
+    time_local: time,
+    request,
+    host: '-',
+    server_port: sourcePort,
+    source_port: sourcePort,
+    status,
+    body_bytes_sent: bytes,
+    request_time: requestTime || 0,
+    http_user_agent: ua,
+    http_referer: referer
+  };
+}
+
+function resolveService(entry) {
+  const host = String(entry.host || entry.http_host || entry.server_name || '');
+  const portFromHost = host.match(/:(\d+)$/)?.[1];
+  const port = String(portFromHost || entry.server_port || entry.port || entry.source_port || DEFAULT_SERVICE_PORT);
+  const service = SERVICE_PORTS[port];
+
+  if (!service) return null;
+
+  return {
+    port,
+    key: service.key,
+    label: service.label
+  };
+}
+
+function isProbeRequest(method, requestPath, uaInfo) {
+  if (!FILTER_SCANS) return false;
+  if (!method || method === '-' || !requestPath || requestPath === '-') return true;
+  if (uaInfo?.bot) return true;
+  if (requestPath === '*' || !requestPath.startsWith('/')) return true;
+  if (/\\x[0-9a-f]{2}/i.test(requestPath)) return true;
+  if (/[\u0000-\u001f\u007f]/.test(requestPath)) return true;
+
+  const lowerPath = requestPath.toLowerCase().split('?')[0];
+  return SUSPICIOUS_PATH_PATTERNS.some(pattern => pattern.test(lowerPath));
+}
+
+function normalizePagePath(requestPath) {
+  try {
+    const parsed = new URL(requestPath, 'http://local');
+    const view = parsed.searchParams.get('view');
+    if (parsed.pathname === '/' && view === 'logs') return '/?view=logs';
+    return parsed.pathname || '/';
+  } catch {
+    return requestPath.split('?')[0] || requestPath;
+  }
+}
+
+function parseLogs(logText, sourcePort = DEFAULT_SERVICE_PORT) {
+  const lines = logText
+    .trim()
+    .split('\n')
+    .filter(line => line.trim())
+    .slice(-MAX_LOG_LINES);
+
   const logs = [];
 
   for (const line of lines) {
     try {
-      let entry;
-      if (line.startsWith('{')) {
-        entry = JSON.parse(line);
-      } else {
-        // 解析标准 Nginx Combined 格式
-        const match = line.match(/^(\S+)\s+\S+\s+\S+\s+\[([^\]]+)\]\s+"([^"]+)"\s+(\d+)\s+(\d+|-)\s+"([^"]*)"\s+"([^"]*)"/);
-        if (match) {
-          const [, ip, time, request, status, , referer, ua] = match;
-          entry = { remote_addr: ip, time_local: time, request, status, http_user_agent: ua, http_referer: referer };
-        } else {
-          continue;
-        }
-      }
+      const entry = normalizeEntry(line, sourcePort);
+      if (!entry) continue;
 
       const ip = entry.remote_addr || '-';
-      const requestMatch = entry.request?.match(/^(GET|POST|PUT|DELETE|HEAD|OPTIONS)\s+(\S+)/);
+      const request = entry.request || '-';
+      const requestMatch = request.match(/^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)\s+(\S+)/);
       const method = requestMatch ? requestMatch[1] : '-';
-      const reqPath = requestMatch ? requestMatch[2] : entry.request || '-';
+      const reqPath = requestMatch ? requestMatch[2] : request;
+      const service = resolveService(entry);
 
-      // 过滤静态资源请求
-      if (isStaticResource(reqPath)) {
+      if (isStaticResource(reqPath)) continue;
+      if (!service) continue;
+
+      const status = Number.parseInt(entry.status, 10) || 0;
+      const ua = entry.http_user_agent || '-';
+      const rawTime = entry.time_local || '-';
+      const { label, timestamp } = parseNginxTime(rawTime);
+      const device = parseUserAgent(ua);
+
+      if (isProbeRequest(method, reqPath, device)) {
         continue;
       }
 
-      const status = parseInt(entry.status) || 0;
-      const ua = entry.http_user_agent || '-';
-      const rawTime = entry.time_local || '-';
-
-      // 转换为北京时间
-      const time = toBeijingTime(rawTime);
-
-      // 解析地理位置和设备信息
       const geo = lookupGeo(ip);
-      const device = parseUserAgent(ua);
+      const requestTimeMs = Math.round((Number.parseFloat(entry.request_time) || 0) * 1000);
+      const pagePath = normalizePagePath(reqPath);
 
       logs.push({
         ip,
+        maskedIp: maskIp(ip),
         geo,
         device,
         method,
         path: reqPath,
+        pagePath,
+        service,
+        port: service.port,
+        serviceLabel: service.label,
         status,
+        statusGroup: Math.floor(status / 100) * 100,
+        requestTimeMs,
         ua,
-        time
+        time: label,
+        timestamp
       });
-    } catch (e) {
-      // 跳过无法解析的行
+    } catch {
+      // Skip malformed log lines.
     }
   }
 
   return logs.reverse();
 }
 
-// 读取日志文件
-function readLogFile(callback) {
-  fs.readFile(LOG_FILE, 'utf8', (err, data) => {
-    if (err) {
-      console.error('读取日志文件失败:', err.message);
-      callback('');
-      return;
+function readLogFiles(callback) {
+  let pending = LOG_SOURCES.length;
+  const chunks = [];
+
+  if (pending === 0) {
+    callback([]);
+    return;
+  }
+
+  for (const source of LOG_SOURCES) {
+    fs.readFile(source.path, 'utf8', (err, data) => {
+      if (err) {
+        console.error(`读取日志文件失败(${source.port}:${source.path}):`, err.message);
+      } else {
+        chunks.push({ port: source.port, text: data });
+      }
+
+      pending -= 1;
+      if (pending === 0) {
+        callback(chunks);
+      }
+    });
+  }
+}
+
+function isAuthorized(req, query) {
+  if (!ADMIN_TOKEN) return true;
+
+  const header = req.headers.authorization || '';
+  const bearer = header.startsWith('Bearer ') ? header.slice(7) : '';
+  const customHeader = req.headers['x-admin-token'] || '';
+  const token = query.token || bearer || customHeader;
+
+  return token === ADMIN_TOKEN;
+}
+
+function sendJson(res, status, payload) {
+  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+  res.end(JSON.stringify(payload));
+}
+
+function applyFilters(logs, query) {
+  let result = logs;
+  const hours = query.range && query.range !== 'all' ? Number(query.range) : 24;
+
+  if (Number.isFinite(hours) && hours > 0) {
+    const cutoff = Date.now() - hours * 60 * 60 * 1000;
+    result = result.filter(log => log.timestamp && log.timestamp >= cutoff);
+  }
+
+  if (query.status && query.status !== 'all') {
+    const group = Number(query.status);
+    result = result.filter(log => log.statusGroup === group);
+  }
+
+  if (query.device && query.device !== 'all') {
+    result = result.filter(log => log.device?.type === query.device);
+  }
+
+  if (query.q) {
+    const keyword = String(query.q).trim().toLowerCase();
+    if (keyword) {
+      result = result.filter(log => {
+        const haystack = `${log.path} ${log.method} ${log.status} ${log.maskedIp} ${log.geo?.country || ''} ${log.device?.browser || ''}`.toLowerCase();
+        return haystack.includes(keyword);
+      });
     }
-    callback(data);
+  }
+
+  if (query.hideBots === 'true') {
+    result = result.filter(log => !log.device?.bot);
+  }
+
+  return result;
+}
+
+function topEntries(map, keyName, limit = 10) {
+  return Object.entries(map)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([key, count]) => ({ [keyName]: key, count }));
+}
+
+function getBeijingDate() {
+  const bjTime = new Date(Date.now() + 8 * 60 * 60 * 1000);
+  return `${bjTime.getUTCFullYear()}-${String(bjTime.getUTCMonth() + 1).padStart(2, '0')}-${String(bjTime.getUTCDate()).padStart(2, '0')}`;
+}
+
+function buildHourlyTrend(logs) {
+  const buckets = [];
+  const now = new Date();
+  now.setMinutes(0, 0, 0);
+
+  for (let i = 23; i >= 0; i--) {
+    const start = new Date(now.getTime() - i * 60 * 60 * 1000);
+    buckets.push({
+      key: start.toISOString(),
+      label: `${String((start.getUTCHours() + 8) % 24).padStart(2, '0')}:00`,
+      count: 0,
+      errors: 0
+    });
+  }
+
+  for (const log of logs) {
+    if (!log.timestamp) continue;
+    const hour = new Date(log.timestamp);
+    hour.setMinutes(0, 0, 0);
+    const bucket = buckets.find(item => item.key === hour.toISOString());
+    if (!bucket) continue;
+    bucket.count += 1;
+    if (log.status >= 400) bucket.errors += 1;
+  }
+
+  return buckets;
+}
+
+function buildStats(logs, allLogs) {
+  const statusCodes = {};
+  const statusGroups = { 200: 0, 300: 0, 400: 0, 500: 0 };
+  const ips = {};
+  const paths = {};
+  const countries = {};
+  const services = {
+    home: { key: 'home', port: '80', label: '首页', count: 0 },
+    rpc: { key: 'rpc', port: '3000', label: 'RPC', count: 0 },
+    code: { key: 'code', port: '8888', label: 'Code', count: 0 }
+  };
+  const devices = { desktop: 0, mobile: 0, tablet: 0, tv: 0, wearable: 0, bot: 0, unknown: 0 };
+  const browsers = {};
+  const os = {};
+  const today = getBeijingDate();
+  let totalRequestTime = 0;
+  let timedCount = 0;
+
+  for (const log of logs) {
+    ips[log.maskedIp] = (ips[log.maskedIp] || 0) + 1;
+    const serviceKey = log.service?.key || 'home';
+    if (services[serviceKey]) {
+      services[serviceKey].count += 1;
+    }
+    const pathKey = `${log.serviceLabel || '首页'} ${log.port || '80'}${log.pagePath || log.path}`;
+    paths[pathKey] = (paths[pathKey] || 0) + 1;
+    statusCodes[log.status] = (statusCodes[log.status] || 0) + 1;
+    if (statusGroups[log.statusGroup] !== undefined) {
+      statusGroups[log.statusGroup] += 1;
+    }
+
+    if (log.geo?.country && log.geo.country !== '-') {
+      countries[log.geo.country] = (countries[log.geo.country] || 0) + 1;
+    }
+
+    const deviceType = log.device?.type || 'unknown';
+    devices[deviceType] = (devices[deviceType] || 0) + 1;
+
+    if (log.device?.browser && log.device.browser !== '-') {
+      browsers[log.device.browser] = (browsers[log.device.browser] || 0) + 1;
+    }
+
+    if (log.device?.os && log.device.os !== '-') {
+      os[log.device.os] = (os[log.device.os] || 0) + 1;
+    }
+
+    if (log.requestTimeMs > 0) {
+      totalRequestTime += log.requestTimeMs;
+      timedCount += 1;
+    }
+  }
+
+  return {
+    total: logs.length,
+    totalAll: allLogs.length,
+    today: logs.filter(log => log.time.startsWith(today)).length,
+    uniqueIps: new Set(logs.map(log => log.maskedIp)).size,
+    successRequests: logs.filter(log => log.status >= 200 && log.status < 300).length,
+    redirectRequests: logs.filter(log => log.status >= 300 && log.status < 400).length,
+    errorRequests: logs.filter(log => log.status >= 400).length,
+    avgRequestTimeMs: timedCount ? Math.round(totalRequestTime / timedCount) : 0,
+    statusCodes,
+    statusGroups,
+    devices,
+    topIps: topEntries(ips, 'ip', 10),
+    serviceVisits: Object.values(services),
+    topPaths: topEntries(paths, 'path', 10).map(item => {
+      const match = item.path.match(/^(.+?)\s+(\d+)(\/.*)$/);
+      return {
+        service: match ? match[1] : '首页',
+        port: match ? match[2] : '80',
+        path: match ? match[3] : item.path,
+        count: item.count
+      };
+    }),
+    topCountries: topEntries(countries, 'country', 10),
+    topDevices: topEntries(devices, 'device', 8),
+    topBrowsers: topEntries(browsers, 'browser', 6),
+    topOs: topEntries(os, 'os', 6),
+    hourlyTrend: buildHourlyTrend(logs)
+  };
+}
+
+function sanitizeLogs(logs) {
+  return logs.map(log => ({
+    ip: log.maskedIp,
+    geo: log.geo,
+    device: log.device,
+    method: log.method,
+    path: log.path,
+    pagePath: log.pagePath,
+    service: log.service,
+    port: log.port,
+    serviceLabel: log.serviceLabel,
+    status: log.status,
+    statusGroup: log.statusGroup,
+    requestTimeMs: log.requestTimeMs,
+    time: log.time
+  }));
+}
+
+function handleLogs(req, res, query) {
+  if (!isAuthorized(req, query)) {
+    sendJson(res, 401, { error: 'Unauthorized' });
+    return;
+  }
+
+  readLogFiles((sources) => {
+    const allLogs = sources.flatMap(source => source.text ? parseLogs(source.text, source.port) : []);
+    allLogs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    const filteredLogs = applyFilters(allLogs, query);
+    const limit = Math.min(Math.max(Number(query.limit || 100), 20), 500);
+    const stats = buildStats(filteredLogs, allLogs);
+
+    sendJson(res, 200, {
+      logs: sanitizeLogs(filteredLogs.slice(0, limit)),
+      stats,
+      meta: {
+        limit,
+        maxLogLines: MAX_LOG_LINES,
+        filtered: filteredLogs.length,
+        authRequired: Boolean(ADMIN_TOKEN)
+      }
+    });
   });
 }
 
-// 路由处理
-const server = http.createServer(async (req, res) => {
+function handleStats(req, res, query) {
+  if (!isAuthorized(req, query)) {
+    sendJson(res, 401, { error: 'Unauthorized' });
+    return;
+  }
+
+  readLogFiles((sources) => {
+    const allLogs = sources.flatMap(source => source.text ? parseLogs(source.text, source.port) : []);
+    allLogs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    const filteredLogs = applyFilters(allLogs, query);
+    sendJson(res, 200, buildStats(filteredLogs, allLogs));
+  });
+}
+
+const server = http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname;
+  const query = parsedUrl.query || {};
 
-  // 设置 CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Admin-Token');
 
   if (req.method === 'OPTIONS') {
-    res.writeHead(200);
+    res.writeHead(204);
     res.end();
     return;
   }
 
   if (pathname === '/api/logs') {
-    readLogFile((logText) => {
-      if (!logText) {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ logs: [], stats: { total: 0, topIps: [], topPaths: [], topCountries: [], topDevices: [], statusCodes: {} } }));
-        return;
-      }
-
-      const logs = parseLogs(logText);
-
-      // 统计信息
-      const stats = {
-        total: logs.length,
-        ips: {},
-        paths: {},
-        countries: {},
-        devices: { mobile: 0, tablet: 0, desktop: 0, tv: 0, wearable: 0, unknown: 0 },
-        browsers: {},
-        os: {},
-        statusCodes: {}
-      };
-
-      for (const log of logs) {
-        // IP 统计
-        stats.ips[log.ip] = (stats.ips[log.ip] || 0) + 1;
-        // 路径统计
-        stats.paths[log.path] = (stats.paths[log.path] || 0) + 1;
-        // 状态码统计
-        const statusGroup = Math.floor(log.status / 100) * 100;
-        stats.statusCodes[statusGroup] = (stats.statusCodes[statusGroup] || 0) + 1;
-
-        // 地理位置统计
-        if (log.geo?.country && log.geo.country !== '-') {
-          stats.countries[log.geo.country] = (stats.countries[log.geo.country] || 0) + 1;
-        }
-
-        // 设备类型统计
-        if (log.device?.type) {
-          stats.devices[log.device.type] = (stats.devices[log.device.type] || 0) + 1;
-        }
-
-        // 浏览器统计
-        if (log.device?.browser && log.device.browser !== '-') {
-          stats.browsers[log.device.browser] = (stats.browsers[log.device.browser] || 0) + 1;
-        }
-
-        // 操作系统统计
-        if (log.device?.os && log.device.os !== '-') {
-          stats.os[log.device.os] = (stats.os[log.device.os] || 0) + 1;
-        }
-      }
-
-      // 转换为数组并排序
-      stats.topIps = Object.entries(stats.ips)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .map(([ip, count]) => ({ ip, count }));
-
-      stats.topPaths = Object.entries(stats.paths)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .map(([path, count]) => ({ path, count }));
-
-      stats.topCountries = Object.entries(stats.countries)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .map(([country, count]) => ({ country, count }));
-
-      stats.topBrowsers = Object.entries(stats.browsers)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([browser, count]) => ({ browser, count }));
-
-      stats.topOs = Object.entries(stats.os)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([os, count]) => ({ os, count }));
-
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ logs: logs.slice(0, 200), stats }));
-    });
-  } else if (pathname === '/api/stats') {
-    readLogFile((logText) => {
-      if (!logText) {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ total: 0, today: 0, uniqueIps: 0, topCountries: [], deviceBreakdown: {} }));
-        return;
-      }
-
-      const logs = parseLogs(logText);
-
-      // 获取北京时间日期
-      const now = new Date();
-      const bjTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
-      const today = `${bjTime.getUTCFullYear()}-${String(bjTime.getUTCMonth() + 1).padStart(2, '0')}-${String(bjTime.getUTCDate()).padStart(2, '0')}`;
-
-      const countries = {};
-      const devices = { mobile: 0, tablet: 0, desktop: 0, unknown: 0 };
-
-      for (const log of logs) {
-        if (log.geo?.country && log.geo.country !== '-') {
-          countries[log.geo.country] = (countries[log.geo.country] || 0) + 1;
-        }
-        if (log.device?.type) {
-          devices[log.device.type] = (devices[log.device.type] || 0) + 1;
-        }
-      }
-
-      const stats = {
-        total: logs.length,
-        today: logs.filter(l => l.time.startsWith(today)).length,
-        uniqueIps: new Set(logs.map(l => l.ip)).size,
-        topCountries: Object.entries(countries).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([country, count]) => ({ country, count })),
-        deviceBreakdown: devices
-      };
-
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(stats));
-    });
-  } else {
-    res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Not found' }));
+    handleLogs(req, res, query);
+    return;
   }
+
+  if (pathname === '/api/stats') {
+    handleStats(req, res, query);
+    return;
+  }
+
+  sendJson(res, 404, { error: 'Not found' });
 });
 
-// 启动服务器
 initGeoIP().then(() => {
   server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Log server running on port ${PORT}, reading from ${LOG_FILE}`);
+    console.log(`Log server running on port ${PORT}, reading from ${LOG_SOURCES.map(source => `${source.port}:${source.path}`).join(', ')}`);
   });
 });

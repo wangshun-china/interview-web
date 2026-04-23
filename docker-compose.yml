@@ -27,6 +27,9 @@ services:
       - "3001:3000"
     environment:
       - LOG_FILE=/var/log/nginx/access.log
+      - LOG_FILES=${LOG_FILES:-80:/var/log/nginx/access.log}
+      - LOG_ADMIN_TOKEN=${LOG_ADMIN_TOKEN:-}
+      - MAX_LOG_LINES=${MAX_LOG_LINES:-12000}
     depends_on:
       - portfolio
     networks:

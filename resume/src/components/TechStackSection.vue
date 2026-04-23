@@ -106,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { Server, Monitor, Brain, Wrench, Zap } from 'lucide-vue-next'
+import { Server, Monitor, Brain, Wrench } from 'lucide-vue-next'
 
 const backendTechs = [
   { name: 'Java 21', level: '熟悉' },
@@ -133,9 +133,8 @@ const frontendTechs = [
 const aiTechs = [
   { name: 'LangChain4j', level: '熟悉' },
   { name: 'LangGraph4j', level: '熟悉' },
-  { name: 'Claude API', level: '熟悉' },
-  { name: 'Gemini 3.1 Pro', level: '熟悉' },
-  { name: 'GPT 5.4 Thinking', level: '熟悉' },
+  { name: 'OpenAI-compatible API', level: '熟悉' },
+  { name: 'Claude / Gemini', level: '熟悉' },
   { name: 'DeepSeek', level: '熟悉' },
   { name: 'Prompt Engineering', level: '熟悉' },
   { name: 'Tool Calling', level: '熟悉' },

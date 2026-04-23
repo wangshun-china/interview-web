@@ -15,9 +15,9 @@
 
     <!-- Footer -->
     <footer class="py-8 text-center text-[#666666] text-sm border-t border-[#E5E3DD]">
-      <p>© 2025 Wang Shun | Built with Vue 3 + Vite + TailwindCSS</p>
+      <p>© 2026 Wang Shun | Built with Vue 3 + Vite + TailwindCSS</p>
       <p v-if="currentView !== 'logs'" class="mt-2">
-        <a href="/?view=logs" class="text-[#D97757] hover:underline">查看访问日志</a>
+        <a href="/?view=logs" class="text-[#D97757] hover:underline">查看访问统计</a>
       </p>
     </footer>
   </div>

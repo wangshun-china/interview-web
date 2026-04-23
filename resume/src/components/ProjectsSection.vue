@@ -1,7 +1,6 @@
 <template>
   <section id="projects" class="pt-8 pb-16 relative">
-    <!-- Section header -->
-    <div class="w-full px-12 md:px-20 lg:px-32 mb-8">
+    <div class="w-full px-8 md:px-16 lg:px-28 mb-8">
       <div class="flex items-center gap-4 mb-3">
         <div class="h-px flex-1 bg-gradient-to-r from-transparent to-[var(--color-border)]"></div>
         <span class="text-[var(--color-text-muted)] text-sm font-mono">02</span>
@@ -13,715 +12,624 @@
       <p class="text-center text-[var(--color-text-muted)] text-lg">Project Showcase</p>
     </div>
 
-    <div class="w-full px-12 md:px-20 lg:px-32 space-y-10">
-      <!-- ==================== Project 1: AI Coder (第一个项目) ==================== -->
-      <div class="project-featured card card-elevated rounded-3xl overflow-hidden border-2 border-[var(--color-accent-light)] relative">
-        <!-- Featured badge -->
-        <div class="absolute top-6 right-6 z-10">
-          <span class="px-4 py-1.5 bg-[var(--color-accent-light)] border border-[var(--color-accent)] text-[var(--color-accent)] text-sm rounded-full font-semibold">
-            起点项目
-          </span>
+    <div class="w-full px-8 md:px-16 lg:px-28 space-y-8">
+      <article
+        v-for="project in projects"
+        :key="project.name"
+        class="project-card card card-elevated overflow-hidden border border-[var(--color-border)]"
+        :class="{ 'project-featured border-2 border-[var(--color-accent-light)]': project.featured }"
+      >
+        <div class="grid xl:grid-cols-[1.08fr_0.92fr]">
+          <div class="p-7 lg:p-9">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-[var(--color-accent-light)] flex items-center justify-center">
+                  <component :is="project.icon" class="w-7 h-7" :style="{ color: project.color }" />
+                </div>
+                <div>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <h3 class="text-2xl font-bold text-[var(--color-text)]">{{ project.name }}</h3>
+                    <span v-if="project.featured" class="px-3 py-1 rounded-full bg-[var(--color-accent-light)] text-[var(--color-accent)] text-xs font-semibold">
+                      主项目
+                    </span>
+                  </div>
+                  <p class="text-[var(--color-text-muted)] text-sm font-mono mt-1">{{ project.subtitle }}</p>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <a
+                  v-for="link in project.links"
+                  :key="link.label"
+                  :href="link.href"
+                  target="_blank"
+                  class="btn btn-outline inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm"
+                >
+                  <component :is="link.icon" class="w-4 h-4" />
+                  <span>{{ link.label }}</span>
+                  <ExternalLink class="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span v-for="tag in project.tags" :key="tag" class="tag text-sm">{{ tag }}</span>
+            </div>
+
+            <p class="text-[var(--color-text-secondary)] leading-relaxed mb-6">
+              {{ project.summary }}
+            </p>
+
+            <div class="why-box mb-6">
+              <div class="mini-title">
+                <Lightbulb class="w-4 h-4" />
+                <span>为什么做这个项目</span>
+              </div>
+              <p>{{ project.why }}</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-3 mb-6">
+              <div v-for="metric in project.metrics" :key="metric.label" class="metric-box">
+                <div class="metric-value">{{ metric.value }}</div>
+                <div class="metric-label">{{ metric.label }}</div>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-3">
+              <div v-for="item in project.highlights" :key="item.title" class="highlight-item">
+                <Check class="w-4 h-4 mt-0.5 flex-shrink-0" :style="{ color: project.color }" />
+                <div>
+                  <div class="text-sm font-semibold text-[var(--color-text)]">{{ item.title }}</div>
+                  <p class="text-xs text-[var(--color-text-muted)] mt-1 leading-relaxed">{{ item.detail }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="project-side p-7 lg:p-9 border-t xl:border-t-0 xl:border-l border-[var(--color-border-light)]">
+            <div class="side-section">
+              <div class="side-title">
+                <Code2 class="w-4 h-4" />
+                <span>技术选型与原因</span>
+              </div>
+            <ul class="space-y-3">
+                <li v-for="choice in project.choices" :key="choice.title" class="side-line">
+                  <strong>{{ choice.title }}：</strong>{{ choice.detail }}
+                </li>
+              </ul>
+            </div>
+
+            <div class="side-section">
+              <div class="side-title">
+                <Bug class="w-4 h-4" />
+                <span>踩坑与解决</span>
+              </div>
+              <ul class="space-y-3">
+                <li v-for="pitfall in project.pitfalls" :key="pitfall.title" class="side-line">
+                  <strong>{{ pitfall.title }}：</strong>{{ pitfall.detail }}
+                </li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </article>
+
+      <section class="card rounded-3xl border border-[var(--color-border)] p-7 lg:p-9">
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-7">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-[var(--color-accent-light)] flex items-center justify-center">
+              <GitBranch class="w-6 h-6 text-[var(--color-tertiary)]" />
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-[var(--color-text)]">CI/CD 自动化部署</h3>
+              <p class="text-[var(--color-text-muted)] text-sm">Push to master 自动构建、推镜像、远程部署，完整上线约 5-8 分钟</p>
+            </div>
+          </div>
+          <a
+            href="https://github.com/xixi-box/template"
+            target="_blank"
+            class="btn btn-outline inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm"
+          >
+            <Github class="w-4 h-4" />
+            <span>部署模板</span>
+            <ExternalLink class="w-3 h-3" />
+          </a>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-0">
-          <!-- Left: Project Info -->
-          <div class="p-8 lg:p-10">
-            <!-- Header -->
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-14 h-14 rounded-2xl bg-[var(--color-accent-light)] flex items-center justify-center">
-                <Cloud class="w-7 h-7 text-[var(--color-tertiary)]" />
-              </div>
-              <div>
-                <h3 class="text-2xl font-bold text-[var(--color-text)]">AI Coder</h3>
-                <p class="text-[var(--color-tertiary)] text-sm font-mono">AI 代码生成与预览平台</p>
-              </div>
-            </div>
-
-            <!-- Tags -->
-            <div class="flex flex-wrap gap-2 mb-6">
-              <span class="tag text-sm">Spring Boot 3</span>
-              <span class="tag text-sm">LangChain4j</span>
-              <span class="tag text-sm">Qwen 3.5</span>
-              <span class="tag text-sm">Dubbo 3</span>
-              <span class="tag text-sm">MyBatis-Flex</span>
-              <span class="tag text-sm">Vue 3</span>
-            </div>
-
-            <!-- 项目背景 -->
-            <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <Lightbulb class="w-5 h-5 text-[var(--color-accent)]" />
-                <span class="text-sm font-semibold text-[var(--color-accent)]">为什么做这个项目</span>
-              </div>
-              <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">
-                当时在学 LangChain4j，想做一个能实际用起来的东西。输入一句话就能生成前端代码，这个想法挺有意思的。做这个项目的过程中，我开始思考：多个服务之间怎么通信？配置怎么管理？服务挂了怎么办？这些问题让我萌生了深入研究 RPC 架构的想法，也就有了后面 Lumina-RPC 这个项目。
-              </p>
-            </div>
-
-            <!-- 技术选型 -->
-            <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <Code2 class="w-5 h-5 text-[var(--color-secondary)]" />
-                <span class="text-sm font-semibold text-[var(--color-secondary)]">技术选型与原因</span>
-              </div>
-              <div class="space-y-2 text-sm text-[var(--color-text-secondary)]">
-                <p><span class="text-[var(--color-text)] font-medium">LangChain4j：</span>Java 生态里做 AI 应用最成熟的框架，Tool Calling、对话记忆这些开箱即用。</p>
-                <p><span class="text-[var(--color-text)] font-medium">Qwen 3.5 Max：</span>阿里的模型，代码生成能力不错，调用成本低。</p>
-                <p><span class="text-[var(--color-text)] font-medium">Dubbo 3 + Nacos：</span>服务之间需要通信，Dubbo 性能好，Nacos 同时搞定注册和配置。</p>
-                <p><span class="text-[var(--color-text)] font-medium">MyBatis-Flex：</span>比 MyBatis-Plus 更轻量，性能更好，支持多表关联查询。</p>
-                <p><span class="text-[var(--color-text)] font-medium">Redis + Caffeine：</span>热点数据放本地缓存更快，其他放 Redis 共享，两层缓存提升性能。</p>
-                <p><span class="text-[var(--color-text)] font-medium">Grafana + Prometheus：</span>监控 AI 模型调用情况，QPS、响应时间、Token 消耗这些指标。</p>
-                <p><span class="text-[var(--color-text)] font-medium">SSE 流式输出：</span>AI 生成代码比较慢，流式输出让用户能看到进度，不用傻等。</p>
-              </div>
-            </div>
-
-            <!-- Features -->
-            <div class="mb-6">
-              <div class="flex items-center gap-2 mb-3">
-                <CheckCircle class="w-5 h-5 text-[var(--color-tertiary)]" />
-                <span class="text-sm font-semibold text-[var(--color-tertiary)]">实现了哪些功能</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-tertiary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">自然语言生成代码</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">用户输入需求，AI 通过 Tool Calling 自动创建文件、写代码</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-tertiary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">可视化编辑</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">选中页面元素，通过对话修改，iframe 通信实现元素定位</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-tertiary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">一键部署</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">自动构建、部署、截图、生成分享链接，Docker + Nginx</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-tertiary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">多轮对话修改</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">Redis 存储对话历史，AI 能记住上下文，支持连续修改</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-tertiary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">安全防护</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">Guardrail 检测恶意输入，接口限流防刷，Docker 沙箱隔离执行</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-tertiary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">源码下载</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">生成的代码能下载完整项目源码，支持二次开发</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Links -->
-            <div class="flex flex-wrap gap-3">
-              <a
-                href="http://120.26.186.0:8888"
-                target="_blank"
-                class="btn btn-primary inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-sm"
-              >
-                <Rocket class="w-4 h-4" />
-                <span>在线体验</span>
-                <ExternalLink class="w-3 h-3" />
-              </a>
-              <a
-                href="https://github.com/wangshun-china/ai-code"
-                target="_blank"
-                class="btn btn-outline inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-sm"
-              >
-                <Github class="w-4 h-4" />
-                <span>GitHub 源码</span>
-                <ExternalLink class="w-3 h-3" />
-              </a>
-            </div>
-          </div>
-
-          <!-- Right: Debug Records -->
-          <div class="p-8 lg:p-10 bg-[var(--color-bg-alt)] border-l border-[var(--color-border-light)]">
-            <div class="flex items-center gap-2 mb-6">
-              <Bug class="w-5 h-5 text-[#C4613F]" />
-              <span class="text-lg font-semibold text-[var(--color-text)]">踩坑记录</span>
-            </div>
-
-            <div class="space-y-4">
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">AI 对话上下文丢失</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>微服务是无状态的，每次请求可能打到不同实例，AI 的对话历史就丢了。
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>用 Redis 存对话历史，key 是 userId+appId，每次请求先从 Redis 加载历史消息。同时限制最多保留 20 条，避免 Token 超限。
-                </p>
-              </div>
-
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">生成代码的安全问题</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>AI 生成的代码可能有恶意操作，直接跑在服务器上太危险。
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>Docker 容器隔离执行，限制了 CPU 和内存，也不让访问外网。跑出异常就抓堆栈扔回给 AI 自己修。
-                </p>
-              </div>
-
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">AI 工具调用死循环</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>有时候 AI 会反复调用同一个工具，停不下来，Token 烧完了也没生成出东西。
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>加了最大步数限制，超过 50 步就强制退出。同时做了个 ExitTool，AI 觉得干完了就调这个退出。
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ==================== Project 2: Lumina-RPC ==================== -->
-      <div class="project-card card card-elevated rounded-3xl overflow-hidden border border-[var(--color-border)]">
-        <div class="grid lg:grid-cols-2 gap-0">
-          <!-- Left: Project Info -->
-          <div class="p-8 lg:p-10">
-            <!-- Header -->
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-14 h-14 rounded-2xl bg-[var(--color-accent-light)] flex items-center justify-center">
-                <Rocket class="w-7 h-7 text-[var(--color-accent)]" />
-              </div>
-              <div>
-                <h3 class="text-2xl font-bold text-[var(--color-text)]">Lumina-RPC</h3>
-                <p class="text-[var(--color-secondary)] text-sm font-mono">轻量级 RPC 框架</p>
-              </div>
-            </div>
-
-            <!-- Tags -->
-            <div class="flex flex-wrap gap-2 mb-6">
-              <span class="tag text-sm">Java 21</span>
-              <span class="tag text-sm">Netty 4.1</span>
-              <span class="tag text-sm">Kryo</span>
-              <span class="tag text-sm">ByteBuddy</span>
-              <span class="tag text-sm">MySQL 8.0</span>
-              <span class="tag text-sm">Vue 3</span>
-            </div>
-
-            <!-- 项目背景 -->
-            <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <Lightbulb class="w-5 h-5 text-[var(--color-accent)]" />
-                <span class="text-sm font-semibold text-[var(--color-accent)]">为什么做这个项目</span>
-              </div>
-              <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">
-                做 AI Coder 的时候，用 Dubbo 做服务通信，但我不太理解它底层是怎么工作的。就想自己从头写一个 RPC 框架，搞清楚服务发现、负载均衡、序列化这些到底怎么实现的。写完这个之后，再回头看 Dubbo 源码就轻松多了。
-              </p>
-            </div>
-
-            <!-- 技术选型 -->
-            <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <Code2 class="w-5 h-5 text-[var(--color-secondary)]" />
-                <span class="text-sm font-semibold text-[var(--color-secondary)]">技术选型与原因</span>
-              </div>
-              <div class="space-y-2 text-sm text-[var(--color-text-secondary)]">
-                <p><span class="text-[var(--color-text)] font-medium">Netty：</span>做网络通信最常用的框架，NIO 模型性能好，封装了各种边界情况。</p>
-                <p><span class="text-[var(--color-text)] font-medium">自研注册中心：</span>Spring Boot + MySQL 实现，控制面和业务解耦，不依赖 Nacos 等第三方组件。</p>
-                <p><span class="text-[var(--color-text)] font-medium">多种序列化：</span>支持 JSON、Kryo 两种，默认 Kryo，比 JSON 快 3-5 倍，通过 SPI 可扩展。</p>
-                <p><span class="text-[var(--color-text)] font-medium">ByteBuddy：</span>动态代理比 JDK 原生的快，能在运行时生成代理类，让调用远程方法像调本地方法一样。</p>
-                <p><span class="text-[var(--color-text)] font-medium">自定义协议：</span>自己设计协议头，包含魔数、版本、消息类型、数据长度，解决 TCP 粘包问题。</p>
-                <p><span class="text-[var(--color-text)] font-medium">Vue 3 + Vue Flow：</span>前端需要一个拓扑图展示服务调用关系，Vue Flow 刚好能用。</p>
-              </div>
-            </div>
-
-            <!-- Features -->
-            <div class="mb-6">
-              <div class="flex items-center gap-2 mb-3">
-                <CheckCircle class="w-5 h-5 text-[var(--color-accent)]" />
-                <span class="text-sm font-semibold text-[var(--color-accent)]">实现了哪些功能</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-accent)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">服务注册发现</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">Provider 启动向控制面注册，Consumer 从控制面拉取服务列表，本地缓存提高可用性</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-accent)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">负载均衡</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">轮询、随机、加权、最少活跃调用、一致性哈希，通过 SPI 可以扩展</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-accent)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">熔断限流</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">滑动窗口统计错误率，超过阈值就熔断；令牌桶限流防止服务被打挂</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-accent)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">Mock 引擎</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">测试的时候可以配置返回假数据，支持短路模式和篡改模式</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-accent)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">链路追踪</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">每个请求生成 TraceId，Span 信息上报到控制面，前端展示瀑布图</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-accent)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">集群容错</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">失败重试、快速失败、忽略失败、并行调用，按场景选择</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-accent)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">优雅关闭</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">控制面下发关闭信号，Provider 停止接收新请求，等现有请求处理完再下线</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 性能测试数据 -->
-            <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <BarChart3 class="w-5 h-5 text-[var(--color-accent)]" />
-                <span class="text-sm font-semibold text-[var(--color-accent)]">JMeter 压测数据</span>
-              </div>
-              <div class="text-xs text-[var(--color-text-muted)] mb-3">
-                测试环境：Windows 11 / AMD Ryzen 9 7845HX / 32GB DDR5 / JDK 21 / 本地 localhost<br/>
-                测试接口：EngineService.getWarpStatus() 和 RadarService.scanEnemies()，无延迟立即返回
-              </div>
-              <div class="overflow-x-auto">
-                <table class="w-full text-xs">
-                  <thead>
-                    <tr class="border-b border-[var(--color-border)]">
-                      <th class="py-2 px-2 text-left text-[var(--color-text-secondary)]">线程数</th>
-                      <th class="py-2 px-2 text-left text-[var(--color-text-secondary)]">QPS</th>
-                      <th class="py-2 px-2 text-left text-[var(--color-text-secondary)]">平均响应</th>
-                      <th class="py-2 px-2 text-left text-[var(--color-text-secondary)]">P90</th>
-                      <th class="py-2 px-2 text-left text-[var(--color-text-secondary)]">P95</th>
-                      <th class="py-2 px-2 text-left text-[var(--color-text-secondary)]">P99</th>
-                      <th class="py-2 px-2 text-left text-[var(--color-text-secondary)]">错误率</th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-[var(--color-text)]">
-                    <tr class="border-b border-[var(--color-border-light)]">
-                      <td class="py-2 px-2">500</td>
-                      <td class="py-2 px-2 font-semibold text-[var(--color-tertiary)]">6863</td>
-                      <td class="py-2 px-2">70ms</td>
-                      <td class="py-2 px-2">55ms</td>
-                      <td class="py-2 px-2">66ms</td>
-                      <td class="py-2 px-2">671ms</td>
-                      <td class="py-2 px-2 text-[var(--color-tertiary)]">0%</td>
-                    </tr>
-                    <tr class="border-b border-[var(--color-border-light)]">
-                      <td class="py-2 px-2">1000</td>
-                      <td class="py-2 px-2 font-semibold text-[var(--color-tertiary)]">6753</td>
-                      <td class="py-2 px-2">71ms</td>
-                      <td class="py-2 px-2">83ms</td>
-                      <td class="py-2 px-2">169ms</td>
-                      <td class="py-2 px-2">1007ms</td>
-                      <td class="py-2 px-2 text-[var(--color-tertiary)]">0%</td>
-                    </tr>
-                    <tr class="border-b border-[var(--color-border-light)]">
-                      <td class="py-2 px-2">2000</td>
-                      <td class="py-2 px-2 font-semibold text-[var(--color-tertiary)]">6811</td>
-                      <td class="py-2 px-2">70ms</td>
-                      <td class="py-2 px-2">65ms</td>
-                      <td class="py-2 px-2">75ms</td>
-                      <td class="py-2 px-2">857ms</td>
-                      <td class="py-2 px-2 text-[var(--color-tertiary)]">0%</td>
-                    </tr>
-                    <tr class="border-b border-[var(--color-border-light)]">
-                      <td class="py-2 px-2">3000</td>
-                      <td class="py-2 px-2 font-semibold text-[var(--color-tertiary)]">6793</td>
-                      <td class="py-2 px-2">70ms</td>
-                      <td class="py-2 px-2">70ms</td>
-                      <td class="py-2 px-2">91ms</td>
-                      <td class="py-2 px-2">836ms</td>
-                      <td class="py-2 px-2 text-[var(--color-tertiary)]">0%</td>
-                    </tr>
-                    <tr class="border-b border-[var(--color-border-light)]">
-                      <td class="py-2 px-2">5000</td>
-                      <td class="py-2 px-2 font-semibold text-[var(--color-tertiary)]">7185</td>
-                      <td class="py-2 px-2">66ms</td>
-                      <td class="py-2 px-2">66ms</td>
-                      <td class="py-2 px-2">84ms</td>
-                      <td class="py-2 px-2">768ms</td>
-                      <td class="py-2 px-2 text-[var(--color-tertiary)]">0%</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <p class="text-xs text-[var(--color-text-muted)] mt-2">
-                5000 线程下 QPS 约 7100，平均响应 66ms，错误率始终为 0%。测试调用的是真实 RPC 方法，无延迟立即返回模拟数据。<br/>
-                <span class="text-[var(--color-text-secondary)]">注：测试中观察到 JMeter 实际活跃线程数约 500。因为响应快（~70ms），线程完成请求后立即进入下一轮，并发数不会持续达到配置的最大值。所以虽然 QPS 未达拐点，再增加线程意义不大——上述数据更准确反映的是"每秒发起的请求数"而非真实并发连接数。目前瓶颈更多的是 JMeter 客户端本身。</span>
-              </p>
-            </div>
-
-            <!-- Links -->
-            <div class="flex flex-wrap gap-3">
-              <a
-                href="http://120.26.186.0:3000"
-                target="_blank"
-                class="btn btn-primary inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-sm"
-              >
-                <Rocket class="w-4 h-4" />
-                <span>监控面板</span>
-                <ExternalLink class="w-3 h-3" />
-              </a>
-              <a
-                href="https://github.com/wangshun-china/lumina-rpc"
-                target="_blank"
-                class="btn btn-outline inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-sm"
-              >
-                <Github class="w-4 h-4" />
-                <span>GitHub 源码</span>
-                <ExternalLink class="w-3 h-3" />
-              </a>
-            </div>
-          </div>
-
-          <!-- Right: Debug Records -->
-          <div class="p-8 lg:p-10 bg-[var(--color-bg-alt)] border-l border-[var(--color-border-light)]">
-            <div class="flex items-center gap-2 mb-6">
-              <Bug class="w-5 h-5 text-[#C4613F]" />
-              <span class="text-lg font-semibold text-[var(--color-text)]">踩坑记录</span>
-            </div>
-
-            <div class="space-y-4">
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">TCP 粘包/半包</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>Netty 发消息有时候两条粘一起，有时候一条消息分成两半，解码就报错。
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>协议头里加了 4 字节的 Data Length，用 Netty 的 LengthFieldBasedFrameDecoder 按长度切分，保证每次读到完整的消息。
-                </p>
-              </div>
-
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">Spring 启动顺序问题</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>在 BeanPostProcessor 里启动 Netty，结果 Spring 容器还没初始化完，服务就注册上了，各种 Bean 注入失败。
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>监听 ContextRefreshedEvent，等 Spring 容器完全启动后再启动网络层、注册服务。
-                </p>
-              </div>
-
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">异步转同步</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>Netty 是异步的，发送请求后不知道什么时候收到响应，业务代码怎么同步等待？
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>发请求时创建一个 CompletableFuture 存起来，收到响应后按 requestId 找到对应的 Future 调用 complete()，业务层 get() 阻塞等待。
-                </p>
-              </div>
-
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">泛型序列化失败</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>控制面没有引入业务包，Jackson 反序列化时找不到具体的 Class，直接报错。
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>catch 住异常，降级成 LinkedHashMap，前端渲染 JSON 没问题，不影响大盘展示。
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ==================== Project 3: AutoGuard AI ==================== -->
-      <div class="project-card card card-elevated rounded-3xl overflow-hidden border border-[var(--color-border)]">
-        <div class="grid lg:grid-cols-2 gap-0">
-          <!-- Left: Project Info -->
-          <div class="p-8 lg:p-10">
-            <!-- Header -->
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-14 h-14 rounded-2xl bg-[var(--color-accent-light)] flex items-center justify-center">
-                <Shield class="w-7 h-7 text-[var(--color-secondary)]" />
-              </div>
-              <div>
-                <h3 class="text-2xl font-bold text-[var(--color-text)]">AutoGuard AI</h3>
-                <p class="text-[var(--color-secondary)] text-sm font-mono">GitHub 智能代码审查</p>
-              </div>
-            </div>
-
-            <!-- Tags -->
-            <div class="flex flex-wrap gap-2 mb-6">
-              <span class="tag text-sm">FastAPI</span>
-              <span class="tag text-sm">Python</span>
-              <span class="tag text-sm">GitHub App</span>
-              <span class="tag text-sm">DeepSeek</span>
-              <span class="tag text-sm">JWT</span>
-              <span class="tag text-sm">AST</span>
-            </div>
-
-            <!-- 项目背景 -->
-            <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <Lightbulb class="w-5 h-5 text-[var(--color-secondary)]" />
-                <span class="text-sm font-semibold text-[var(--color-secondary)]">为什么做这个项目</span>
-              </div>
-              <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">
-                有了 AI Coder 和 Lumina-RPC，代码能自动生成了，也能自动部署了，那能不能自动审查代码？正好我想彻底从零体验一次 Vibe Coding——我和 Gemini 3.1 Pro、GPT 5.4 Thinking 讨论需求，代码几乎全部由 AI 编写。另外想嵌入到 GitHub 工作流里，就学了下 GitHub App 开发。
-              </p>
-            </div>
-
-            <!-- 部署说明 -->
-            <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <Cloud class="w-5 h-5 text-[var(--color-tertiary)]" />
-                <span class="text-sm font-semibold text-[var(--color-tertiary)]">部署说明</span>
-              </div>
-              <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">
-                这个项目部署在 Zeabur 上。本来想把三个项目都放 Zeabur，但免费额度有限，另外两个项目比较重（微服务多、依赖 MySQL），就放到阿里云 ECS 了。AutoGuard 是个轻量的单服务，Zeabur 免费额度够用。
-              </p>
-            </div>
-
-            <!-- 技术选型 -->
-            <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <Code2 class="w-5 h-5 text-[var(--color-accent)]" />
-                <span class="text-sm font-semibold text-[var(--color-accent)]">技术选型与原因</span>
-              </div>
-              <div class="space-y-2 text-sm text-[var(--color-text-secondary)]">
-                <p><span class="text-[var(--color-text)] font-medium">FastAPI：</span>Python 写 API 很快，异步性能也不错，适合这种轻量服务。</p>
-                <p><span class="text-[var(--color-text)] font-medium">GitHub App：</span>比 Personal Access Token 安全，能做到"一次安装、所有仓库生效"，不用每个仓库配 Secret。</p>
-                <p><span class="text-[var(--color-text)] font-medium">JWT + Installation Token：</span>GitHub App 鉴权标准流程，私钥签名换临时 Token，权限可控。</p>
-                <p><span class="text-[var(--color-text)] font-medium">DeepSeek：</span>国产模型便宜，代码理解能力够用，调用成本比 GPT 低很多。</p>
-              </div>
-            </div>
-
-            <!-- Features -->
-            <div class="mb-6">
-              <div class="flex items-center gap-2 mb-3">
-                <CheckCircle class="w-5 h-5 text-[var(--color-secondary)]" />
-                <span class="text-sm font-semibold text-[var(--color-secondary)]">实现了哪些功能</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-secondary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">自动触发审查</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">PR 创建或更新时，Webhook 通知服务，自动拉取 diff 分析</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-secondary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">AST 代码分析</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">提取变更的函数、类，只把相关代码喂给 AI，省 Token</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-secondary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">生成审查评论</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">AI 分析后生成评论，直接发到 PR 的 Review 里</p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 rounded-lg bg-[var(--color-bg-alt)]">
-                  <Check class="w-4 h-4 text-[var(--color-secondary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span class="text-sm font-medium text-[var(--color-text)]">安全检测</span>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">让 AI 重点检查 SQL 注入、XSS、敏感信息泄露等问题</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Links -->
-            <div class="flex flex-wrap gap-3">
-              <a
-                href="https://github.com/xixi-box/AutoGuard-AI-Reviewer"
-                target="_blank"
-                class="btn btn-primary inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-medium text-sm"
-              >
-                <Github class="w-4 h-4" />
-                <span>GitHub 源码</span>
-                <ExternalLink class="w-3 h-3" />
-              </a>
-            </div>
-          </div>
-
-          <!-- Right: Debug Records -->
-          <div class="p-8 lg:p-10 bg-[var(--color-bg-alt)] border-l border-[var(--color-border-light)]">
-            <div class="flex items-center gap-2 mb-6">
-              <Bug class="w-5 h-5 text-[#C4613F]" />
-              <span class="text-lg font-semibold text-[var(--color-text)]">踩坑记录</span>
-            </div>
-
-            <div class="space-y-4">
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">GitHub App 鉴权</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>一开始用 Personal Access Token，但权限太大，而且每个仓库都要配置 Secret，很麻烦。
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>换成 GitHub App 模式。私钥用 RS256 算法签名生成 JWT，再用 JWT 换 Installation Token，权限粒度更细，而且一次安装所有仓库都能用。
-                </p>
-              </div>
-
-              <div class="p-4 rounded-xl bg-white border border-[#F0D0C5]">
-                <div class="flex items-center gap-2 mb-3">
-                  <AlertTriangle class="w-4 h-4 text-[var(--color-accent)]" />
-                  <span class="text-sm font-semibold text-[var(--color-accent)]">Token 消耗太大</span>
-                </div>
-                <p class="text-sm text-[var(--color-text-secondary)] mb-3">
-                  <span class="text-[var(--color-text)] font-medium">问题：</span>直接把整个 PR 的代码丢给 AI，Token 消耗很大，而且 AI 容易说一堆废话。
-                </p>
-                <p class="text-sm text-[var(--color-text-secondary)]">
-                  <span class="text-[var(--color-tertiary)] font-medium">解决：</span>用 AST 解析代码，只提取变更的函数和相关的上下文。写 Prompt 的时候明确要求只输出关键问题，不要废话。
-                </p>
-              </div>
-            </div>
-
-            <!-- Vibe Coding 说明 -->
-            <div class="mt-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-accent-light)]/30 to-transparent border border-[var(--color-border)]">
-              <div class="flex items-center gap-2 mb-3">
-                <Zap class="w-4 h-4 text-[var(--color-accent)]" />
-                <span class="text-sm font-semibold text-[var(--color-accent)]">Vibe Coding 工作流</span>
-              </div>
-              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-                这个项目是我和 <span class="text-[var(--color-accent)]">Gemini 3.1 Pro</span>、<span class="text-[var(--color-secondary)]">GPT 5.4 Thinking</span> 讨论需求后，代码几乎全部由 AI 编写的。我负责确定技术方案、Review 代码、调试问题，AI 负责写具体实现。整个过程体验下来，感觉 AI 写代码确实快，但架构设计、问题排查还是需要人来把关。
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ==================== CI/CD Pipeline Section ==================== -->
-      <div class="card rounded-3xl border border-[var(--color-border)] p-8 lg:p-10">
-        <div class="flex items-center gap-4 mb-8">
-          <div class="w-12 h-12 rounded-2xl bg-[var(--color-accent-light)] flex items-center justify-center">
-            <GitBranch class="w-6 h-6 text-[var(--color-tertiary)]" />
-          </div>
-          <div>
-            <h3 class="text-xl font-bold text-[var(--color-text)]">CI/CD 自动化部署</h3>
-            <p class="text-[var(--color-text-muted)] text-sm">Push to Master 自动部署，5-8 分钟上线</p>
-          </div>
+        <div class="pipeline">
+          <div v-for="step in pipeline" :key="step" class="pipeline-step">{{ step }}</div>
         </div>
 
-        <!-- Pipeline Flow -->
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
-          <div class="flex items-center gap-3 px-5 py-3 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
-            <Github class="w-5 h-5 text-[var(--color-text-secondary)]" />
-            <span class="text-[var(--color-text-secondary)] font-medium">Push to Master</span>
+        <div class="deploy-grid mt-6">
+          <div class="deploy-card">
+            <div class="deploy-title">为什么做这套部署</div>
+            <p>
+              项目从个人仓库迁移到
+              <a href="https://github.com/wangshun-china" target="_blank" class="inline-link"><strong>wangshun-china</strong></a>
+              Organization 后，我希望把“提交代码到线上可访问”做成稳定流程。
+              所以后端、前端、Node Builder、截图服务都统一打 Docker 镜像，GitHub Actions 负责构建和发布，服务器只拉最新镜像并重启。
+            </p>
           </div>
-          <ChevronRight class="w-5 h-5 text-[var(--color-border)] rotate-90 md:rotate-0" />
-          <div class="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#EDE7DF] border border-[var(--color-border)]">
-            <Zap class="w-5 h-5 text-[var(--color-secondary)]" />
-            <span class="text-[var(--color-secondary)] font-medium">GitHub Actions</span>
+          <div class="deploy-card">
+            <div class="deploy-title">阿里云生产部署</div>
+            <p>
+              Self-hosted Runner 直接部署在阿里云 ECS 上，适合 Lumina-RPC 和 Code Craft 这类依赖 MySQL、Redis、Nacos、Nginx 的重项目。
+              优点是网络路径短、部署链路简单，缺点是低配机器压力较大。
+            </p>
           </div>
-          <ChevronRight class="w-5 h-5 text-[var(--color-border)] rotate-90 md:rotate-0" />
-          <div class="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#F5E6DC] border border-[var(--color-border)]">
-            <Box class="w-5 h-5 text-[var(--color-accent)]" />
-            <span class="text-[var(--color-accent)] font-medium">Docker Build</span>
+          <div class="deploy-card">
+            <div class="deploy-title">本地 WSL + FRP 内网穿透</div>
+            <p>
+              为了降低云服务器成本，我也做过本地 WSL Runner 部署方案：构建和运行放在本地机器，阿里云只通过 frp 做转发。
+              这样低配 ECS 也能承接公网入口，适合测试环境和个人项目演示。
+            </p>
           </div>
-          <ChevronRight class="w-5 h-5 text-[var(--color-border)] rotate-90 md:rotate-0" />
-          <div class="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#E5E0ED] border border-[var(--color-border)]">
-            <CloudIcon class="w-5 h-5 text-[#7B5EA0]" />
-            <span class="text-[#7B5EA0] font-medium">阿里云 ACR</span>
-          </div>
-          <ChevronRight class="w-5 h-5 text-[var(--color-border)] rotate-90 md:rotate-0" />
-          <div class="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#E5EDE5] border border-[var(--color-border)]">
-            <Server class="w-5 h-5 text-[var(--color-tertiary)]" />
-            <span class="text-[var(--color-tertiary)] font-medium">阿里云 ECS</span>
+          <div class="deploy-card">
+            <div class="deploy-title">模板沉淀</div>
+            <p>
+              部署过程中把 GitHub Actions、Docker Compose、Nginx、frp、Runner 安装脚本整理成模板，后续新项目可以直接复用，
+              不需要每次从零配置 CI/CD。
+            </p>
           </div>
         </div>
-
-        <!-- Deployment Architecture -->
-        <div class="mt-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-secondary-light)]/30 to-[var(--color-bg-alt)] border border-[var(--color-border)]">
-          <div class="flex items-center gap-2 mb-3">
-            <Server class="w-5 h-5 text-[var(--color-secondary)]" />
-            <span class="text-sm font-semibold text-[var(--color-secondary)]">部署架构演进</span>
-          </div>
-          <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mb-3">
-            创建了 <a href="https://github.com/wangshun-china" target="_blank" class="text-[var(--color-secondary)] hover:underline font-medium">wangshun-china</a> Organization，将项目迁移后使用 GitHub Actions Runner 进行部署：
-          </p>
-          <div class="grid md:grid-cols-2 gap-3 text-xs mb-3">
-            <div class="p-3 rounded-lg bg-white border border-[var(--color-border-light)]">
-              <div class="font-semibold text-[var(--color-text)] mb-1">阿里云部署</div>
-              <div class="text-[var(--color-text-muted)]">Self-hosted Runner 直接部署在阿里云 ECS 上，适合生产环境</div>
-            </div>
-            <div class="p-3 rounded-lg bg-white border border-[var(--color-border-light)]">
-              <div class="font-semibold text-[var(--color-text)] mb-1">本地 WSL + FRP 内网穿透</div>
-              <div class="text-[var(--color-text-muted)]">Runner 部署在本地 WSL，通过 frp 内网穿透，阿里云只做转发，低配服务器即可，大幅节省成本</div>
-            </div>
-          </div>
-          <p class="text-xs text-[var(--color-text-muted)]">
-            期间整理了相关部署和内网穿透文件成模板，放在了 <a href="https://github.com/xixi-box/template" target="_blank" class="text-[var(--color-accent)] hover:underline">github.com/xixi-box/template</a>
-          </p>
-        </div>
-      </div>
+      </section>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import {
-  Rocket, Shield, Cloud, ExternalLink, Github, Check, Zap, Code2,
-  Bug, AlertTriangle, GitBranch, Box, Server, ChevronRight,
-  Layers, Lightbulb, CheckCircle, BarChart3
+  Rocket,
+  Shield,
+  Cloud,
+  ExternalLink,
+  Github,
+  Check,
+  Bug,
+  Code2,
+  Lightbulb,
+  GitBranch,
 } from 'lucide-vue-next'
 
-const CloudIcon = Cloud
+const projects = [
+  {
+    name: 'Code Craft',
+    subtitle: 'AI 零代码应用生成平台',
+    featured: true,
+    icon: Cloud,
+    color: 'var(--color-tertiary)',
+    tags: ['Java 21', 'Spring Boot 3', 'Dubbo 3', 'Nacos', 'LangChain4j', 'Redis', 'Vue 3', 'Docker'],
+    summary:
+      '面向自然语言生成前端应用的全栈平台。用户输入需求后，后端通过 LangChain4j Tool Calling 创建和修改项目文件，前端提供源码工作区、实时预览、可视化编辑和一键部署能力。',
+    why:
+      '最开始是想把 LangChain4j 学到能落地的程度，而不是只停留在调用一次大模型。做着做着发现，真正难的不是让 AI 生成一段代码，而是让它持续生成、能预览、能修改、能部署、出错还能回到工程流程里处理。',
+    metrics: [
+      { value: '5+', label: '核心微服务/构建服务' },
+      { value: '6', label: 'AI 文件工具' },
+      { value: 'SSE', label: '流式生成反馈' },
+    ],
+    highlights: [
+      { title: 'AI 工具调用闭环', detail: 'FileWrite/FileRead/FileModify/FileDelete/DirRead/ExitTool 支撑多文件项目生成。' },
+      { title: '多轮对话记忆', detail: 'Redis 保存用户与应用维度的上下文，并限制历史长度控制 Token 成本。' },
+      { title: '源码与预览工作区', detail: '文件树、源码 Tab、iframe 预览和拖拽分屏提高调试效率。' },
+      { title: '部署任务持久化', detail: '记录部署状态、日志、错误信息和版本数据，前端展示临时终端日志。' },
+      { title: '并发与安全控制', detail: 'Redisson 限流/锁控制同一应用并发写入，Guardrail 过滤风险输入。' },
+      { title: '截图与对象存储', detail: 'Playwright 截图服务生成应用封面，并上传到腾讯云 COS。' },
+    ],
+    choices: [
+      {
+        title: 'LangChain4j',
+        detail: '相比直接封装 HTTP 调模型，LangChain4j 提供 AI Service、Tool Calling、ChatMemory 和 Guardrail，能把 AI 能力接进 Spring Boot 的 Bean 生命周期，代码结构更清楚。',
+      },
+      {
+        title: 'Dubbo 3 + Nacos',
+        detail: '项目有用户服务、应用服务、截图服务和构建服务。用 HTTP 也能做，但接口治理、服务发现和超时重试都要自己补；Dubbo + Nacos 更适合练习微服务调用链。',
+      },
+      {
+        title: 'Redis + Caffeine',
+        detail: '只用 Redis 会增加每次查询的网络开销，只用本地缓存又无法跨实例共享。这里用 Redis 保存会话、任务和限流状态，用 Caffeine 缓热点应用信息。',
+      },
+      {
+        title: 'Redisson',
+        detail: '同一个 app 不能同时让两轮 AI 写文件，否则会互相覆盖。Redisson 的锁和 RRateLimiter 比自己写 Lua/SETNX 更稳，也方便按用户、IP、接口维度限流。',
+      },
+      {
+        title: 'Node Builder',
+        detail: '生成的 Vue 项目需要 npm install/build。把构建逻辑独立成 Node 服务，比在 Java 进程里执行命令更隔离，构建失败也不会拖垮主应用。',
+      },
+      {
+        title: 'SSE',
+        detail: 'WebSocket 适合双向实时通信，但这里只需要服务端持续推送 AI 输出和工具状态。SSE 更轻，浏览器原生支持，断线重连成本也低。',
+      },
+      {
+        title: 'Playwright 截图服务',
+        detail: '相比前端 canvas 截图，服务端 Playwright 能拿到真实渲染结果，用来生成应用封面更稳定，也方便部署后自动截图。',
+      },
+    ],
+    pitfalls: [
+      {
+        title: 'AI 工具调用死循环',
+        detail: '模型会反复读写同一个文件。解决方式是设置最大连续工具调用次数，并提供 ExitTool，让模型有明确的任务结束出口。',
+      },
+      {
+        title: '代码围栏污染文件',
+        detail: '模型经常输出 ```vue 或 ```html，直接写入会导致项目编译失败。写文件和改文件前统一剥离外层 Markdown 代码块。',
+      },
+      {
+        title: '对话上下文丢失',
+        detail: '微服务无状态，请求打到不同实例后历史消息拿不到。改为按 userId + appId 维度把 ChatMemory 存进 Redis，并限制历史条数控制 Token。',
+      },
+      {
+        title: '并发写文件冲突',
+        detail: '用户连续发送修改请求时，两轮 AI 可能同时改同一项目目录。用 Redis 原子锁限制同一 app 同时只允许一轮生成任务。',
+      },
+      {
+        title: '构建日志不可见',
+        detail: '一键部署失败时用户只看到失败状态，排查困难。后来把构建/部署过程记录到部署任务里，前端轮询展示临时终端日志。',
+      },
+      {
+        title: 'iframe 可视化编辑通信',
+        detail: '预览页面和主页面隔离，无法直接拿组件上下文。通过 postMessage 注入选择脚本，把元素文本、路径和样式上下文带回聊天框。',
+      },
+    ],
+    links: [
+      { label: '在线体验', href: 'http://120.26.186.0:8888', icon: Rocket },
+      { label: '源码', href: 'https://github.com/wangshun-china/ai-code', icon: Github },
+    ],
+  },
+  {
+    name: 'Lumina-RPC',
+    subtitle: '面向可观测性的轻量 RPC 框架',
+    featured: false,
+    icon: Rocket,
+    color: 'var(--color-accent)',
+    tags: ['Java 21', 'Netty 4.1', 'Kryo', 'ByteBuddy', 'MySQL', 'Vue Flow', 'ECharts', 'Docker'],
+    summary:
+      '自研 RPC 框架，包含协议层、核心 SDK、控制面和可视化面板。项目重点覆盖服务注册发现、动态代理、负载均衡、容错、Mock、熔断限流和链路追踪。',
+    why:
+      'Code Craft 里用了 Dubbo 和 Nacos，但只会用还不够。我想把 RPC 从协议、编解码、连接管理、服务发现、负载均衡到容错保护完整写一遍，这样再看 Dubbo 或 Spring Cloud 的实现会更有底。',
+    metrics: [
+      { value: '17B', label: '自定义协议头' },
+      { value: '5', label: '负载均衡策略' },
+      { value: '6500+', label: '单机压测 QPS' },
+    ],
+    highlights: [
+      { title: '自定义二进制协议', detail: '魔数、版本、序列化类型、消息类型、RequestId 和 Body 长度组成协议头。' },
+      { title: '粘包半包处理', detail: '基于 LengthFieldBasedFrameDecoder 按 Data Length 切分完整 RPC 帧。' },
+      { title: '透明远程调用', detail: 'ByteBuddy 动态生成代理类，让 Consumer 像调用本地接口一样调用远程服务。' },
+      { title: '服务治理能力', detail: 'RoundRobin、Random、Weighted、LeastActive、ConsistentHash 通过 SPI 扩展。' },
+      { title: '容错与保护', detail: 'Failover/Failfast/Failsafe/Forking 配合滑动窗口熔断和令牌桶限流。' },
+      { title: '可观测控制面', detail: '控制面管理服务、Mock 规则、保护配置和 Trace 数据，前端展示拓扑与瀑布图。' },
+    ],
+    choices: [
+      {
+        title: 'Netty',
+        detail: '直接写 BIO Socket 能跑通 Demo，但连接复用、半包处理、线程模型和背压都要自己处理。Netty 的 NIO 模型和 ChannelPipeline 更适合做框架层。',
+      },
+      {
+        title: '自定义协议',
+        detail: 'HTTP/JSON 可读性好但冗余大，也不利于练习编解码。自定义 17 字节协议头可以明确放魔数、版本、序列化类型、消息类型、RequestId 和 Body 长度。',
+      },
+      {
+        title: 'LengthFieldBasedFrameDecoder',
+        detail: '相比按分隔符拆包，长度字段对二进制 Body 更可靠。协议头里的 Data Length 直接交给 Netty 解码器处理，避免手写缓冲区状态机。',
+      },
+      {
+        title: 'Kryo + JSON',
+        detail: 'Kryo 性能更好，适合作为默认序列化；JSON 可读性更好，适合调试和控制面展示。两者通过 Serializer SPI 切换，避免写死实现。',
+      },
+      {
+        title: 'ByteBuddy',
+        detail: 'JDK 动态代理只能代理接口，CGLIB 对类增强更常见但学习价值有限。ByteBuddy API 更底层，适合理解运行期生成代理类的过程。',
+      },
+      {
+        title: '自研控制面',
+        detail: '接 Nacos/Zookeeper 会少写很多代码，但服务注册、心跳、故障剔除和规则推送就学不完整。自研控制面能把这些链路完整展示出来。',
+      },
+      {
+        title: 'SSE 规则推送',
+        detail: 'Mock 规则变化是服务端向 Consumer 单向通知，用 WebSocket 有点重；SSE 足够轻，浏览器和 Java 客户端实现成本都低。',
+      },
+      {
+        title: 'Vue Flow + ECharts',
+        detail: '服务拓扑适合用节点边表达，调用链适合瀑布图。相比纯表格，前端可视化更能体现 RPC 框架的可观测性。',
+      },
+    ],
+    pitfalls: [
+      {
+        title: 'TCP 粘包/半包',
+        detail: '一开始按读取事件直接解码，遇到多条消息粘在一起或一条消息拆开就失败。后来用 Data Length + LengthFieldBasedFrameDecoder 解决。',
+      },
+      {
+        title: '异步转同步',
+        detail: 'Netty 写出请求后响应异步返回，但业务调用期望同步拿结果。用 requestId 维护 CompletableFuture，响应回来后 complete 对应 Future。',
+      },
+      {
+        title: 'Spring 启动顺序',
+        detail: '在 BeanPostProcessor 里启动 Netty 会早于容器完全初始化，导致服务注册后部分 Bean 还不可用。改为监听 ContextRefreshedEvent。',
+      },
+      {
+        title: '服务实例缓存过期',
+        detail: 'Consumer 本地缓存能减少控制面压力，但缓存太久会打到已下线实例。后续结合心跳、失败剔除和重新拉取降低脏缓存影响。',
+      },
+      {
+        title: 'LeastActive 计数回收',
+        detail: '最少活跃调用策略如果异常路径没有 decrement，会导致实例永远被认为很忙。需要在成功、失败和超时路径都释放活跃计数。',
+      },
+      {
+        title: 'Mock 篡改嵌套字段',
+        detail: '控制面传来的规则可能是扁平 key，例如 contacts.[element0].shipId。需要先归一化成嵌套 JSON，再和真实响应合并。',
+      },
+      {
+        title: 'Trace 泛型反序列化',
+        detail: '控制面没有业务包，Jackson 反序列化具体返回类型会失败。展示链路时降级成 Map/JSON，不影响瀑布图渲染。',
+      },
+    ],
+    links: [
+      { label: '在线演示', href: 'http://120.26.186.0:3000', icon: Rocket },
+      { label: '源码', href: 'https://github.com/xixi-box/lumina-rpc', icon: Github },
+    ],
+  },
+  {
+    name: 'AutoGuard AI',
+    subtitle: 'GitHub App 智能代码审查服务',
+    featured: false,
+    icon: Shield,
+    color: 'var(--color-secondary)',
+    tags: ['Python 3.11', 'FastAPI', 'GitHub App', 'Webhook', 'httpx async', 'DeepSeek', 'JWT', 'HMAC'],
+    summary:
+      '基于 GitHub App 的自动化 PR 审查服务。Pull Request 创建或更新时，服务验证 Webhook 签名、拉取 PR Diff、调用 DeepSeek 生成结构化 Review，并回写到 PR 评论。',
+    why:
+      '前两个项目解决的是“生成代码”和“服务通信”，这个项目想补上代码进入仓库前的质量关。它不是要替代人工 Review，而是把明显的安全、逻辑和风格问题先筛一遍，减轻重复检查成本。',
+    metrics: [
+      { value: 'async', label: '全链路异步 HTTP' },
+      { value: '10min', label: 'Installation Token' },
+      { value: '4', label: '审查维度' },
+    ],
+    highlights: [
+      { title: 'Webhook 安全验证', detail: '使用 HMAC-SHA256 和 compare_digest 校验 GitHub 请求来源。' },
+      { title: 'GitHub App 鉴权', detail: 'RS256 私钥签发 JWT，再换取 Installation Access Token 调用 GitHub API。' },
+      { title: '异步编排', detail: 'FastAPI + httpx async 拉取 diff、调用 API、创建评论，减少阻塞等待。' },
+      { title: '结构化审查 Prompt', detail: '聚焦逻辑错误、安全漏洞、代码风格和性能问题四类检查。' },
+      { title: '优雅降级', detail: 'AI 服务异常时发布可读提示，不阻塞 PR 流程。' },
+      { title: '轻量部署', detail: '单服务适合 Zeabur/Railway/Heroku 等平台，通过环境变量完成配置。' },
+    ],
+    choices: [
+      {
+        title: 'GitHub App',
+        detail: 'PAT 权限过大且每个仓库都要单独配置 Secret。GitHub App 可以按仓库安装、权限粒度更细，并用短期 Installation Token 调 GitHub API。',
+      },
+      {
+        title: 'FastAPI',
+        detail: '这个服务核心是接 Webhook、调 GitHub、调 AI，不需要复杂后台。FastAPI 启动快、类型提示清楚，写异步接口也自然。',
+      },
+      {
+        title: 'httpx async',
+        detail: '换 token、拉 diff、发评论都是网络 IO。requests 同步写法简单但会阻塞 worker，httpx async 更适合后续并发处理多个 PR 事件。',
+      },
+      {
+        title: 'GitHub Diff API',
+        detail: '相比 clone 仓库再本地 diff，直接拉 PR diff 更轻量，也更适合 Serverless/轻量平台部署。缺点是上下文有限，所以 Prompt 要约束输出。',
+      },
+      {
+        title: 'DeepSeek',
+        detail: '兼容 OpenAI SDK，接入成本低，价格也适合频繁 Review。相比更强模型，DeepSeek 在成本和可用性之间更适合作为个人项目默认方案。',
+      },
+      {
+        title: 'Pydantic Settings',
+        detail: 'GitHub App ID、私钥、Webhook Secret、模型 Key 都来自环境变量。用配置类集中校验，比在业务代码里到处读 process env 更清楚。',
+      },
+      {
+        title: '优雅降级',
+        detail: 'PR 流程不能因为 AI 服务挂了就中断，所以没有做强制拦截，而是失败时回写提示评论，保留人工 Review 流程。',
+      },
+    ],
+    pitfalls: [
+      {
+        title: 'Webhook 签名验证',
+        detail: '不能只相信请求来自 GitHub，必须用 HMAC-SHA256 校验 body，并用 compare_digest 防止时序攻击。',
+      },
+      {
+        title: '私钥换行格式',
+        detail: '部署平台环境变量经常把 PEM 换行弄坏，导致 JWT 签名失败。兼容原始多行 PEM 和 \\n 转义格式。',
+      },
+      {
+        title: 'Installation Token 获取失败',
+        detail: 'JWT 有效期、App ID、安装 ID 任一不对都会 401。把鉴权逻辑独立成 github_auth 模块，错误日志单独输出。',
+      },
+      {
+        title: '重复事件触发',
+        detail: 'PR opened 和 synchronize 都会触发审查，短时间内可能多次评论。当前先保证流程正确，后续可以加 commit sha 缓存避免重复审查。',
+      },
+      {
+        title: 'AI 输出太散',
+        detail: '模型容易输出泛泛建议。Prompt 限定逻辑错误、安全漏洞、代码风格、性能问题四类，并要求没有问题时输出 LGTM。',
+      },
+      {
+        title: 'AI 服务异常',
+        detail: 'DeepSeek 超时或返回空内容时不能让 Webhook 直接 500 结束。统一捕获异常，回写友好失败评论并记录日志。',
+      },
+      {
+        title: '轻量平台部署',
+        detail: 'Zeabur/Heroku 类平台文件系统和环境变量处理方式不同，启动时增加配置检查和健康检查端点，方便定位部署问题。',
+      },
+    ],
+    links: [
+      { label: '源码', href: 'https://github.com/xixi-box/AutoGuard-AI-Reviewer', icon: Github },
+    ],
+  },
+]
+
+const pipeline = ['Push to master', 'GitHub Actions', 'Docker Build', '阿里云 ACR', 'Self-hosted Runner', 'Nginx / Docker Compose']
 </script>
 
 <style scoped>
-.project-featured,
 .project-card {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 24px;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.project-featured {
+  box-shadow: var(--shadow-md);
+}
+
+.project-side {
+  background: linear-gradient(180deg, var(--color-bg-alt), #ffffff);
+}
+
+.why-box {
+  padding: 1rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--color-accent-light), #fff);
+  border: 1px solid var(--color-border-light);
+}
+
+.why-box p {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+.mini-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-accent);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.metric-box {
+  min-height: 86px;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border-light);
+}
+
+.metric-value {
+  color: var(--color-accent);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.metric-label {
+  margin-top: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.highlight-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border-light);
+}
+
+.side-section + .side-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.side-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+  color: var(--color-accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.side-line {
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.side-line strong {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.side-line::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.55rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  vertical-align: 0.08rem;
+}
+
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.pipeline-step {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.deploy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.deploy-card {
+  padding: 1rem;
+  border-radius: 14px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border-light);
+}
+
+.deploy-title {
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.deploy-card p {
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.75;
+}
+
+.inline-link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.inline-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .pipeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .deploy-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

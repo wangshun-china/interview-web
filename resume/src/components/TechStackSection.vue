@@ -136,6 +136,9 @@ const aiTechs = [
   { name: 'OpenAI-compatible API', level: '熟悉' },
   { name: 'Claude / Gemini', level: '熟悉' },
   { name: 'DeepSeek', level: '熟悉' },
+  { name: 'Claude Code', level: '熟练' },
+  { name: 'Codex', level: '熟练' },
+  { name: 'Code Plan', level: '熟练' },
   { name: 'Prompt Engineering', level: '熟悉' },
   { name: 'Tool Calling', level: '熟悉' },
 ]

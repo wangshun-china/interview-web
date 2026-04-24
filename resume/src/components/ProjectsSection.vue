@@ -68,6 +68,14 @@
               <p>{{ project.why }}</p>
             </div>
 
+            <div v-if="project.flowDesign" class="why-box mb-6">
+              <div class="mini-title">
+                <Code2 class="w-4 h-4" />
+                <span>{{ project.flowDesign.title }}</span>
+              </div>
+              <p>{{ project.flowDesign.detail }}</p>
+            </div>
+
             <div class="grid md:grid-cols-3 gap-3 mb-6">
               <div v-for="metric in project.metrics" :key="metric.label" class="metric-box">
                 <div class="metric-value">{{ metric.value }}</div>
@@ -203,6 +211,11 @@ const projects = [
       '面向自然语言生成前端应用的全栈平台。用户输入需求后，后端通过 LangChain4j Tool Calling 创建和修改项目文件，前端提供源码工作区、实时预览、可视化编辑和一键部署能力。',
     why:
       '最开始是想把 LangChain4j 学到能落地的程度，而不是只停留在调用一次大模型。做着做着发现，真正难的不是让 AI 生成一段代码，而是让它持续生成、能预览、能修改、能部署、出错还能回到工程流程里处理。',
+    flowDesign: {
+      title: 'AI 开发闭环设计',
+      detail:
+        '这个项目的重点不是“AI 帮我写代码”，而是我自己设计了一套 AI 驱动的开发流程：先做需求拆解，再通过文件读写工具落到项目结构里，生成过程中用 SSE 持续反馈状态，构建失败后把错误日志和预览结果回传给模型继续修，最后形成生成、预览、编辑、部署的完整闭环。',
+    },
     metrics: [
       { value: '5+', label: '核心微服务/构建服务' },
       { value: '6', label: 'AI 文件工具' },
@@ -215,6 +228,7 @@ const projects = [
       { title: '部署任务持久化', detail: '记录部署状态、日志、错误信息和版本数据，前端展示临时终端日志。' },
       { title: '并发与安全控制', detail: 'Redisson 限流/锁控制同一应用并发写入，Guardrail 过滤风险输入。' },
       { title: '截图与对象存储', detail: 'Playwright 截图服务生成应用封面，并上传到腾讯云 COS。' },
+      { title: '生成式开发闭环', detail: '需求拆解、文件操作、流式反馈、错误回传、二次修改串成一条完整工程链路。' },
     ],
     choices: [
       {
@@ -245,6 +259,10 @@ const projects = [
         title: 'Playwright 截图服务',
         detail: '相比前端 canvas 截图，服务端 Playwright 能拿到真实渲染结果，用来生成应用封面更稳定，也方便部署后自动截图。',
       },
+      {
+        title: 'AI 开发闭环设计',
+        detail: '项目核心不是让模型一次性吐完整代码，而是把需求拆解、文件操作、流式反馈、错误回传、二次修改这些步骤设计成稳定流程，让 AI 能持续迭代。',
+      },
     ],
     pitfalls: [
       {
@@ -266,6 +284,14 @@ const projects = [
       {
         title: '构建日志不可见',
         detail: '一键部署失败时用户只看到失败状态，排查困难。后来把构建/部署过程记录到部署任务里，前端轮询展示临时终端日志。',
+      },
+      {
+        title: '一次生成太多文件',
+        detail: '如果让模型一次性输出整个项目，前后文件很容易冲突。后来改成先读目录、再写文件、再按需修改文件，把生成过程拆成多轮工具调用。',
+      },
+      {
+        title: '修 bug 时引入新 bug',
+        detail: '只把一句报错丢回给模型，修改往往很盲。后面把错误堆栈、构建日志、源码片段和预览结果一起回传，二次修改的稳定性明显更高。',
       },
       {
         title: 'iframe 可视化编辑通信',
@@ -299,6 +325,7 @@ const projects = [
       { title: '透明远程调用', detail: 'ByteBuddy 动态生成代理类，让 Consumer 像调用本地接口一样调用远程服务。' },
       { title: '服务治理能力', detail: 'RoundRobin、Random、Weighted、LeastActive、ConsistentHash 通过 SPI 扩展。' },
       { title: '容错与保护', detail: 'Failover/Failfast/Failsafe/Forking 配合滑动窗口熔断和令牌桶限流。' },
+      { title: '优雅停机与实例管理', detail: '实例下线时先从注册中心摘除，再等待请求处理完成，避免服务重启时直接打断流量。' },
       { title: '可观测控制面', detail: '控制面管理服务、Mock 规则、保护配置和 Trace 数据，前端展示拓扑与瀑布图。' },
     ],
     choices: [
@@ -327,6 +354,10 @@ const projects = [
         detail: '接 Nacos/Zookeeper 会少写很多代码，但服务注册、心跳、故障剔除和规则推送就学不完整。自研控制面能把这些链路完整展示出来。',
       },
       {
+        title: '优雅停机',
+        detail: '直接 kill 进程最简单，但会让正在处理的请求失败。这里通过先摘除实例、停止接收新流量、等待存量请求结束，再关闭 Netty/EventLoop，减少重启抖动。',
+      },
+      {
         title: 'SSE 规则推送',
         detail: 'Mock 规则变化是服务端向 Consumer 单向通知，用 WebSocket 有点重；SSE 足够轻，浏览器和 Java 客户端实现成本都低。',
       },
@@ -351,6 +382,10 @@ const projects = [
       {
         title: '服务实例缓存过期',
         detail: 'Consumer 本地缓存能减少控制面压力，但缓存太久会打到已下线实例。后续结合心跳、失败剔除和重新拉取降低脏缓存影响。',
+      },
+      {
+        title: '优雅停机时的流量切换',
+        detail: '如果实例还在注册列表里就直接停机，Consumer 仍可能选中它。处理方式是先把实例标记为下线并从发现列表剔除，再等一小段时间释放在途请求。',
       },
       {
         title: 'LeastActive 计数回收',
@@ -378,9 +413,9 @@ const projects = [
     color: 'var(--color-secondary)',
     tags: ['Python 3.11', 'FastAPI', 'GitHub App', 'Webhook', 'httpx async', 'DeepSeek', 'JWT', 'HMAC'],
     summary:
-      '基于 GitHub App 的自动化 PR 审查服务。Pull Request 创建或更新时，服务验证 Webhook 签名、拉取 PR Diff、调用 DeepSeek 生成结构化 Review，并回写到 PR 评论。',
+      '基于 GitHub App 的自动化 PR 审查服务，也是一次完整的 vibe coding 实践。项目不是先写代码，而是先和 Claude Code / Codex 讨论需求、模块边界和错误处理流程，再按收敛后的方案分段落地、持续迭代和修复。',
     why:
-      '前两个项目解决的是“生成代码”和“服务通信”，这个项目想补上代码进入仓库前的质量关。它不是要替代人工 Review，而是把明显的安全、逻辑和风格问题先筛一遍，减轻重复检查成本。',
+      '前两个项目解决的是“生成代码”和“服务通信”，这个项目想补上代码进入仓库前的质量关。同时我也想认真做一次 vibe coding 实践：不是把一句需求直接丢给 AI，而是先和 Claude Code、Codex 来回讨论几版方案，明确 webhook、鉴权、GitHub API、AI Review、错误回写这几个模块，再让它按模块逐段实现。',
     metrics: [
       { value: 'async', label: '全链路异步 HTTP' },
       { value: '10min', label: 'Installation Token' },
@@ -391,6 +426,7 @@ const projects = [
       { title: 'GitHub App 鉴权', detail: 'RS256 私钥签发 JWT，再换取 Installation Access Token 调用 GitHub API。' },
       { title: '异步编排', detail: 'FastAPI + httpx async 拉取 diff、调用 API、创建评论，减少阻塞等待。' },
       { title: '结构化审查 Prompt', detail: '聚焦逻辑错误、安全漏洞、代码风格和性能问题四类检查。' },
+      { title: 'Vibe Coding 工作流', detail: '先讨论需求和方案，再把改动拆成 webhook、auth、github api、reviewer、router 五段，让 Claude Code / Codex 按步骤实现。' },
       { title: '优雅降级', detail: 'AI 服务异常时发布可读提示，不阻塞 PR 流程。' },
       { title: '轻量部署', detail: '单服务适合 Zeabur/Railway/Heroku 等平台，通过环境变量完成配置。' },
     ],
@@ -398,6 +434,10 @@ const projects = [
       {
         title: 'GitHub App',
         detail: 'PAT 权限过大且每个仓库都要单独配置 Secret。GitHub App 可以按仓库安装、权限粒度更细，并用短期 Installation Token 调 GitHub API。',
+      },
+      {
+        title: '先出方案再写代码',
+        detail: '这次刻意没有一上来就让模型生成项目骨架，而是先把需求整理成 PRD，再讨论模块划分、接口输入输出、失败路径和部署方式。这样后面的生成更像按图施工，不容易越写越散。',
       },
       {
         title: 'FastAPI',
@@ -420,8 +460,16 @@ const projects = [
         detail: 'GitHub App ID、私钥、Webhook Secret、模型 Key 都来自环境变量。用配置类集中校验，比在业务代码里到处读 process env 更清楚。',
       },
       {
+        title: '分段让 AI 落地',
+        detail: '如果一次让模型同时写 webhook、鉴权、业务编排和评论模板，代码很容易耦合。这里按模块分段推进，每次只让它处理当前文件和当前职责，Review 成本更低。',
+      },
+      {
         title: '优雅降级',
         detail: 'PR 流程不能因为 AI 服务挂了就中断，所以没有做强制拦截，而是失败时回写提示评论，保留人工 Review 流程。',
+      },
+      {
+        title: 'Claude Code / Codex 协作',
+        detail: '不是一次性把需求全丢给模型，而是先讨论几版方案，再让它们按方案迭代实现。Claude Code 更适合整理步骤和收敛结构，Codex 更适合按明确任务补实现、改代码和跑验证。',
       },
     ],
     pitfalls: [
@@ -438,12 +486,24 @@ const projects = [
         detail: 'JWT 有效期、App ID、安装 ID 任一不对都会 401。把鉴权逻辑独立成 github_auth 模块，错误日志单独输出。',
       },
       {
+        title: '模块边界被 AI 写乱',
+        detail: '一开始如果让模型自由发挥，它会把验签、业务解析、调用 GitHub API 和评论格式化混在一起。后来明确拆成 webhook_handler、github_auth、github_api、ai_reviewer、router 五个模块。',
+      },
+      {
         title: '重复事件触发',
         detail: 'PR opened 和 synchronize 都会触发审查，短时间内可能多次评论。当前先保证流程正确，后续可以加 commit sha 缓存避免重复审查。',
       },
       {
         title: 'AI 输出太散',
         detail: '模型容易输出泛泛建议。Prompt 限定逻辑错误、安全漏洞、代码风格、性能问题四类，并要求没有问题时输出 LGTM。',
+      },
+      {
+        title: 'Vibe Coding 失控',
+        detail: '如果不先定方案，AI 很容易边写边改，最后模块职责混乱。后来先让它输出方案、再让我确认，然后按 webhook -> auth -> github api -> ai reviewer -> router 五段逐步落地。',
+      },
+      {
+        title: 'AI 改着改着偏题',
+        detail: '让模型在已有代码上连续修改时，它有时会顺手改掉无关逻辑。后面我会明确限定“只改当前模块、不要动其他文件”，并在每一轮结束后人工 Review diff。',
       },
       {
         title: 'AI 服务异常',

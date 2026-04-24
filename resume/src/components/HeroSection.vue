@@ -84,9 +84,13 @@
           <span class="text-sm font-semibold text-[var(--color-accent)]">AI Developer Workflow</span>
         </div>
         <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-          长期使用 AI 辅助完成需求拆解、方案评审、代码实现、Review 和 Debug。
-          关注的不只是“让模型写代码”，更重视工程边界、可观测性、部署流程和安全护栏。
-          代码完成后通过 GitHub Actions、Docker 和 Nginx 自动构建发布。
+          平时长期订阅 <span class="text-[var(--color-accent)]">ChatGPT Plus</span>、
+          <span class="text-[var(--color-accent)]">Gemini Pro</span> 和
+          <span class="text-[var(--color-secondary)]">Claude Pro</span>，
+          也会用国内的 <span class="text-[var(--color-secondary)]">Code Plan</span> 做日常辅助。
+          工作里最常用的是 <span class="text-[var(--color-tertiary)]">Claude Code / Codex</span>：
+          先和模型讨论几版需求与方案，再把方案收敛成可执行步骤，让它按方案写代码、改代码、跑构建、做 Review，
+          我负责把关架构、边界条件、异常处理和最终交付。
         </p>
       </div>
 

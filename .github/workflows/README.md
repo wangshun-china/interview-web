@@ -60,7 +60,7 @@ sudo ./svc.sh start
 只有一个 `deploy.yml` 文件，包含两个 job：
 
 ### build (runs-on: ubuntu-latest)
-- 构建前端和日志服务 Docker 镜像
+- 构建前端 Docker 镜像
 - 推送到阿里云 ACR
 - 使用 Buildx 缓存加速
 

@@ -19,7 +19,6 @@ env:
   ALIYUN_USERNAME: aliyun4384550071
   ALIYUN_PASSWORD: wangshun817
   FRONTEND_IMAGE: wangshun_build/wangshun_portfolio
-  LOG_SERVER_IMAGE: wangshun_build/wangshun_log_server
 
 jobs:
   build:
@@ -35,7 +34,6 @@ jobs:
           node-version: "20"
 
       - name: Build Frontend
-        working-directory: ./resume
         run: |
           npm install -g pnpm
           pnpm install
@@ -54,19 +52,9 @@ jobs:
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
         with:
-          context: ./resume
+          context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build and push Log Server
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile.log-server
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.LOG_SERVER_IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -77,7 +65,7 @@ jobs:
     steps:
       - name: Deploy
         run: |
-          mkdir -p wangshun-portfolio/logs
+          mkdir -p wangshun-portfolio
           cd wangshun-portfolio
 
           cat > docker-compose.yml << 'EOF'
@@ -88,29 +76,6 @@ jobs:
               restart: unless-stopped
               ports:
                 - "80:80"
-              volumes:
-                - ./logs:/var/log/nginx
-              networks:
-                - app-network
-
-            log-server:
-              image: crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com/wangshun_build/wangshun_log_server:latest
-              container_name: wangshun-log-server
-              restart: unless-stopped
-              volumes:
-                - ./logs:/var/log/nginx:ro
-              ports:
-                - "3001:3000"
-              environment:
-                - LOG_FILE=/var/log/nginx/access.log
-              depends_on:
-                - portfolio
-              networks:
-                - app-network
-
-          networks:
-            app-network:
-              driver: bridge
           EOF
 
           docker login crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com -u aliyun4384550071 -p wangshun817

@@ -11,8 +11,8 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-8 text-center text-cyber-primary/50 text-sm border-t border-cyber-primary/10">
-      <p>© 2025 Wang Shun | Built with Vue 3 + Vite + TailwindCSS</p>
+    <footer class="py-8 text-center text-[#666666] text-sm border-t border-[#E5E3DD]">
+      <p>© 2026 Wang Shun | Built with Vue 3 + Vite + TailwindCSS</p>
     </footer>
   </div>
 </template>
@@ -84,7 +84,7 @@ onMounted(() => {
       // Draw particle
       ctx.beginPath()
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(0, 240, 255, ${particle.alpha})`
+      ctx.fillStyle = `rgba(217, 119, 87, ${particle.alpha})`
       ctx.fill()
 
       // Draw connections
@@ -97,7 +97,7 @@ onMounted(() => {
           ctx.beginPath()
           ctx.moveTo(particle.x, particle.y)
           ctx.lineTo(particles[j].x, particles[j].y)
-          ctx.strokeStyle = `rgba(0, 240, 255, ${0.1 * (1 - distance / connectionDistance)})`
+          ctx.strokeStyle = `rgba(217, 119, 87, ${0.1 * (1 - distance / connectionDistance)})`
           ctx.lineWidth = 0.5
           ctx.stroke()
         }
@@ -119,6 +119,6 @@ onMounted(() => {
 <style scoped>
 .app {
   min-height: 100vh;
-  background-color: #0a0a0f;
+  background-color: #FAFAFA;
 }
 </style>

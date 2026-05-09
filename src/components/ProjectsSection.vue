@@ -1,6 +1,6 @@
 <template>
-  <section id="projects" class="pt-8 pb-16 relative">
-    <div class="w-full px-8 md:px-16 lg:px-28 mb-8">
+  <section id="projects" class="pt-2 pb-16 relative">
+    <div class="w-full px-8 md:px-16 lg:px-28 mb-5">
       <div class="flex items-center gap-4 mb-3">
         <div class="h-px flex-1 bg-gradient-to-r from-transparent to-[var(--color-border)]"></div>
         <span class="text-[var(--color-text-muted)] text-sm font-mono">02</span>
@@ -12,109 +12,142 @@
       <p class="text-center text-[var(--color-text-muted)] text-lg">Project Showcase</p>
     </div>
 
-    <div class="w-full px-8 md:px-16 lg:px-28 space-y-8">
+    <div class="project-grid w-full px-8 md:px-16 lg:px-28">
       <article
-        v-for="project in projects"
+        v-for="project in allProjects"
         :key="project.name"
-        class="project-card card card-elevated overflow-hidden border border-[var(--color-border)]"
-        :class="{ 'project-featured border-2 border-[var(--color-accent-light)]': project.featured }"
+        class="project-summary-card card card-elevated"
+        :class="{ 'project-featured': project.featured }"
       >
-        <div class="grid xl:grid-cols-[1.08fr_0.92fr]">
-          <div class="p-7 lg:p-9">
-            <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
-              <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-[var(--color-accent-light)] flex items-center justify-center">
-                  <component :is="project.icon" class="w-7 h-7" :style="{ color: project.color }" />
+        <div class="summary-card-head">
+          <div class="summary-icon">
+            <component :is="project.icon" class="w-6 h-6" :style="{ color: project.color }" />
+          </div>
+          <div>
+            <div class="summary-title-row">
+              <h3>{{ project.name }}</h3>
+              <span v-if="project.featured" class="summary-badge">主项目</span>
+            </div>
+            <p>{{ project.subtitle }}</p>
+          </div>
+        </div>
+
+        <p class="summary-text">{{ project.summary }}</p>
+
+        <div class="summary-tags">
+          <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
+        </div>
+
+        <div class="summary-points">
+          <div v-for="item in project.highlights.slice(0, 4)" :key="item.title" class="summary-point">
+            <Check class="w-4 h-4" :style="{ color: project.color }" />
+            <span>{{ item.title }}</span>
+          </div>
+        </div>
+
+        <div class="summary-actions">
+          <a
+            v-for="link in project.links"
+            :key="link.label"
+            :href="link.href"
+            target="_blank"
+            class="summary-link"
+          >
+            <component :is="link.icon" class="w-4 h-4" />
+            <span>{{ link.label }}</span>
+            <ExternalLink class="w-3 h-3" />
+          </a>
+          <button type="button" class="summary-link summary-detail-button" @click="openProject(project)">
+            <span>展开详情</span>
+            <ArrowRight class="w-4 h-4" />
+          </button>
+        </div>
+      </article>
+    </div>
+
+    <Teleport to="body">
+      <div v-if="selectedProject" class="project-overlay" @click="closeProject">
+        <article class="project-modal" @click.stop>
+          <header class="modal-header">
+            <div class="modal-title-block">
+              <div class="modal-title-row">
+                <div class="summary-icon">
+                  <component :is="selectedProject.icon" class="w-6 h-6" :style="{ color: selectedProject.color }" />
                 </div>
                 <div>
-                  <div class="flex flex-wrap items-center gap-3">
-                    <h3 class="text-2xl font-bold text-[var(--color-text)]">{{ project.name }}</h3>
-                    <span v-if="project.featured" class="px-3 py-1 rounded-full bg-[var(--color-accent-light)] text-[var(--color-accent)] text-xs font-semibold">
-                      主项目
-                    </span>
-                  </div>
-                  <p class="text-[var(--color-text-muted)] text-sm font-mono mt-1">{{ project.subtitle }}</p>
+                  <h3>{{ selectedProject.name }}</h3>
+                  <p>{{ selectedProject.subtitle }}</p>
                 </div>
               </div>
-
-              <div class="flex flex-wrap gap-2">
+              <div class="modal-tags">
+                <span v-for="tag in selectedProject.tags" :key="tag" class="tag">{{ tag }}</span>
+              </div>
+            </div>
+            <div class="modal-header-actions">
+              <div class="modal-actions">
                 <a
-                  v-for="link in project.links"
+                  v-for="link in selectedProject.links"
                   :key="link.label"
                   :href="link.href"
                   target="_blank"
-                  class="btn btn-outline inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm"
+                  class="summary-link"
                 >
                   <component :is="link.icon" class="w-4 h-4" />
                   <span>{{ link.label }}</span>
                   <ExternalLink class="w-3 h-3" />
                 </a>
               </div>
+              <button type="button" class="modal-close" aria-label="关闭详情" @click="closeProject">
+                <X class="w-6 h-6" />
+              </button>
             </div>
+          </header>
 
-            <div class="flex flex-wrap gap-2 mb-5">
-              <span v-for="tag in project.tags" :key="tag" class="tag text-sm">{{ tag }}</span>
-            </div>
+          <div class="modal-body">
+            <section class="modal-section">
+              <h4>项目概览</h4>
+              <p>{{ selectedProject.summary }}</p>
+              <p v-if="selectedProject.why">{{ selectedProject.why }}</p>
+            </section>
 
-            <p class="text-[var(--color-text-secondary)] leading-relaxed mb-6">
-              {{ project.summary }}
-            </p>
-
-            <div class="why-box mb-6">
-              <div class="mini-title">
-                <Lightbulb class="w-4 h-4" />
-                <span>为什么做这个项目</span>
+            <section v-if="selectedProject.metrics" class="modal-section">
+              <h4>核心指标</h4>
+              <div class="modal-metrics">
+                <div v-for="metric in selectedProject.metrics" :key="metric.label" class="metric-box">
+                  <div class="metric-value">{{ metric.value }}</div>
+                  <div class="metric-label">{{ metric.label }}</div>
+                </div>
               </div>
-              <p>{{ project.why }}</p>
-            </div>
+            </section>
 
-            <div v-if="project.flowDesign" class="why-box mb-6">
-              <div class="mini-title">
-                <Code2 class="w-4 h-4" />
-                <span>{{ project.flowDesign.title }}</span>
-              </div>
-              <p>{{ project.flowDesign.detail }}</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-3 mb-6">
-              <div v-for="metric in project.metrics" :key="metric.label" class="metric-box">
-                <div class="metric-value">{{ metric.value }}</div>
-                <div class="metric-label">{{ metric.label }}</div>
-              </div>
-            </div>
-
-            <div v-if="project.processFlow" class="detail-box mb-6">
-              <div class="mini-title">
-                <Code2 class="w-4 h-4" />
-                <span>{{ project.processFlow.title }}</span>
-              </div>
-              <div v-if="project.processFlow.mode === 'arrow'" class="arrow-flow">
-                <template v-for="(step, index) in project.processFlow.steps" :key="step.title">
-                  <div class="arrow-card">
-                    <div class="arrow-step">{{ step.title }}</div>
-                    <p>{{ step.detail }}</p>
+            <section class="modal-section">
+              <h4>我主要做了什么</h4>
+              <div class="modal-card-grid">
+                <div v-for="item in selectedProject.highlights" :key="item.title" class="highlight-item">
+                  <Check class="w-4 h-4 mt-0.5 flex-shrink-0" :style="{ color: selectedProject.color }" />
+                  <div>
+                    <div class="text-sm font-semibold text-[var(--color-text)]">{{ item.title }}</div>
+                    <p class="text-xs text-[var(--color-text-muted)] mt-1 leading-relaxed">{{ item.detail }}</p>
                   </div>
-                  <div v-if="index < project.processFlow.steps.length - 1" class="arrow-connector">
-                    <ArrowRight class="w-4 h-4" />
-                  </div>
-                </template>
-                <div class="arrow-loop-note">构建失败后回到“错误回传 -> 二次修改”继续迭代</div>
+                </div>
               </div>
-              <div v-else class="flow-grid">
-                <div v-for="step in project.processFlow.steps" :key="step.title" class="flow-item">
+            </section>
+
+            <section v-if="selectedProject.flowDesign || selectedProject.processFlow" class="modal-section">
+              <h4>核心流程</h4>
+              <p v-if="selectedProject.flowDesign">{{ selectedProject.flowDesign.detail }}</p>
+              <div v-if="selectedProject.processFlow" class="flow-grid">
+                <div v-for="step in selectedProject.processFlow.steps" :key="step.title" class="flow-item">
                   <div class="flow-step">{{ step.title }}</div>
                   <p>{{ step.detail }}</p>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div v-if="project.strategyGroups" class="detail-box mb-6">
-              <div class="mini-title">
-                <Code2 class="w-4 h-4" />
-                <span>策略设计与适用场景</span>
-              </div>
+            <section v-if="selectedProject.strategyGroups" class="modal-section">
+              <h4>策略设计</h4>
               <div class="strategy-grid">
-                <div v-for="group in project.strategyGroups" :key="group.title" class="strategy-card">
+                <div v-for="group in selectedProject.strategyGroups" :key="group.title" class="strategy-card">
                   <div class="strategy-title">{{ group.title }}</div>
                   <div class="strategy-list">
                     <div v-for="item in group.items" :key="item.name" class="strategy-item">
@@ -124,22 +157,19 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div v-if="project.benchmark" class="detail-box mb-6">
-              <div class="mini-title">
-                <Code2 class="w-4 h-4" />
-                <span>{{ project.benchmark.title }}</span>
-              </div>
+            <section v-if="selectedProject.benchmark" class="modal-section">
+              <h4>{{ selectedProject.benchmark.title }}</h4>
               <div class="benchmark-table-wrap">
                 <table class="benchmark-table">
                   <thead>
                     <tr>
-                      <th v-for="column in project.benchmark.columns" :key="column">{{ column }}</th>
+                      <th v-for="column in selectedProject.benchmark.columns" :key="column">{{ column }}</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="row in project.benchmark.rows" :key="row.thread">
+                    <tr v-for="row in selectedProject.benchmark.rows" :key="row.thread">
                       <td>{{ row.thread }}</td>
                       <td>{{ row.qps }}</td>
                       <td>{{ row.avg }}</td>
@@ -149,133 +179,55 @@
                   </tbody>
                 </table>
               </div>
-              <p class="detail-note">{{ project.benchmark.note }}</p>
-            </div>
+              <p class="detail-note">{{ selectedProject.benchmark.note }}</p>
+            </section>
 
-            <div v-if="project.boundary" class="detail-box mb-6">
-              <div class="mini-title">
-                <Lightbulb class="w-4 h-4" />
-                <span>{{ project.boundary.title }}</span>
+            <section v-if="selectedProject.choices" class="modal-section">
+              <h4>技术选型</h4>
+              <div class="modal-list-grid">
+                <div v-for="choice in selectedProject.choices" :key="choice.title" class="modal-list-item">
+                  <strong>{{ choice.title }}</strong>
+                  <p>{{ choice.detail }}</p>
+                </div>
               </div>
+            </section>
+
+            <section v-if="selectedProject.pitfalls" class="modal-section">
+              <h4>踩坑与解决</h4>
+              <div class="modal-list-grid">
+                <div v-for="pitfall in selectedProject.pitfalls" :key="pitfall.title" class="modal-list-item">
+                  <strong>{{ pitfall.title }}</strong>
+                  <p>{{ pitfall.detail }}</p>
+                </div>
+              </div>
+            </section>
+
+            <section v-if="selectedProject.boundary" class="modal-section">
+              <h4>{{ selectedProject.boundary.title }}</h4>
               <div class="boundary-grid">
                 <div class="boundary-card">
                   <div class="boundary-title">已完成</div>
                   <ul>
-                    <li v-for="item in project.boundary.done" :key="item">{{ item }}</li>
+                    <li v-for="item in selectedProject.boundary.done" :key="item">{{ item }}</li>
                   </ul>
                 </div>
                 <div class="boundary-card">
                   <div class="boundary-title">下一步</div>
                   <ul>
-                    <li v-for="item in project.boundary.next" :key="item">{{ item }}</li>
+                    <li v-for="item in selectedProject.boundary.next" :key="item">{{ item }}</li>
                   </ul>
                 </div>
               </div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-3">
-              <div v-for="item in project.highlights" :key="item.title" class="highlight-item">
-                <Check class="w-4 h-4 mt-0.5 flex-shrink-0" :style="{ color: project.color }" />
-                <div>
-                  <div class="text-sm font-semibold text-[var(--color-text)]">{{ item.title }}</div>
-                  <p class="text-xs text-[var(--color-text-muted)] mt-1 leading-relaxed">{{ item.detail }}</p>
-                </div>
-              </div>
-            </div>
+            </section>
           </div>
-
-          <aside class="project-side p-7 lg:p-9 border-t xl:border-t-0 xl:border-l border-[var(--color-border-light)]">
-            <div class="side-section">
-              <div class="side-title">
-                <Code2 class="w-4 h-4" />
-                <span>技术选型与原因</span>
-              </div>
-            <ul class="space-y-3">
-                <li v-for="choice in project.choices" :key="choice.title" class="side-line">
-                  <strong>{{ choice.title }}：</strong>{{ choice.detail }}
-                </li>
-              </ul>
-            </div>
-
-            <div class="side-section">
-              <div class="side-title">
-                <Bug class="w-4 h-4" />
-                <span>踩坑与解决</span>
-              </div>
-              <ul class="space-y-3">
-                <li v-for="pitfall in project.pitfalls" :key="pitfall.title" class="side-line">
-                  <strong>{{ pitfall.title }}：</strong>{{ pitfall.detail }}
-                </li>
-              </ul>
-            </div>
-          </aside>
-        </div>
-      </article>
-
-      <section class="card rounded-3xl border border-[var(--color-border)] p-7 lg:p-9">
-        <div class="flex flex-wrap items-start justify-between gap-4 mb-7">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-[var(--color-accent-light)] flex items-center justify-center">
-              <GitBranch class="w-6 h-6 text-[var(--color-tertiary)]" />
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-[var(--color-text)]">CI/CD 自动化部署</h3>
-              <p class="text-[var(--color-text-muted)] text-sm">Push to master 自动构建、推镜像、远程部署，完整上线约 5-8 分钟</p>
-            </div>
-          </div>
-          <a
-            href="https://github.com/xixi-box/template"
-            target="_blank"
-            class="btn btn-outline inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm"
-          >
-            <Github class="w-4 h-4" />
-            <span>部署模板</span>
-            <ExternalLink class="w-3 h-3" />
-          </a>
-        </div>
-
-        <div class="pipeline">
-          <div v-for="step in pipeline" :key="step" class="pipeline-step">{{ step }}</div>
-        </div>
-
-        <div class="deploy-grid mt-6">
-          <div class="deploy-card">
-            <div class="deploy-title">为什么做这套部署</div>
-            <p>
-              项目从个人仓库迁移到
-              <a href="https://github.com/wangshun-china" target="_blank" class="inline-link"><strong>wangshun-china</strong></a>
-              Organization 后，我希望把“提交代码到线上可访问”做成稳定流程。
-              所以后端、前端、Node Builder、截图服务都统一打 Docker 镜像，GitHub Actions 负责构建和发布，服务器只拉最新镜像并重启。
-            </p>
-          </div>
-          <div class="deploy-card">
-            <div class="deploy-title">阿里云生产部署</div>
-            <p>
-              Self-hosted Runner 直接部署在阿里云 ECS 上，适合 Lumina-RPC 和 Code Craft 这类依赖 MySQL、Redis、Nacos、Nginx 的重项目。
-              优点是网络路径短、部署链路简单，缺点是低配机器压力较大。
-            </p>
-          </div>
-          <div class="deploy-card">
-            <div class="deploy-title">本地 WSL + FRP 内网穿透</div>
-            <p>
-              为了降低云服务器成本，我也做过本地 WSL Runner 部署方案：构建和运行放在本地机器，阿里云只通过 frp 做转发。
-              这样低配 ECS 也能承接公网入口，适合测试环境和个人项目演示。
-            </p>
-          </div>
-          <div class="deploy-card">
-            <div class="deploy-title">模板沉淀</div>
-            <p>
-              部署过程中把 GitHub Actions、Docker Compose、Nginx、frp、Runner 安装脚本整理成模板，后续新项目可以直接复用，
-              不需要每次从零配置 CI/CD。
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
+        </article>
+      </div>
+    </Teleport>
   </section>
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue'
 import {
   ArrowRight,
   Rocket,
@@ -288,12 +240,40 @@ import {
   Code2,
   Lightbulb,
   GitBranch,
+  X,
 } from 'lucide-vue-next'
+
+const selectedProject = ref<any | null>(null)
+
+const openProject = (project: any) => {
+  selectedProject.value = project
+  document.body.style.overflow = 'hidden'
+}
+
+const closeProject = () => {
+  selectedProject.value = null
+  document.body.style.overflow = ''
+}
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && selectedProject.value) {
+    closeProject()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+  document.body.style.overflow = ''
+})
 
 const projects = [
   {
-    name: 'Code Craft',
-    subtitle: 'AI 零代码应用生成平台',
+    name: 'AI Coder',
+    subtitle: 'AI 代码生成与预览平台',
     featured: true,
     icon: Cloud,
     color: 'var(--color-tertiary)',
@@ -301,15 +281,15 @@ const projects = [
     summary:
       '面向自然语言生成前端应用的全栈平台。用户输入需求后，后端通过 LangChain4j Tool Calling 创建和修改项目文件，前端提供源码工作区、实时预览、可视化编辑和一键部署能力。',
     why:
-      '最开始是想把 LangChain4j 学到能落地的程度，而不是只停留在调用一次大模型。做着做着发现，真正难的不是让 AI 生成一段代码，而是让它持续生成、能预览、能修改、能部署、出错还能回到工程流程里处理。',
+      '最开始是想把 LangChain4j 学到能落地的程度，而不是只停留在单次模型调用。项目重点放在工程闭环：让 AI 能持续生成、预览、修改、部署，并在构建失败后回到可追踪的研发流程里继续修复。',
     flowDesign: {
       title: 'AI 开发闭环设计',
       detail:
         '这个项目的重点不是“AI 帮我写代码”，而是我自己设计了一套 AI 驱动的开发流程：先做需求拆解，再通过文件读写工具落到项目结构里，生成过程中用 SSE 持续反馈状态，构建失败后把错误日志和预览结果回传给模型继续修，最后形成生成、预览、编辑、部署的完整闭环。',
     },
     metrics: [
-      { value: '5+', label: '核心微服务/构建服务' },
-      { value: '6', label: 'AI 文件工具' },
+      { value: '多模块', label: '用户/应用/构建/截图/部署服务' },
+      { value: '工具链', label: 'AI 文件读写与修改工具' },
       { value: 'SSE', label: '流式生成反馈' },
     ],
     processFlow: {
@@ -317,7 +297,7 @@ const projects = [
       mode: 'arrow',
       steps: [
         { title: '需求拆解', detail: '先把用户输入拆成页面结构、关键组件、状态流转和交互目标。' },
-        { title: '文件操作', detail: 'AI 通过目录读取、文件写入、文件修改工具逐步生成项目，而不是一次吐完整代码。' },
+        { title: '文件操作', detail: 'AI 通过目录读取、文件写入、文件修改工具逐步生成项目，避免一次性生成导致文件冲突。' },
         { title: '流式反馈', detail: 'SSE 实时返回工具调用、生成进度和中间结果，避免长时间无响应。' },
         { title: '构建与预览', detail: 'Node Builder 负责编译生成项目，前端用 iframe 预览并支持可视化编辑。' },
         { title: '错误回传', detail: '构建失败后把错误堆栈、日志、源码片段和预览结果一起回传模型。' },
@@ -364,7 +344,7 @@ const projects = [
       },
       {
         title: 'AI 开发闭环设计',
-        detail: '项目核心不是让模型一次性吐完整代码，而是把需求拆解、文件操作、流式反馈、错误回传、二次修改这些步骤设计成稳定流程，让 AI 能持续迭代。',
+        detail: '项目核心是把需求拆解、文件操作、流式反馈、错误回传、二次修改设计成稳定流程，让 AI 能持续迭代。',
       },
     ],
     pitfalls: [
@@ -390,7 +370,7 @@ const projects = [
       },
       {
         title: '一次生成太多文件',
-        detail: '如果让模型一次性输出整个项目，前后文件很容易冲突。后来改成先读目录、再写文件、再按需修改文件，把生成过程拆成多轮工具调用。',
+        detail: '一次性输出整个项目容易造成前后文件冲突。后来改成先读目录、再写文件、再按需修改文件，把生成过程拆成多轮工具调用。',
       },
       {
         title: '修 bug 时引入新 bug',
@@ -416,7 +396,7 @@ const projects = [
     summary:
       '自研 RPC 框架，包含协议层、核心 SDK、控制面和可视化面板。项目重点覆盖服务注册发现、动态代理、负载均衡、容错、Mock、熔断限流和链路追踪。',
     why:
-      'Code Craft 里用了 Dubbo 和 Nacos，但只会用还不够。我想把 RPC 从协议、编解码、连接管理、服务发现、负载均衡到容错保护完整写一遍，这样再看 Dubbo 或 Spring Cloud 的实现会更有底。',
+      'AI Coder 里用了 Dubbo 和 Nacos，但只会用还不够。我想把 RPC 从协议、编解码、连接管理、服务发现、负载均衡到容错保护完整写一遍，这样再看 Dubbo 或 Spring Cloud 的实现会更有底。',
     metrics: [
       { value: '17B', label: '自定义协议头' },
       { value: '5 + 4', label: 'LB / 容错策略' },
@@ -549,9 +529,9 @@ const projects = [
     color: 'var(--color-secondary)',
     tags: ['Python 3.11', 'FastAPI', 'GitHub App', 'Webhook', 'httpx async', 'DeepSeek', 'JWT', 'HMAC'],
     summary:
-      '基于 GitHub App 的自动化 PR 审查服务，也是一次完整的 vibe coding 实践。项目不是先写代码，而是先和 Claude Code / Codex 讨论需求、模块边界和错误处理流程，再按收敛后的方案分段落地、持续迭代和修复。',
+      '基于 GitHub App 的自动化 PR 审查服务，也是一次完整的 vibe coding 实践。项目先和 Claude Code / Codex 讨论需求、模块边界和错误处理流程，再按收敛后的方案分段落地、持续迭代和修复。',
     why:
-      '前两个项目解决的是“生成代码”和“服务通信”，这个项目想补上代码进入仓库前的质量关。同时我也想认真做一次 vibe coding 实践：不是把一句需求直接丢给 AI，而是先和 Claude Code、Codex 来回讨论几版方案，明确 webhook、鉴权、GitHub API、AI Review、错误回写这几个模块，再让它按模块逐段实现。',
+      '前两个项目解决的是“生成代码”和“服务通信”，这个项目想补上代码进入仓库前的质量关。同时也作为一次 vibe coding 实践：先和 Claude Code、Codex 来回讨论几版方案，明确 webhook、鉴权、GitHub API、AI Review、错误回写这几个模块，再按模块逐段实现。',
     metrics: [
       { value: 'async', label: '全链路异步 HTTP' },
       { value: '10min', label: 'Installation Token' },
@@ -630,7 +610,7 @@ const projects = [
       },
       {
         title: 'Claude Code / Codex 协作',
-        detail: '不是一次性把需求全丢给模型，而是先讨论几版方案，再让它们按方案迭代实现。Claude Code 更适合整理步骤和收敛结构，Codex 更适合按明确任务补实现、改代码和跑验证。',
+        detail: '先讨论几版方案，再让 Claude Code / Codex 按方案迭代实现。Claude Code 更适合整理步骤和收敛结构，Codex 更适合按明确任务补实现、改代码和跑验证。',
       },
     ],
     pitfalls: [
@@ -682,6 +662,80 @@ const projects = [
 ]
 
 const pipeline = ['Push to master', 'GitHub Actions', 'Docker Build', '阿里云 ACR', 'Self-hosted Runner', 'Nginx / Docker Compose']
+
+const ciCdProject = {
+  name: 'CI/CD 自动化部署',
+  subtitle: 'GitHub Actions + Docker + 阿里云部署闭环',
+  featured: false,
+  icon: GitBranch,
+  color: 'var(--color-tertiary)',
+  tags: ['GitHub Actions', 'Docker', '阿里云 ACR', 'ECS', 'Self-hosted Runner', 'Nginx', 'FRP'],
+  summary:
+    'Push to master 后自动构建镜像、推送阿里云 ACR，并通过 Self-hosted Runner 部署到 ECS；同时保留 WSL + FRP 的低成本个人项目部署方案。',
+  why:
+    '项目从个人仓库迁移到 wangshun-china Organization 后，我希望把“提交代码到线上可访问”做成稳定流程，所以将构建、镜像发布、部署重启和模板沉淀统一纳入 CI/CD。',
+  metrics: [
+    { value: '5-8min', label: '完整上线耗时' },
+    { value: '双链路', label: '阿里云直部署 / WSL + FRP' },
+    { value: '模板化', label: 'Runner / FRP / Compose 脚本' },
+  ],
+  processFlow: {
+    title: '部署链路',
+    steps: pipeline.map((step) => ({ title: step, detail: '自动化部署链路中的关键节点。' })),
+  },
+  highlights: [
+    { title: 'GitHub Actions 自动化', detail: 'Push to master 后自动安装依赖、构建前端、构建 Docker 镜像并推送到阿里云 ACR。' },
+    { title: 'Self-hosted Runner', detail: 'Runner 部署在目标环境，负责拉取最新镜像并通过 Docker Compose 重启服务。' },
+    { title: '阿里云直部署', detail: '适合简历站这类轻量前端和生产环境服务，链路短、访问稳定。' },
+    { title: 'WSL + FRP 方案', detail: '重服务可运行在本地 WSL，阿里云只做公网入口和端口转发，降低低配服务器压力。' },
+    { title: '模板沉淀', detail: '整理 Runner、FRP、Docker Compose、Nginx 和部署脚本模板，后续新项目可复用。' },
+  ],
+  choices: [
+    {
+      title: 'GitHub Actions',
+      detail: '相比手动 SSH 上服务器执行命令，Actions 能把构建、推镜像、部署步骤固化成可追踪流程，减少人为漏操作。',
+    },
+    {
+      title: '阿里云 ACR',
+      detail: '镜像仓库和 ECS 同地域时拉取速度稳定，也能避免每次部署都在服务器上重新构建。',
+    },
+    {
+      title: 'Self-hosted Runner',
+      detail: '部署动作在目标环境内执行，不需要暴露服务器 SSH 到外部工作流，也便于复用本机 Docker 环境。',
+    },
+    {
+      title: 'Docker Compose',
+      detail: '个人项目服务数量有限，Compose 比 Kubernetes 更轻，适合快速描述端口、镜像、重启策略和网络。',
+    },
+    {
+      title: 'FRP',
+      detail: '本地 WSL 承载重服务，阿里云只保留公网入口，适合低成本演示和个人项目测试。',
+    },
+  ],
+  pitfalls: [
+    {
+      title: '端口归属冲突',
+      detail: 'FRP 远程端口和阿里云本机 Docker 服务不能同时占用 80，需要明确哪些服务直部署、哪些服务走穿透。',
+    },
+    {
+      title: '服务器残留 Compose',
+      detail: '旧部署文件中可能仍保留已删除服务，需要 docker compose up -d --remove-orphans 清理孤儿容器。',
+    },
+    {
+      title: '低配 ECS 压力',
+      detail: '重服务全部放阿里云会占用内存和 CPU，所以将轻量简历站放 ECS，重服务按需走 WSL + FRP。',
+    },
+    {
+      title: '模板复用成本',
+      detail: '不同项目端口、镜像名和环境变量不同，模板中保留变量入口，避免每个项目从零写部署文件。',
+    },
+  ],
+  links: [
+    { label: '部署模板', href: 'https://github.com/xixi-box/template', icon: Github },
+  ],
+}
+
+const allProjects = [...projects, ciCdProject]
 </script>
 
 <style scoped>
@@ -692,6 +746,301 @@ const pipeline = ['Push to master', 'GitHub Actions', 'Docker Build', '阿里云
 
 .project-featured {
   box-shadow: var(--shadow-md);
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.project-summary-card {
+  display: flex;
+  min-height: 390px;
+  flex-direction: column;
+  padding: 1.25rem;
+  border-radius: 18px;
+  border: 1px solid var(--color-border);
+}
+
+.project-summary-card.project-featured {
+  border: 2px solid rgba(217, 119, 87, 0.28);
+  background: linear-gradient(135deg, #fff, rgba(217, 119, 87, 0.05));
+}
+
+.summary-card-head,
+.modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.summary-icon {
+  display: flex;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--color-accent-light);
+}
+
+.summary-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.summary-title-row h3 {
+  color: var(--color-text);
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.summary-card-head p,
+.modal-title-row p {
+  margin-top: 0.15rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+}
+
+.summary-badge {
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.summary-text {
+  margin-top: 0.85rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.summary-tags,
+.modal-tags,
+.summary-actions,
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.summary-tags {
+  margin-top: 0.85rem;
+}
+
+.summary-points {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.summary-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.summary-point svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.summary-actions {
+  margin-top: auto;
+  padding-top: 0.9rem;
+}
+
+.summary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 38px;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-text);
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color var(--transition-base), color var(--transition-base), background var(--transition-base);
+}
+
+.summary-link:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.summary-detail-button {
+  cursor: pointer;
+}
+
+.project-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(34, 34, 34, 0.52);
+  backdrop-filter: blur(8px);
+}
+
+.project-modal {
+  position: relative;
+  width: min(85vw, 1180px);
+  height: 88vh;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid var(--color-border-light);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+.modal-title-block {
+  min-width: 0;
+}
+
+.modal-title-row h3 {
+  color: var(--color-text);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.modal-tags {
+  margin-top: 0.45rem;
+}
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-shrink: 0;
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+}
+
+.modal-close {
+  display: flex;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform var(--transition-base), background var(--transition-base), color var(--transition-base);
+}
+
+.modal-close:hover {
+  transform: scale(1.05);
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.modal-body {
+  height: calc(88vh - 94px);
+  overflow-y: auto;
+  padding: 1.25rem 1.6rem 1.8rem;
+}
+
+.modal-section {
+  padding: 1.1rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.modal-section + .modal-section {
+  margin-top: 1rem;
+}
+
+.modal-section h4 {
+  margin-bottom: 0.7rem;
+  color: var(--color-accent);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.modal-section p {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.modal-section p + p {
+  margin-top: 0.65rem;
+}
+
+.modal-metrics,
+.modal-card-grid,
+.modal-list-grid {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.modal-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.modal-card-grid,
+.modal-list-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.modal-list-item {
+  padding: 0.9rem;
+  border-radius: 12px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border-light);
+}
+
+.modal-list-item strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--color-text);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.modal-list-item p {
+  font-size: 0.82rem;
+  line-height: 1.65;
 }
 
 .project-side {
@@ -905,6 +1254,47 @@ const pipeline = ['Push to master', 'GitHub Actions', 'Docker Build', '阿里云
   border: 1px solid var(--color-border-light);
 }
 
+.summary-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.detail-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.25rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-accent);
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color var(--transition-base), background var(--transition-base);
+}
+
+.detail-toggle:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+.detail-toggle svg {
+  transition: transform var(--transition-base);
+}
+
+.project-detail-panel {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
 .side-section + .side-section {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
@@ -943,6 +1333,31 @@ const pipeline = ['Push to master', 'GitHub Actions', 'Docker Build', '阿里云
   vertical-align: 0.08rem;
 }
 
+.side-more {
+  margin-top: 0.9rem;
+}
+
+.side-more summary {
+  cursor: pointer;
+  color: var(--color-accent);
+  font-size: 0.84rem;
+  font-weight: 800;
+  list-style: none;
+}
+
+.side-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.side-more summary::after {
+  content: '+';
+  margin-left: 0.4rem;
+}
+
+.side-more[open] summary::after {
+  content: '-';
+}
+
 .pipeline {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -967,6 +1382,14 @@ const pipeline = ['Push to master', 'GitHub Actions', 'Docker Build', '阿里云
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.deploy-summary {
+  display: grid;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.7;
 }
 
 .deploy-card {
@@ -999,13 +1422,63 @@ const pipeline = ['Push to master', 'GitHub Actions', 'Docker Build', '阿里云
 }
 
 @media (max-width: 900px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+    padding-right: 1.25rem;
+    padding-left: 1.25rem;
+  }
+
+  .project-summary-card {
+    min-height: auto;
+  }
+
+  .project-overlay {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .project-modal {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .modal-header {
+    align-items: flex-start;
+    padding: 0.85rem 1rem;
+  }
+
+  .modal-header-actions {
+    align-items: flex-start;
+  }
+
+  .modal-title-row h3 {
+    font-size: 1.25rem;
+  }
+
+  .modal-close {
+    width: 42px;
+    height: 42px;
+  }
+
+  .modal-body {
+    height: calc(100vh - 106px);
+    padding: 1rem;
+  }
+
+  .modal-metrics,
+  .modal-card-grid,
+  .modal-list-grid,
+  .flow-grid,
+  .strategy-grid,
+  .boundary-grid {
+    grid-template-columns: 1fr;
+  }
+
   .pipeline {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .flow-grid,
-  .strategy-grid,
-  .boundary-grid,
   .deploy-grid {
     grid-template-columns: 1fr;
   }

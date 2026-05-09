@@ -231,12 +231,12 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Section spacing */
 section {
-  padding: 4rem 1rem;
+  padding: 2.5rem 1rem;
 }
 
 /* Hero section - compressed to show projects on first screen */
 #hero {
-  min-height: 65vh;
+  min-height: 42vh;
 }
 
 /* Projects and TechStack sections */

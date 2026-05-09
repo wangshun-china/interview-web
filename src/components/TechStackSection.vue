@@ -78,13 +78,13 @@
           </div>
         </div>
 
-        <!-- DevOps & Tools -->
+        <!-- AI Coding Tools & DevOps -->
         <div class="card rounded-2xl p-8">
           <div class="flex items-center gap-3 mb-8">
             <div class="w-10 h-10 rounded-lg bg-[#6B8E6B]/10 flex items-center justify-center">
               <Wrench class="w-5 h-5 text-[#6B8E6B]" />
             </div>
-            <h3 class="text-xl font-bold text-[#222222]">DevOps & Tools</h3>
+            <h3 class="text-xl font-bold text-[#222222]">AI Coding Tools & DevOps</h3>
           </div>
 
           <div class="flex flex-wrap gap-3">
@@ -134,16 +134,18 @@ const aiTechs = [
   { name: 'LangChain4j', level: '熟悉' },
   { name: 'LangGraph4j', level: '熟悉' },
   { name: 'OpenAI-compatible API', level: '熟悉' },
-  { name: 'Claude / Gemini', level: '熟悉' },
   { name: 'DeepSeek', level: '熟悉' },
-  { name: 'Claude Code', level: '熟练' },
-  { name: 'Codex', level: '熟练' },
-  { name: 'Code Plan', level: '熟练' },
+  { name: 'Qwen', level: '熟悉' },
   { name: 'Prompt Engineering', level: '熟悉' },
   { name: 'Tool Calling', level: '熟悉' },
 ]
 
 const devopsTechs = [
+  { name: 'Claude Code', level: '熟练' },
+  { name: 'Codex', level: '熟练' },
+  { name: 'ChatGPT', level: '熟练' },
+  { name: 'Gemini', level: '熟悉' },
+  { name: 'Code Plan', level: '熟练' },
   { name: 'Docker', level: '熟悉' },
   { name: 'GitHub App', level: '熟悉' },
   { name: 'GitHub Actions', level: '熟悉' },

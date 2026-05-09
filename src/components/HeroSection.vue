@@ -1,115 +1,102 @@
 <template>
-  <section id="hero" class="min-h-[65vh] flex items-center justify-center relative bg-pattern">
+  <section id="hero" class="hero-section flex items-center justify-center relative bg-pattern">
     <!-- Decorative elements -->
     <div class="absolute top-20 left-10 w-32 h-32 border border-[var(--color-accent)]/20 rounded-full animate-pulse-slow"></div>
     <div class="absolute bottom-20 right-10 w-48 h-48 border border-[var(--color-secondary)]/20 rounded-full animate-pulse-slow" style="animation-delay: 1s;"></div>
     <div class="absolute top-1/3 right-1/4 w-2 h-2 bg-[var(--color-accent)]/40 rounded-full animate-float"></div>
     <div class="absolute bottom-1/3 left-1/4 w-3 h-3 bg-[var(--color-secondary)]/40 rounded-full animate-float" style="animation-delay: 2s;"></div>
 
-    <div class="w-full px-12 md:px-20 lg:px-32 text-center relative z-10">
+    <div class="w-full px-6 md:px-12 lg:px-24 text-center relative z-10">
       <!-- Status badge -->
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 border border-[var(--color-border)] mb-6 animate-fade-in">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-[var(--color-border)] mb-2 animate-fade-in">
         <span class="w-2 h-2 bg-[var(--color-tertiary)] rounded-full animate-pulse"></span>
         <span class="text-sm text-[var(--color-text-secondary)]">Available for opportunities</span>
       </div>
 
       <!-- Main title with typewriter effect -->
-      <h1 class="text-5xl md:text-7xl font-bold mb-3 font-[var(--font-serif)]">
+      <h1 class="text-4xl md:text-5xl font-bold mb-1 font-[var(--font-serif)]">
         <span class="gradient-text">王顺</span>
       </h1>
-      <h2 class="text-2xl md:text-4xl font-light mb-4 text-[var(--color-text-secondary)] font-[var(--font-serif)]">
+      <h2 class="text-lg md:text-2xl font-light mb-2 text-[var(--color-text-secondary)] font-[var(--font-serif)]">
         Wang Shun
       </h2>
 
+      <div class="mb-2">
+        <p class="text-lg md:text-xl font-semibold text-[var(--color-text)]">
+          Java 后端 / AI Agent 应用开发实习生
+        </p>
+        <p class="mt-1 text-sm md:text-base text-[var(--color-text-secondary)]">
+          关注大模型工具调用、代码生成、AI Code Review 与工程化部署
+        </p>
+      </div>
+
       <!-- Typewriter subtitle -->
-      <div class="h-8 mb-6">
-        <p class="text-xl md:text-2xl text-[var(--color-accent)]">
+      <div class="h-6 mb-3">
+        <p class="text-base md:text-xl text-[var(--color-accent)]">
           <span class="typewriter-text">{{ displayText }}</span>
           <span class="cursor"></span>
         </p>
       </div>
 
-      <!-- Core info cards - 两端对齐布局 -->
-      <div class="flex flex-col md:flex-row justify-between gap-8 mb-6">
-        <!-- Education -->
-        <div class="card card-elevated p-5 text-left flex-1">
-          <div class="flex items-center gap-2 mb-3">
-            <GraduationCap class="w-5 h-5 text-[var(--color-accent)]" />
-            <span class="text-[var(--color-accent)] font-semibold">Education</span>
+      <div class="hero-info-bar">
+        <div class="hero-info-group education-compact">
+          <div class="hero-info-title">
+            <GraduationCap class="w-4 h-4 text-[var(--color-accent)]" />
+            <span>Education</span>
           </div>
-          <div class="space-y-2 text-sm">
-            <div>
-              <p class="text-[var(--color-text)] font-medium">上海海洋大学 · 硕士</p>
-              <p class="text-[var(--color-text-muted)]">计算机技术 (2025.09 - 2028.06)</p>
-              <p class="text-[var(--color-secondary)] text-xs mt-1">研究方向：基于 3DGS 的无人机影像实时三维建模</p>
-                <a href="https://xixi-box.github.io/grad/" target="_blank" class="inline-flex items-center gap-1 mt-2 text-xs text-[var(--color-accent)] hover:underline">
-                  <span>研究进度</span>
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                </a>
-            </div>
-            <div class="border-t border-[var(--color-border-light)] pt-2">
-              <p class="text-[var(--color-text)] font-medium">山东理工大学 · 本科</p>
-              <p class="text-[var(--color-text-muted)]">数据科学与大数据技术 (2021.09 - 2025.06)</p>
-            </div>
+          <div class="hero-education-list">
+            <span>上海海洋大学 · 计算机技术硕士 · 2025.09 - 2028.06</span>
+            <span>山东理工大学 · 数据科学与大数据技术本科 · 2021.09 - 2025.06</span>
           </div>
         </div>
 
-        <!-- Contact -->
-        <div class="card card-elevated p-5 text-left flex-1">
-          <div class="flex items-center gap-2 mb-3">
-            <Contact class="w-5 h-5 text-[var(--color-secondary)]" />
-            <span class="text-[var(--color-secondary)] font-semibold">Contact</span>
+        <div class="hero-contact-row">
+          <div class="hero-info-title">
+            <Contact class="w-4 h-4 text-[var(--color-secondary)]" />
+            <span>Contact</span>
           </div>
-          <div class="space-y-3">
-            <a href="mailto:2606209307@qq.com" class="flex items-center gap-3 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors group">
-              <Mail class="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span class="text-sm">2606209307@qq.com</span>
-            </a>
-            <a href="https://github.com/xixi-box" target="_blank" class="flex items-center gap-3 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors group">
-              <Github class="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span class="text-sm">github.com/xixi-box</span>
-            </a>
-            <div class="flex items-center gap-3 text-[var(--color-text-secondary)]">
-              <MapPin class="w-4 h-4" />
-              <span class="text-sm">Shanghai, China</span>
-            </div>
+          <a href="mailto:2606209307@qq.com" class="hero-contact-link">
+            <Mail class="w-4 h-4" />
+            <span>2606209307@qq.com</span>
+          </a>
+          <a href="https://github.com/xixi-box" target="_blank" class="hero-contact-link">
+            <Github class="w-4 h-4" />
+            <span>github.com/xixi-box</span>
+          </a>
+          <div class="hero-contact-link">
+            <MapPin class="w-4 h-4" />
+            <span>Shanghai</span>
           </div>
         </div>
       </div>
 
       <!-- AI Workflow -->
-      <div class="w-full mb-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-accent-light)]/50 to-[var(--color-bg-alt)] border border-[var(--color-border)]">
-        <div class="flex items-center gap-2 mb-2">
+      <div class="workflow-line">
+        <div class="flex items-center gap-2 shrink-0">
           <Zap class="w-4 h-4 text-[var(--color-accent)]" />
           <span class="text-sm font-semibold text-[var(--color-accent)]">AI Developer Workflow</span>
         </div>
-        <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-          平时长期订阅 <span class="text-[var(--color-accent)]">ChatGPT Plus</span>、
-          <span class="text-[var(--color-accent)]">Gemini Pro</span> 和
-          <span class="text-[var(--color-secondary)]">Claude Pro</span>，
-          也会用国内的 <span class="text-[var(--color-secondary)]">Code Plan</span> 做日常辅助。
-          工作里最常用的是 <span class="text-[var(--color-tertiary)]">Claude Code / Codex</span>：
-          先和模型讨论几版需求与方案，再把方案收敛成可执行步骤，让它按方案写代码、改代码、跑构建、做 Review，
-          我负责把关架构、边界条件、异常处理和最终交付。
+        <p>
+          使用 Claude Code / Codex / GPT / Gemini / DeepSeek 辅助需求拆解、方案设计、代码实现、Review 和 Debug，并结合人工 Review、测试与 CI/CD 控制交付质量。
         </p>
       </div>
 
       <!-- Role badges -->
-      <div class="flex flex-wrap justify-center gap-3 mb-8">
+      <div class="flex flex-wrap justify-center gap-3 mb-2">
         <span class="tag">
-          Cloud Native Developer
+          Java 后端
         </span>
         <span class="tag" style="background: rgba(139, 115, 85, 0.1); color: var(--color-secondary);">
-          Full Stack Engineer
+          AI Agent
         </span>
         <span class="tag" style="background: rgba(107, 142, 107, 0.1); color: var(--color-tertiary);">
-          AI Agent Developer
+          工程化部署
         </span>
       </div>
 
       <!-- Scroll indicator -->
-      <div class="mt-4 flex flex-col items-center gap-2 cursor-pointer" @click="scrollToProjects">
-        <span class="text-sm text-[var(--color-text-muted)]">下滑查看项目经历</span>
+      <div class="mt-1 flex flex-col items-center gap-1 cursor-pointer" @click="scrollToProjects">
+        <span class="text-xs text-[var(--color-text-muted)]">下滑查看项目经历</span>
         <div class="animate-bounce">
           <ChevronDown class="w-6 h-6 text-[var(--color-accent)]" />
         </div>
@@ -123,10 +110,10 @@ import { ref, onMounted } from 'vue'
 import { GraduationCap, Contact, Mail, Github, MapPin, ChevronDown, Zap } from 'lucide-vue-next'
 
 const roles = [
-  'Cloud Native Developer',
-  'Microservices Architect',
-  'AI Agent Developer',
-  'Full Stack Engineer'
+  'Java Backend & AI Agent Developer',
+  'AI Application Builder',
+  'AI Code Review Builder',
+  'Engineering Delivery'
 ]
 
 const displayText = ref('')
@@ -206,5 +193,113 @@ onMounted(() => {
 
 .animate-pulse-slow {
   animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.hero-section {
+  min-height: 42vh;
+  padding-top: 1.5rem;
+  padding-bottom: 0.75rem;
+}
+
+.hero-info-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.hero-info-group,
+.hero-contact-row,
+.workflow-line {
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-info-group {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.65rem 0.9rem;
+  text-align: left;
+}
+
+.hero-info-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.hero-education-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.8rem;
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.hero-contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  min-width: 0;
+}
+
+.hero-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--transition-base);
+}
+
+.hero-contact-link:hover {
+  color: var(--color-accent);
+}
+
+.workflow-line {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  text-align: left;
+  background: linear-gradient(90deg, var(--color-accent-light), rgba(245, 244, 240, 0.9));
+}
+
+.workflow-line p {
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .hero-section {
+    min-height: auto;
+    padding-top: 1.5rem;
+  }
+
+  .hero-info-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-info-group,
+  .hero-contact-row,
+  .workflow-line {
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 }
 </style>

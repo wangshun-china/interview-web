@@ -10,6 +10,10 @@
         <span class="gradient-text">项目经历</span>
       </h2>
       <p class="text-center text-[var(--color-text-muted)] text-lg">Project Showcase</p>
+      <div class="availability-banner">
+        <strong>访问说明：</strong>
+        简历网站运行在阿里云，全天可访问；AI Coder 和 Lumina-RPC 运行在本地 WSL，通过内网穿透访问，一般工作日白天可访问。
+      </div>
     </div>
 
     <div class="project-grid w-full px-8 md:px-16 lg:px-28">
@@ -33,6 +37,9 @@
         </div>
 
         <p class="summary-text">{{ project.summary }}</p>
+        <div v-if="project.availability" class="availability-note">
+          {{ project.availability }}
+        </div>
 
         <div class="summary-tags">
           <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
@@ -107,6 +114,9 @@
             <section class="modal-section">
               <h4>项目概览</h4>
               <p>{{ selectedProject.summary }}</p>
+              <p v-if="selectedProject.availability" class="modal-availability">
+                {{ selectedProject.availability }}
+              </p>
               <p v-if="selectedProject.why">{{ selectedProject.why }}</p>
             </section>
 
@@ -280,6 +290,7 @@ const projects = [
     tags: ['Java 21', 'Spring Boot 3', 'Dubbo 3', 'Nacos', 'LangChain4j', 'Redis', 'Vue 3', 'Docker'],
     summary:
       '面向自然语言生成前端应用的全栈平台。用户输入需求后，后端通过 LangChain4j Tool Calling 创建和修改项目文件，前端提供源码工作区、实时预览、可视化编辑和一键部署能力。',
+    availability: '在线体验运行在本地 WSL，通过 FRP 内网穿透访问；一般工作日白天可访问。',
     why:
       '最开始是想把 LangChain4j 学到能落地的程度，而不是只停留在单次模型调用。项目重点放在工程闭环：让 AI 能持续生成、预览、修改、部署，并在构建失败后回到可追踪的研发流程里继续修复。',
     flowDesign: {
@@ -395,6 +406,7 @@ const projects = [
     tags: ['Java 21', 'Netty 4.1', 'Kryo', 'ByteBuddy', 'MySQL', 'Vue Flow', 'ECharts', 'Docker'],
     summary:
       '自研 RPC 框架，包含协议层、核心 SDK、控制面和可视化面板。项目重点覆盖服务注册发现、动态代理、负载均衡、容错、Mock、熔断限流和链路追踪。',
+    availability: '在线演示运行在本地 WSL，通过 FRP 内网穿透访问；一般工作日白天可访问。',
     why:
       'AI Coder 里用了 Dubbo 和 Nacos，但只会用还不够。我想把 RPC 从协议、编解码、连接管理、服务发现、负载均衡到容错保护完整写一遍，这样再看 Dubbo 或 Spring Cloud 的实现会更有底。',
     metrics: [
@@ -735,7 +747,7 @@ const ciCdProject = {
   ],
 }
 
-const allProjects = [...projects, ciCdProject]
+const allProjects: any[] = [...projects, ciCdProject]
 </script>
 
 <style scoped>
@@ -821,6 +833,35 @@ const allProjects = [...projects, ciCdProject]
   color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.65;
+}
+
+.availability-banner {
+  max-width: 920px;
+  margin: 1rem auto 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(217, 119, 87, 0.28);
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--color-accent-light), #fff);
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  text-align: center;
+}
+
+.availability-banner strong {
+  color: var(--color-accent);
+}
+
+.availability-note,
+.modal-availability {
+  margin-top: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px dashed rgba(217, 119, 87, 0.35);
+  border-radius: 10px;
+  background: rgba(217, 119, 87, 0.06);
+  color: var(--color-accent);
+  font-size: 0.82rem;
+  line-height: 1.55;
 }
 
 .summary-tags,

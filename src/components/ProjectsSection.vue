@@ -13,6 +13,7 @@
       <div class="availability-banner">
         <strong>访问说明：</strong>
         简历网站运行在阿里云，全天可访问；AI Coder 和 Lumina-RPC 运行在本地 WSL，通过内网穿透访问，一般工作日白天可访问。
+        点击“展开详情”会出现当前模块的伪二级界面；手机上若访问有问题，请在手机浏览器中打开电脑模式。
       </div>
     </div>
 

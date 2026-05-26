@@ -12,7 +12,7 @@
 
     <!-- Footer -->
     <footer class="py-8 text-center text-[#666666] text-sm border-t border-[#E5E3DD]">
-      <p>© 2026 Wang Shun | Built with Vue 3 + Vite + TailwindCSS</p>
+      <p>© 2026 Wang Shun | Built with Vue 3 + Vite + TailwindCSS | <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">鲁ICP备2026026854号</a></p>
     </footer>
   </div>
 </template>

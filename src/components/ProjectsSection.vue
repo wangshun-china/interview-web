@@ -288,47 +288,48 @@ const projects = [
     featured: true,
     icon: Cloud,
     color: 'var(--color-tertiary)',
-    tags: ['Java 21', 'Spring Boot 3', 'Dubbo 3', 'Nacos', 'LangChain4j', 'Redis', 'Vue 3', 'Docker'],
+    tags: ['Java 21', 'Spring Boot 3', 'Spring AI Alibaba Graph', 'Dubbo 3', 'Nacos', 'Redis/Redisson', 'Vue 3', 'Docker'],
     summary:
-      '面向自然语言生成前端应用的全栈平台。用户输入需求后，后端通过 LangChain4j Tool Calling 创建和修改项目文件，前端提供源码工作区、实时预览、可视化编辑和一键部署能力。',
+      '面向自然语言生成前端应用的全栈平台。后端基于 Spring AI Alibaba Graph/ReactAgent 编排规划、脚手架、UI、审查和修复流程，通过工具调用读写项目文件，前端提供源码工作区、实时预览、可视化编辑和一键部署能力。',
     availability: '在线体验运行在本地 WSL，通过 FRP 内网穿透访问；一般工作日白天可访问。',
     why:
-      '最开始是想把 LangChain4j 学到能落地的程度，而不是只停留在单次模型调用。项目重点放在工程闭环：让 AI 能持续生成、预览、修改、部署，并在构建失败后回到可追踪的研发流程里继续修复。',
+      '现在的 springaialibaba 分支重点是把 Spring AI Alibaba 的 ChatClient、Tool Calling、Graph Agent 和 Redis 记忆落到可运行产品，而不是只做一次模型调用。项目核心放在工程闭环：让 AI 能持续规划、生成、审查、构建、修复、预览和部署。',
     flowDesign: {
       title: 'AI 开发闭环设计',
       detail:
-        '这个项目的重点不是“AI 帮我写代码”，而是我自己设计了一套 AI 驱动的开发流程：先做需求拆解，再通过文件读写工具落到项目结构里，生成过程中用 SSE 持续反馈状态，构建失败后把错误日志和预览结果回传给模型继续修，最后形成生成、预览、编辑、部署的完整闭环。',
+        '正式生成前先产出应用方案，生成阶段由 StateGraph 串起 scaffold_coder、ui_coder、reviewer、fix_coder；工具调用和阶段消息通过 SSE 推给前端，Node Builder 构建失败后把日志回传给修复 Agent，最后进入预览、截图、部署和版本记录。',
     },
     metrics: [
       { value: '多模块', label: '用户/应用/构建/截图/部署服务' },
-      { value: '工具链', label: 'AI 文件读写与修改工具' },
-      { value: 'SSE', label: '流式生成反馈' },
+      { value: '4 Agent', label: '脚手架/UI/审查/修复编排' },
+      { value: 'SSE', label: '阶段与工具调用反馈' },
     ],
     processFlow: {
       title: '生成链路',
       mode: 'arrow',
       steps: [
-        { title: '需求拆解', detail: '先把用户输入拆成页面结构、关键组件、状态流转和交互目标。' },
-        { title: '文件操作', detail: 'AI 通过目录读取、文件写入、文件修改工具逐步生成项目，避免一次性生成导致文件冲突。' },
-        { title: '流式反馈', detail: 'SSE 实时返回工具调用、生成进度和中间结果，避免长时间无响应。' },
-        { title: '构建与预览', detail: 'Node Builder 负责编译生成项目，前端用 iframe 预览并支持可视化编辑。' },
-        { title: '错误回传', detail: '构建失败后把错误堆栈、日志、源码片段和预览结果一起回传模型。' },
-        { title: '二次修改', detail: '模型在已有项目上继续改文件，最后接入截图、部署、版本记录形成完整闭环。' },
+        { title: '方案确认', detail: '先生成页面结构、视觉风格、关键交互和数据流，用户确认后再进入正式编码。' },
+        { title: 'Agent 编排', detail: 'StateGraph 依次调度脚手架 Agent、UI Agent、只读审查 Agent 和修复 Agent。' },
+        { title: '文件操作', detail: 'AI 通过 readDir/readFile/writeFile/modifyFile/deleteFile/exit 逐步落地项目文件。' },
+        { title: '流式反馈', detail: 'SSE 实时返回阶段消息、AI 文本、工具请求和工具执行结果，避免长时间无响应。' },
+        { title: '构建修复', detail: 'Node Builder 编译 Vue 项目，失败后把构建日志交给修复 Agent 做最小修改。' },
+        { title: '预览部署', detail: '前端 iframe 预览并支持可视化编辑，部署后记录任务日志、版本和截图封面。' },
       ],
     },
     highlights: [
-      { title: 'AI 工具调用闭环', detail: 'FileWrite/FileRead/FileModify/FileDelete/DirRead/ExitTool 支撑多文件项目生成。' },
-      { title: '多轮对话记忆', detail: 'Redis 保存用户与应用维度的上下文，并限制历史长度控制 Token 成本。' },
+      { title: 'Agent Graph 编排', detail: 'Spring AI Alibaba StateGraph 串联 scaffold_coder、ui_coder、reviewer、fix_coder，并设置最大迭代次数避免无限循环。' },
+      { title: 'AI 工具调用闭环', detail: 'writeFile/readFile/modifyFile/deleteFile/readDir/exit 支撑 Vue 多文件项目生成、审查和修复。' },
+      { title: 'Redis 记忆与检查点', detail: 'RedissonRedisChatMemoryRepository 保存对话记忆，RedisSaver 保存 Graph checkpoint，MessageWindow 控制上下文长度。' },
       { title: '源码与预览工作区', detail: '文件树、源码 Tab、iframe 预览和拖拽分屏提高调试效率。' },
       { title: '部署任务持久化', detail: '记录部署状态、日志、错误信息和版本数据，前端展示临时终端日志。' },
-      { title: '并发与安全控制', detail: 'Redisson 限流/锁控制同一应用并发写入，Guardrail 过滤风险输入。' },
+      { title: '并发与限流控制', detail: 'Redisson RBucket token 锁限制同一应用并发生成，RRateLimiter 按接口、用户和 IP 做限流。' },
+      { title: '模型配置与监控', detail: '支持用户级 OpenAI-compatible 模型凭据，统一记录请求、错误、Token 和响应耗时。' },
       { title: '截图与对象存储', detail: 'Playwright 截图服务生成应用封面，并上传到腾讯云 COS。' },
-      { title: '生成式开发闭环', detail: '需求拆解、文件操作、流式反馈、错误回传、二次修改串成一条完整工程链路。' },
     ],
     choices: [
       {
-        title: 'LangChain4j',
-        detail: '相比直接封装 HTTP 调模型，LangChain4j 提供 AI Service、Tool Calling、ChatMemory 和 Guardrail，能把 AI 能力接进 Spring Boot 的 Bean 生命周期，代码结构更清楚。',
+        title: 'Spring AI Alibaba Graph',
+        detail: '使用 OpenAI-compatible ChatClient 接入 DashScope/Qwen，并用 StateGraph + ReactAgent 编排脚手架生成、UI 生成、代码审查和修复流程。',
       },
       {
         title: 'Dubbo 3 + Nacos',
@@ -336,11 +337,11 @@ const projects = [
       },
       {
         title: 'Redis + Caffeine',
-        detail: '只用 Redis 会增加每次查询的网络开销，只用本地缓存又无法跨实例共享。这里用 Redis 保存会话、任务和限流状态，用 Caffeine 缓热点应用信息。',
+        detail: 'Redis 承担 ChatMemory、Graph checkpoint、生成锁和限流状态，Caffeine 缓存 AI 服务实例，减少重复构建 ChatClient 和 Agent 流水线。',
       },
       {
         title: 'Redisson',
-        detail: '同一个 app 不能同时让两轮 AI 写文件，否则会互相覆盖。Redisson 的锁和 RRateLimiter 比自己写 Lua/SETNX 更稳，也方便按用户、IP、接口维度限流。',
+        detail: '同一个 app 不能同时让两轮 AI 写文件，否则会互相覆盖。这里用 Redisson RBucket token 锁做互斥，用 RRateLimiter 做接口级限流。',
       },
       {
         title: 'Node Builder',
@@ -355,14 +356,14 @@ const projects = [
         detail: '相比前端 canvas 截图，服务端 Playwright 能拿到真实渲染结果，用来生成应用封面更稳定，也方便部署后自动截图。',
       },
       {
-        title: 'AI 开发闭环设计',
-        detail: '项目核心是把需求拆解、文件操作、流式反馈、错误回传、二次修改设计成稳定流程，让 AI 能持续迭代。',
+        title: '本地模板 RAG',
+        detail: '对常见生成场景维护轻量模板库，按用户需求检索实现要点、文件建议和质量检查项，作为生成上下文补充。',
       },
     ],
     pitfalls: [
       {
-        title: 'AI 工具调用死循环',
-        detail: '模型会反复读写同一个文件。解决方式是设置最大连续工具调用次数，并提供 ExitTool，让模型有明确的任务结束出口。',
+        title: 'Agent 循环调用工具',
+        detail: '模型会反复读写同一个文件。解决方式是设置 Graph 最大迭代次数、审查通过/失败出口，并提供 exit 工具让任务有明确结束点。',
       },
       {
         title: '代码围栏污染文件',
@@ -370,11 +371,11 @@ const projects = [
       },
       {
         title: '对话上下文丢失',
-        detail: '微服务无状态，请求打到不同实例后历史消息拿不到。改为按 userId + appId 维度把 ChatMemory 存进 Redis，并限制历史条数控制 Token。',
+        detail: '微服务无状态，请求打到不同实例后历史消息拿不到。改为用 Redis 保存 ChatMemory 和 Graph checkpoint，并用 MessageWindow/SummarizationHook 控制上下文长度。',
       },
       {
         title: '并发写文件冲突',
-        detail: '用户连续发送修改请求时，两轮 AI 可能同时改同一项目目录。用 Redis 原子锁限制同一 app 同时只允许一轮生成任务。',
+        detail: '用户连续发送修改请求时，两轮 AI 可能同时改同一项目目录。用 Redisson token 锁限制同一 app 同时只允许一轮生成任务。',
       },
       {
         title: '构建日志不可见',
@@ -382,11 +383,11 @@ const projects = [
       },
       {
         title: '一次生成太多文件',
-        detail: '一次性输出整个项目容易造成前后文件冲突。后来改成先读目录、再写文件、再按需修改文件，把生成过程拆成多轮工具调用。',
+        detail: '一次性输出整个项目容易造成前后文件冲突。后来拆成 scaffold_coder、ui_coder、reviewer、fix_coder，让生成、审查、修复各自负责一段。',
       },
       {
         title: '修 bug 时引入新 bug',
-        detail: '只把一句报错丢回给模型，修改往往很盲。后面把错误堆栈、构建日志、源码片段和预览结果一起回传，二次修改的稳定性明显更高。',
+        detail: '只把一句报错丢回给模型，修改往往很盲。现在把 Node Builder 的构建日志截断后回传，并要求先读目录和相关文件，再做最小修改。',
       },
       {
         title: 'iframe 可视化编辑通信',
@@ -395,7 +396,7 @@ const projects = [
     ],
     links: [
       { label: '在线体验', href: 'http://120.26.186.0:8888', icon: Rocket },
-      { label: '源码', href: 'https://github.com/wangshun-china/ai-code', icon: Github },
+      { label: '源码', href: 'https://github.com/xixi-box/ai-code/tree/springaialibaba', icon: Github },
     ],
   },
   {

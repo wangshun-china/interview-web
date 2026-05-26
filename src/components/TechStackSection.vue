@@ -131,8 +131,7 @@ const frontendTechs = [
 ]
 
 const aiTechs = [
-  { name: 'LangChain4j', level: '熟悉' },
-  { name: 'LangGraph4j', level: '熟悉' },
+  { name: 'Spring AI Alibaba', level: '熟悉' },
   { name: 'OpenAI-compatible API', level: '熟悉' },
   { name: 'DeepSeek', level: '熟悉' },
   { name: 'Qwen', level: '熟悉' },

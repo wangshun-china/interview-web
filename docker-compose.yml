@@ -1,6 +1,6 @@
 services:
   portfolio:
-    image: crpi-r1wme86kfaw7rr3f.cn-shanghai.personal.cr.aliyuncs.com/wangshun_build/wangshun_portfolio:latest
+    image: ${ALIYUN_ACR_REGISTRY:?set ALIYUN_ACR_REGISTRY}/${INTERVIEW_IMAGE_NAME:-wangshun_build/wangshun_portfolio}:latest
     container_name: wangshun-portfolio
     restart: always
     ports:

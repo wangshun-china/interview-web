@@ -395,7 +395,7 @@ const projects = [
       },
     ],
     links: [
-      { label: '在线体验', href: 'http://120.26.186.0:8888', icon: Rocket },
+      { label: '在线体验', href: 'http://wangshun.work/ai-coder', icon: Rocket },
       { label: '源码', href: 'https://github.com/xixi-box/ai-code/tree/springaialibaba', icon: Github },
     ],
   },
@@ -531,7 +531,7 @@ const projects = [
       },
     ],
     links: [
-      { label: '在线演示', href: 'http://120.26.186.0:3000', icon: Rocket },
+      { label: '在线演示', href: 'http://wangshun.work/lumina-rpc', icon: Rocket },
       { label: '源码', href: 'https://github.com/xixi-box/lumina-rpc', icon: Github },
     ],
   },

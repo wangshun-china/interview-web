@@ -81,6 +81,26 @@
         </p>
       </div>
 
+      <!-- Personal API relay -->
+      <div class="api-station-entry">
+        <div class="api-station-copy">
+          <ServerCog class="h-5 w-5" />
+          <div>
+            <strong>个人 API 中转站</strong>
+            <span>自主搭建并维护的模型 API 中转服务，提供统一的接口入口与调用管理。</span>
+          </div>
+        </div>
+        <a
+          href="http://api.wangshun.work"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="api-station-button"
+        >
+          <span>访问 api.wangshun.work</span>
+          <ExternalLink class="h-4 w-4" />
+        </a>
+      </div>
+
       <!-- Role badges -->
       <div class="flex flex-wrap justify-center gap-3 mb-2">
         <span class="tag">
@@ -107,7 +127,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { GraduationCap, Contact, Mail, Github, MapPin, ChevronDown, Zap } from 'lucide-vue-next'
+import {
+  GraduationCap,
+  Contact,
+  Mail,
+  Github,
+  MapPin,
+  ChevronDown,
+  Zap,
+  ServerCog,
+  ExternalLink,
+} from 'lucide-vue-next'
 
 const roles = [
   'Java Backend & AI Agent Developer',
@@ -284,6 +314,71 @@ onMounted(() => {
   line-height: 1.5;
 }
 
+.api-station-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgba(217, 119, 87, 0.24);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+.api-station-copy {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.api-station-copy > svg {
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.api-station-copy strong,
+.api-station-copy span {
+  display: block;
+}
+
+.api-station-copy strong {
+  color: var(--color-text);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.api-station-copy span {
+  margin-top: 0.15rem;
+  color: var(--color-text-secondary);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.api-station-button {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 38px;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.api-station-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
 @media (max-width: 900px) {
   .hero-section {
     min-height: auto;
@@ -300,6 +395,16 @@ onMounted(() => {
     align-items: flex-start;
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  .api-station-entry {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .api-station-button {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

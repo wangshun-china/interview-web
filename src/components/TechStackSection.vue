@@ -4,7 +4,7 @@
     <div class="w-full px-12 md:px-20 lg:px-32 mb-16">
       <div class="flex items-center gap-4 mb-4">
         <div class="h-px flex-1 bg-gradient-to-r from-transparent to-[#D97757]/30"></div>
-        <span class="text-[#8B7355] text-sm font-mono">03</span>
+        <span class="text-[#8B7355] text-sm font-mono">04</span>
         <div class="h-px flex-1 bg-gradient-to-l from-transparent to-[#D97757]/30"></div>
       </div>
       <h2 class="text-4xl md:text-5xl font-bold text-center mb-4">

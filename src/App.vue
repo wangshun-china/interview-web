@@ -6,6 +6,7 @@
     <!-- Main Content -->
     <main class="relative z-10">
       <HeroSection />
+      <ExperienceSection />
       <ProjectsSection />
       <TechStackSection />
     </main>
@@ -25,6 +26,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import HeroSection from './components/HeroSection.vue'
+import ExperienceSection from './components/ExperienceSection.vue'
 import ProjectsSection from './components/ProjectsSection.vue'
 import TechStackSection from './components/TechStackSection.vue'
 

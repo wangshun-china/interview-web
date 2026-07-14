@@ -95,8 +95,8 @@
       </div>
 
       <!-- Scroll indicator -->
-      <div class="mt-1 flex flex-col items-center gap-1 cursor-pointer" @click="scrollToProjects">
-        <span class="text-xs text-[var(--color-text-muted)]">下滑查看项目经历</span>
+      <div class="mt-1 flex flex-col items-center gap-1 cursor-pointer" @click="scrollToExperience">
+        <span class="text-xs text-[var(--color-text-muted)]">下滑查看实习经历</span>
         <div class="animate-bounce">
           <ChevronDown class="w-6 h-6 text-[var(--color-accent)]" />
         </div>
@@ -147,10 +147,10 @@ const typeWriter = () => {
   setTimeout(typeWriter, typingSpeed)
 }
 
-const scrollToProjects = () => {
-  const projectsSection = document.getElementById('projects')
-  if (projectsSection) {
-    projectsSection.scrollIntoView({ behavior: 'smooth' })
+const scrollToExperience = () => {
+  const experienceSection = document.getElementById('experience')
+  if (experienceSection) {
+    experienceSection.scrollIntoView({ behavior: 'smooth' })
   }
 }
 

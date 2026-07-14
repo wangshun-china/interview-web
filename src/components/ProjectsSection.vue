@@ -3,7 +3,7 @@
     <div class="w-full px-8 md:px-16 lg:px-28 mb-5">
       <div class="flex items-center gap-4 mb-3">
         <div class="h-px flex-1 bg-gradient-to-r from-transparent to-[var(--color-border)]"></div>
-        <span class="text-[var(--color-text-muted)] text-sm font-mono">02</span>
+        <span class="text-[var(--color-text-muted)] text-sm font-mono">03</span>
         <div class="h-px flex-1 bg-gradient-to-l from-transparent to-[var(--color-border)]"></div>
       </div>
       <h2 class="text-4xl md:text-5xl font-bold text-center mb-2">

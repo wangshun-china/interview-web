@@ -91,12 +91,12 @@
           </div>
         </div>
         <a
-          href="http://api.wangshun.work"
+          href="http://api_transfer.wangshun.work"
           target="_blank"
           rel="noopener noreferrer"
           class="api-station-button"
         >
-          <span>访问 api.wangshun.work</span>
+          <span>访问 API 中转站</span>
           <ExternalLink class="h-4 w-4" />
         </a>
       </div>

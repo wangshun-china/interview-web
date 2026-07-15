@@ -117,7 +117,7 @@ jobs:
 
           server {
               listen 80;
-              server_name api.wangshun.work;
+              server_name api_transfer.wangshun.work;
 
               location / {
                   proxy_pass http://host.docker.internal:7777;

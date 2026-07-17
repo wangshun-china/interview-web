@@ -12,9 +12,9 @@ GitHub Actions → SSH 登录服务器 → 执行部署命令
 
 ### 新模式（Cloud Build + Self-hosted Pull）
 ```
-GitHub Actions (Cloud Build) ──Push──→ 阿里云 ACR
+GitHub Actions (Cloud Build) ──Push──→ GHCR + 阿里云 ACR
                                           ↓
-Self-hosted Runner (ECS) ──────Pull──────┘
+Self-hosted Runner (ECS) ──Pull GHCR，失败回退 ACR
                 ↓
          [更安全: 无需 SSH 密钥]
          [更解耦: 构建和部署分离]
@@ -61,19 +61,17 @@ sudo ./svc.sh start
 
 ### build (runs-on: ubuntu-latest)
 - 构建前端 Docker 镜像
-- 推送到阿里云 ACR
+- 同时推送到 GHCR 和阿里云 ACR
 - 使用 Buildx 缓存加速
 
 ### deploy (runs-on: self-hosted)
 - 在 ECS 上执行
-- 拉取最新镜像
+- 优先拉取 GHCR 不可变版本，失败时回退阿里云 ACR
 - 启动服务
 
 ## 后续优化
 
-当前 ACR 账号密码是硬编码的，建议后续改为 GitHub Secrets：
-1. 在仓库 Settings → Secrets → Actions 中添加 `ALIYUN_USERNAME` 和 `ALIYUN_PASSWORD`
-2. 修改 workflow 中的 `env` 部分，改为 `${{ secrets.XXX }}`
+ACR 密码保存在 GitHub Secret `ALIYUN_ACR_PASSWORD`，仓库地址、用户名和镜像名使用 GitHub Variables。
 
 ## 故障排查
 

@@ -1,6 +1,6 @@
 services:
   portfolio:
-    image: ${ALIYUN_ACR_REGISTRY:?set ALIYUN_ACR_REGISTRY}/${INTERVIEW_IMAGE_NAME:-wangshun_build/wangshun_portfolio}:latest
+    image: ${INTERVIEW_IMAGE:?set INTERVIEW_IMAGE}
     container_name: wangshun-portfolio
     restart: always
     ports:

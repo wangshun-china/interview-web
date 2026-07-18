@@ -57,6 +57,7 @@ if [[ ! -f "$CERT_PATH" ]]; then
 
   for domain in "${DOMAINS[@]}"; do
     curl -fsS --retry 10 --retry-delay 2 --retry-all-errors \
+      --noproxy '*' \
       --resolve "$domain:80:127.0.0.1" \
       "http://$domain/.well-known/acme-challenge/$challenge_token" |
       grep -Fxq "$challenge_token"
@@ -102,9 +103,11 @@ compose exec -T portfolio nginx -s reload
 
 for domain in "${ROOT_DOMAINS[@]}"; do
   curl -fsS -o /dev/null --retry 10 --retry-delay 3 --retry-all-errors \
+    --noproxy '*' \
     --resolve "$domain:443:127.0.0.1" "https://$domain/"
 done
 curl -fsS --retry 10 --retry-delay 3 --retry-all-errors \
+  --noproxy '*' \
   --resolve "api.wangshun.work:443:127.0.0.1" \
   "https://api.wangshun.work/health" |
   grep -q '"service":"memoir-server"'

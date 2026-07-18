@@ -79,7 +79,13 @@ jobs:
     name: Deploy to ${{ github.event.inputs.target_env || 'aliyun' }}
     needs: build
     runs-on: [self-hosted, "${{ github.event.inputs.target_env || 'aliyun' }}"]
+    concurrency:
+      group: wangshun-gateway-${{ github.event.inputs.target_env || 'aliyun' }}
+      cancel-in-progress: false
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Deploy
         env:
           GHCR_REGISTRY: ${{ env.GHCR_REGISTRY }}
@@ -88,6 +94,7 @@ jobs:
           ALIYUN_ACR_USERNAME: ${{ env.ALIYUN_ACR_USERNAME }}
           ALIYUN_ACR_PASSWORD: ${{ env.ALIYUN_ACR_PASSWORD }}
           INTERVIEW_IMAGE_NAME: ${{ env.INTERVIEW_IMAGE_NAME }}
+          LETSENCRYPT_EMAIL: ${{ secrets.LETSENCRYPT_EMAIL }}
         run: |
           export DOCKER_CONFIG="$(mktemp -d)"
           trap 'rm -rf "$DOCKER_CONFIG"' EXIT
@@ -109,95 +116,6 @@ jobs:
             exit 1
           fi
 
-          mkdir -p wangshun-portfolio
-          cd wangshun-portfolio
-
-          cat > docker-compose.yml << EOF
-          services:
-            portfolio:
-              image: ${DEPLOY_IMAGE}
-              container_name: wangshun-portfolio
-              restart: unless-stopped
-              ports:
-                - "80:80"
-              extra_hosts:
-                - "host.docker.internal:host-gateway"
-              volumes:
-                - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-          EOF
-
-          cat > nginx.conf << 'NGINX'
-          server {
-              listen 80;
-              server_name wangshun.work www.wangshun.work;
-
-              location / {
-                  root /usr/share/nginx/html;
-                  index index.html index.htm;
-                  try_files $uri $uri/ /index.html;
-              }
-          }
-
-          server {
-              listen 80;
-              server_name ai-coder.wangshun.work;
-
-              location / {
-                  proxy_pass http://host.docker.internal:8888;
-                  proxy_set_header Host $host;
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-                  proxy_http_version 1.1;
-                  proxy_set_header Upgrade $http_upgrade;
-                  proxy_set_header Connection "upgrade";
-              }
-          }
-
-          server {
-              listen 80;
-              server_name api_transfer.wangshun.work;
-
-              location / {
-                  proxy_pass http://host.docker.internal:7777;
-                  proxy_set_header Host $host;
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-              }
-          }
-
-          server {
-              listen 80;
-              server_name rpc.wangshun.work;
-
-              location / {
-                  proxy_pass http://host.docker.internal:3000;
-                  proxy_set_header Host $host;
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-              }
-          }
-
-          server {
-              listen 80;
-              server_name api.wangshun.work;
-
-              client_max_body_size 10m;
-
-              location / {
-                  proxy_pass http://host.docker.internal:18080;
-                  proxy_set_header Host $host;
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-                  proxy_http_version 1.1;
-                  proxy_read_timeout 120s;
-                  proxy_send_timeout 120s;
-              }
-          }
-          NGINX
-
-          docker compose up -d --remove-orphans --pull never
+          export DEPLOY_IMAGE
+          bash deploy/deploy-gateway.sh
           docker image prune -f

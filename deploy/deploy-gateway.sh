@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 SOURCE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:-$HOME/wangshun-portfolio}"
+DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:?GATEWAY_DEPLOY_DIR is required}"
 CERT_NAME="wangshun.work"
 CERTBOT_IMAGE="certbot/certbot:latest"
 DOMAINS=(

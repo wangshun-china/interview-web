@@ -19,4 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Renew certificates and reload nginx
+        env:
+          GATEWAY_DEPLOY_DIR: /opt/wangshun-portfolio
         run: bash deploy/renew-certificates.sh

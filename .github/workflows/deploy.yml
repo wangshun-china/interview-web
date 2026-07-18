@@ -88,6 +88,7 @@ jobs:
 
       - name: Deploy
         env:
+          GATEWAY_DEPLOY_DIR: /opt/wangshun-portfolio
           GHCR_REGISTRY: ${{ env.GHCR_REGISTRY }}
           GHCR_IMAGE_NAME: ${{ env.GHCR_IMAGE_NAME }}
           ALIYUN_ACR_REGISTRY: ${{ env.ALIYUN_ACR_REGISTRY }}

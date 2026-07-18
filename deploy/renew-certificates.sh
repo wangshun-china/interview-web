@@ -2,7 +2,7 @@
 
 set -Eeuo pipefail
 
-DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:-$HOME/wangshun-portfolio}"
+DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:?GATEWAY_DEPLOY_DIR is required}"
 CERTBOT_IMAGE="certbot/certbot:latest"
 CERT_PATH="$DEPLOY_DIR/certbot/conf/live/wangshun.work/fullchain.pem"
 

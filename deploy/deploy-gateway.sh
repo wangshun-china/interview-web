@@ -54,6 +54,8 @@ if [[ ! -f "$CERT_PATH" ]]; then
   challenge_token="gateway-$GITHUB_RUN_ID"
   printf '%s\n' "$challenge_token" > \
     "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge/$challenge_token"
+  chmod 644 \
+    "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge/$challenge_token"
 
   for domain in "${DOMAINS[@]}"; do
     curl -fsS --retry 10 --retry-delay 2 --retry-all-errors \

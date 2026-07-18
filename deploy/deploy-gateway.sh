@@ -37,8 +37,10 @@ mv "$DEPLOY_DIR/.env.next" "$DEPLOY_DIR/.env"
 
 CERT_PATH="$DEPLOY_DIR/certbot/conf/live/$CERT_NAME/fullchain.pem"
 if [[ -f "$CERT_PATH" ]]; then
+  certificate_was_present=true
   install -m 644 "$SOURCE_DIR/nginx-https.conf" "$DEPLOY_DIR/nginx.conf"
 else
+  certificate_was_present=false
   install -m 644 "$SOURCE_DIR/nginx-http.conf" "$DEPLOY_DIR/nginx.conf"
 fi
 
@@ -91,17 +93,18 @@ fi
   exit 1
 }
 
-cp "$DEPLOY_DIR/nginx.conf" "$DEPLOY_DIR/nginx.conf.previous"
-install -m 644 "$SOURCE_DIR/nginx-https.conf" "$DEPLOY_DIR/nginx.conf"
+if [[ "$certificate_was_present" == false ]]; then
+  cp "$DEPLOY_DIR/nginx.conf" "$DEPLOY_DIR/nginx.conf.previous"
+  install -m 644 "$SOURCE_DIR/nginx-https.conf" "$DEPLOY_DIR/nginx.conf"
 
-if ! compose exec -T portfolio nginx -t; then
-  cp "$DEPLOY_DIR/nginx.conf.previous" "$DEPLOY_DIR/nginx.conf"
-  compose exec -T portfolio nginx -t
-  compose exec -T portfolio nginx -s reload
-  echo "HTTPS nginx configuration is invalid; restored the previous configuration." >&2
-  exit 1
+  if ! compose up -d --remove-orphans --pull never --force-recreate || \
+     ! compose exec -T portfolio nginx -t; then
+    cp "$DEPLOY_DIR/nginx.conf.previous" "$DEPLOY_DIR/nginx.conf"
+    compose up -d --remove-orphans --pull never --force-recreate
+    echo "HTTPS nginx configuration is invalid; restored the previous configuration." >&2
+    exit 1
+  fi
 fi
-compose exec -T portfolio nginx -s reload
 
 for domain in "${ROOT_DOMAINS[@]}"; do
   curl -fsS -o /dev/null --retry 10 --retry-delay 3 --retry-all-errors \

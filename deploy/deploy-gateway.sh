@@ -56,7 +56,7 @@ if [[ ! -f "$CERT_PATH" ]]; then
     "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge/$challenge_token"
 
   for domain in "${DOMAINS[@]}"; do
-    curl -fsS --retry 5 --retry-delay 2 \
+    curl -fsS --retry 10 --retry-delay 2 --retry-all-errors \
       --resolve "$domain:80:127.0.0.1" \
       "http://$domain/.well-known/acme-challenge/$challenge_token" |
       grep -Fxq "$challenge_token"

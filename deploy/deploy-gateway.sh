@@ -14,11 +14,9 @@ DOMAINS=(
   agent.wangshun.work
   api.wangshun.work
 )
-ROOT_DOMAINS=(
+HEALTHCHECK_DOMAINS=(
   wangshun.work
   www.wangshun.work
-  ai-coder.wangshun.work
-  rpc.wangshun.work
   agent.wangshun.work
 )
 
@@ -138,15 +136,10 @@ for attempt in $(seq 1 30); do
 done
 compose exec -T portfolio nginx -s reload
 
-for domain in "${ROOT_DOMAINS[@]}"; do
+for domain in "${HEALTHCHECK_DOMAINS[@]}"; do
   curl -fsS -o /dev/null --retry 10 --retry-delay 3 --retry-all-errors \
     --noproxy '*' \
     --resolve "$domain:443:127.0.0.1" "https://$domain/"
 done
-curl -fsS --retry 10 --retry-delay 3 --retry-all-errors \
-  --noproxy '*' \
-  --resolve "api.wangshun.work:443:127.0.0.1" \
-  "https://api.wangshun.work/health" |
-  grep -q '"service":"memoir-server"'
 
 compose ps

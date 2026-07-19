@@ -124,6 +124,18 @@ if [[ "$certificate_was_present" == false ]]; then
 fi
 
 compose exec -T portfolio nginx -t
+for attempt in $(seq 1 30); do
+  if compose exec -T portfolio sh -c \
+    'test -s /run/nginx.pid && kill -0 "$(cat /run/nginx.pid)"'; then
+    break
+  fi
+  if [[ "$attempt" == 30 ]]; then
+    compose logs --tail 100 portfolio
+    echo "Nginx did not become ready in time." >&2
+    exit 1
+  fi
+  sleep 1
+done
 compose exec -T portfolio nginx -s reload
 
 for domain in "${ROOT_DOMAINS[@]}"; do

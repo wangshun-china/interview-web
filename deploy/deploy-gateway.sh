@@ -42,7 +42,8 @@ if [[ -f "$CERT_PATH" ]]; then
   certificate_was_present=true
   certificate_needs_update=false
   for domain in "${DOMAINS[@]}"; do
-    if ! openssl x509 -in "$CERT_PATH" -noout -checkhost "$domain" > /dev/null; then
+    if ! openssl x509 -in "$CERT_PATH" -noout -checkhost "$domain" 2>&1 |
+      grep -Fq "Hostname $domain does match certificate"; then
       certificate_needs_update=true
       break
     fi

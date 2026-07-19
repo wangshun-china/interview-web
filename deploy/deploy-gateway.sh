@@ -11,6 +11,7 @@ DOMAINS=(
   www.wangshun.work
   ai-coder.wangshun.work
   rpc.wangshun.work
+  agent.wangshun.work
   api.wangshun.work
 )
 ROOT_DOMAINS=(
@@ -18,6 +19,7 @@ ROOT_DOMAINS=(
   www.wangshun.work
   ai-coder.wangshun.work
   rpc.wangshun.work
+  agent.wangshun.work
 )
 
 : "${DEPLOY_IMAGE:?DEPLOY_IMAGE is required}"
@@ -38,9 +40,17 @@ mv "$DEPLOY_DIR/.env.next" "$DEPLOY_DIR/.env"
 CERT_PATH="$DEPLOY_DIR/certbot/conf/live/$CERT_NAME/fullchain.pem"
 if [[ -f "$CERT_PATH" ]]; then
   certificate_was_present=true
+  certificate_needs_update=false
+  for domain in "${DOMAINS[@]}"; do
+    if ! openssl x509 -in "$CERT_PATH" -noout -checkhost "$domain" > /dev/null; then
+      certificate_needs_update=true
+      break
+    fi
+  done
   install -m 644 "$SOURCE_DIR/nginx-https.conf" "$DEPLOY_DIR/nginx.conf"
 else
   certificate_was_present=false
+  certificate_needs_update=true
   install -m 644 "$SOURCE_DIR/nginx-http.conf" "$DEPLOY_DIR/nginx.conf"
 fi
 
@@ -52,7 +62,7 @@ compose() {
 
 compose up -d --remove-orphans --pull never
 
-if [[ ! -f "$CERT_PATH" ]]; then
+if [[ "$certificate_needs_update" == true ]]; then
   challenge_token="gateway-$GITHUB_RUN_ID"
   printf '%s\n' "$challenge_token" > \
     "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge/$challenge_token"
@@ -72,6 +82,11 @@ if [[ ! -f "$CERT_PATH" ]]; then
     domain_args+=(-d "$domain")
   done
 
+  certbot_args=()
+  if [[ "$certificate_was_present" == true ]]; then
+    certbot_args+=(--expand)
+  fi
+
   docker run --rm \
     -v "$DEPLOY_DIR/certbot/conf:/etc/letsencrypt" \
     -v "$DEPLOY_DIR/certbot/lib:/var/lib/letsencrypt" \
@@ -85,6 +100,7 @@ if [[ ! -f "$CERT_PATH" ]]; then
       --email "$LETSENCRYPT_EMAIL" \
       --agree-tos \
       --no-eff-email \
+      "${certbot_args[@]}" \
       "${domain_args[@]}"
 fi
 
@@ -105,6 +121,9 @@ if [[ "$certificate_was_present" == false ]]; then
     exit 1
   fi
 fi
+
+compose exec -T portfolio nginx -t
+compose exec -T portfolio nginx -s reload
 
 for domain in "${ROOT_DOMAINS[@]}"; do
   curl -fsS -o /dev/null --retry 10 --retry-delay 3 --retry-all-errors \

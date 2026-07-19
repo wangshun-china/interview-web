@@ -27,3 +27,5 @@ docker exec wangshun-portfolio nginx -s reload
 curl -fsS --retry 5 --retry-delay 3 --retry-all-errors \
   https://api.wangshun.work/health |
   grep -q '"service":"memoir-server"'
+curl -fsS -o /dev/null --retry 5 --retry-delay 3 --retry-all-errors \
+  https://agent.wangshun.work/

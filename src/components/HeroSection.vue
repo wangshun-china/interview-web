@@ -81,24 +81,56 @@
         </p>
       </div>
 
-      <!-- Personal API relay -->
-      <div class="api-station-entry">
-        <div class="api-station-copy">
-          <ServerCog class="h-5 w-5" />
-          <div>
-            <strong>个人 API 中转站</strong>
-            <span>自主搭建并维护的模型 API 中转服务，提供统一的接口入口与调用管理。</span>
+      <!-- Featured links -->
+      <div class="homepage-link-grid">
+        <div class="api-station-entry">
+          <div class="api-station-copy">
+            <ServerCog class="h-5 w-5" />
+            <div>
+              <strong>个人 API 中转站</strong>
+              <span>自主搭建并维护的模型 API 中转服务，提供统一的接口入口与调用管理。</span>
+            </div>
+          </div>
+          <a
+            href="http://api_transfer.wangshun.work"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="api-station-button"
+          >
+            <span>访问 API 中转站</span>
+            <ExternalLink class="h-4 w-4" />
+          </a>
+        </div>
+
+        <div class="api-station-entry">
+          <div class="api-station-copy">
+            <Gamepad2 class="h-5 w-5" />
+            <div>
+              <strong>Agent Quest</strong>
+              <span>用交互式关卡展示 Agent Harness 的边界、工具调用、规划、记忆、观测与评测流程。</span>
+            </div>
+          </div>
+          <div class="api-station-actions">
+            <a
+              href="https://agent.wangshun.work"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="api-station-button"
+            >
+              <span>在线体验</span>
+              <ExternalLink class="h-4 w-4" />
+            </a>
+            <a
+              href="https://github.com/wangshun-china/agent-quest"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="api-station-button api-station-button-secondary"
+            >
+              <Github class="h-4 w-4" />
+              <span>GitHub</span>
+            </a>
           </div>
         </div>
-        <a
-          href="http://api_transfer.wangshun.work"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="api-station-button"
-        >
-          <span>访问 API 中转站</span>
-          <ExternalLink class="h-4 w-4" />
-        </a>
       </div>
 
       <!-- Role badges -->
@@ -137,6 +169,7 @@ import {
   Zap,
   ServerCog,
   ExternalLink,
+  Gamepad2,
 } from 'lucide-vue-next'
 
 const roles = [
@@ -314,12 +347,18 @@ onMounted(() => {
   line-height: 1.5;
 }
 
-.api-station-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.homepage-link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
   margin-bottom: 0.75rem;
+}
+
+.api-station-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
   padding: 0.65rem 0.85rem;
   border: 1px solid rgba(217, 119, 87, 0.24);
   border-radius: 10px;
@@ -360,8 +399,9 @@ onMounted(() => {
 
 .api-station-button {
   display: inline-flex;
-  flex-shrink: 0;
+  flex: 1;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem;
   min-height: 38px;
   padding: 0.55rem 0.8rem;
@@ -372,6 +412,19 @@ onMounted(() => {
   font-weight: 700;
   text-decoration: none;
   transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.api-station-actions {
+  display: flex;
+  width: 100%;
+  gap: 0.55rem;
+  margin-top: auto;
+}
+
+.api-station-button-secondary {
+  border: 1px solid var(--color-border);
+  background: #fff;
+  color: var(--color-text);
 }
 
 .api-station-button:hover {
@@ -397,14 +450,12 @@ onMounted(() => {
     flex-wrap: wrap;
   }
 
-  .api-station-entry {
-    align-items: flex-start;
-    flex-direction: column;
+  .homepage-link-grid {
+    grid-template-columns: 1fr;
   }
 
   .api-station-button {
-    width: 100%;
-    justify-content: center;
+    min-width: 0;
   }
 }
 </style>

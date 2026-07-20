@@ -1,12 +1,32 @@
 services:
   portfolio:
-    image: ${INTERVIEW_IMAGE:?set INTERVIEW_IMAGE}
+    build: .
+    image: ${INTERVIEW_IMAGE:-wangshun-portfolio:local}
     container_name: wangshun-portfolio
-    restart: always
+    labels:
+      wangshun.ops.protected: "true"
+    restart: unless-stopped
     ports:
-      - "80:80"
+      - "${PORT:-5174}:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      OPS_HOST: 127.0.0.1
+      OPS_DATA_DIR: /data
+      OPS_ROUTE_DIR: /data/routes
+      OPS_NGINX_ACCESS_LOG: /data/access-json.log
+      OPS_APPLY_ROUTES: "true"
+      OPS_COOKIE_SECURE: "false"
+      OPS_INITIAL_PASSWORD: wangshun
+      OPS_AGENT_TOKEN: local-test-agent-token
+    volumes:
+      - ops-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+
+volumes:
+  ops-data:

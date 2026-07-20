@@ -21,4 +21,5 @@ jobs:
       - name: Renew certificates and reload nginx
         env:
           GATEWAY_DEPLOY_DIR: /opt/wangshun-portfolio
+          OPS_AGENT_TOKEN: ${{ secrets.OPS_AGENT_TOKEN }}
         run: bash deploy/renew-certificates.sh

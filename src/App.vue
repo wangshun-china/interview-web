@@ -18,6 +18,8 @@
         <span class="mx-1">|</span>
         <img src="/备案图标.png" class="inline-block w-4 h-4" alt="备案图标" />
         <a href="https://beian.mps.gov.cn/#/query/webSearch?code=37172702371806" rel="noreferrer" target="_blank">鲁公网安备37172702371806号</a>
+        <span class="mx-1">|</span>
+        <a :href="opsUrl" rel="nofollow">管理</a>
       </p>
     </footer>
   </div>
@@ -31,6 +33,9 @@ import ProjectsSection from './components/ProjectsSection.vue'
 import TechStackSection from './components/TechStackSection.vue'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
+const opsUrl = ['wangshun.work', 'www.wangshun.work'].includes(window.location.hostname)
+  ? 'https://ops.wangshun.work'
+  : '/ops'
 let animationId: number
 
 onMounted(() => {

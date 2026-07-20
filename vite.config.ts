@@ -13,8 +13,12 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    strictPort: true,
     host: true,
-    open: true
+    open: false,
+    proxy: {
+      '/api/ops': 'http://127.0.0.1:8787'
+    }
   },
   build: {
     target: 'esnext',

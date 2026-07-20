@@ -6,13 +6,18 @@
   "description": "王顺的个人电子简历",
   "author": "Wang Shun",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev.mjs",
+    "dev:frontend": "vite",
+    "ops:dev": "node --watch ops/server.mjs",
+    "ops:start": "node ops/server.mjs",
+    "ops:test": "node --test ops/test/*.test.mjs",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "format": "prettier --write src/",
     "type-check": "vue-tsc --noEmit",
-    "clean": "rm -rf dist node_modules/.vite"
+    "clean": "rm -rf dist node_modules/.vite",
+    "test": "npm run ops:test && npm run type-check && npm run build"
   },
   "dependencies": {},
   "devDependencies": {

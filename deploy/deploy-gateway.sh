@@ -13,14 +13,18 @@ DOMAINS=(
   rpc.wangshun.work
   agent.wangshun.work
   api.wangshun.work
+  ops.wangshun.work
 )
 HEALTHCHECK_DOMAINS=(
   wangshun.work
   www.wangshun.work
   agent.wangshun.work
+  ops.wangshun.work
 )
 
 : "${DEPLOY_IMAGE:?DEPLOY_IMAGE is required}"
+: "${OPS_INITIAL_PASSWORD:?OPS_INITIAL_PASSWORD is required}"
+: "${OPS_AGENT_TOKEN:?OPS_AGENT_TOKEN is required}"
 : "${LETSENCRYPT_EMAIL:?LETSENCRYPT_EMAIL is required}"
 
 install -d -m 700 "$DEPLOY_DIR"
@@ -28,11 +32,18 @@ install -d -m 755 \
   "$DEPLOY_DIR/certbot/conf" \
   "$DEPLOY_DIR/certbot/lib" \
   "$DEPLOY_DIR/certbot/log" \
-  "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge"
+  "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge" \
+  "$DEPLOY_DIR/nginx-logs" \
+  "$DEPLOY_DIR/routes"
+install -d -m 700 "$DEPLOY_DIR/ops-data"
 install -m 644 "$SOURCE_DIR/docker-compose.yml" "$DEPLOY_DIR/docker-compose.yml"
 
 umask 077
-printf 'INTERVIEW_IMAGE=%s\n' "$DEPLOY_IMAGE" > "$DEPLOY_DIR/.env.next"
+{
+  printf 'INTERVIEW_IMAGE=%s\n' "$DEPLOY_IMAGE"
+  printf 'OPS_INITIAL_PASSWORD=%s\n' "$OPS_INITIAL_PASSWORD"
+  printf 'OPS_AGENT_TOKEN=%s\n' "$OPS_AGENT_TOKEN"
+} > "$DEPLOY_DIR/.env.next"
 mv "$DEPLOY_DIR/.env.next" "$DEPLOY_DIR/.env"
 
 CERT_PATH="$DEPLOY_DIR/certbot/conf/live/$CERT_NAME/fullchain.pem"
@@ -141,5 +152,16 @@ for domain in "${HEALTHCHECK_DOMAINS[@]}"; do
     --noproxy '*' \
     --resolve "$domain:443:127.0.0.1" "https://$domain/"
 done
+curl -fsS --retry 10 --retry-delay 3 --retry-all-errors \
+  --noproxy '*' \
+  --resolve "ops.wangshun.work:443:127.0.0.1" \
+  "https://ops.wangshun.work/api/ops/health" |
+  grep -Fq '"service":"wangshun-ops"'
+curl -fsS --max-time 10 \
+  -H "Content-Type: application/json" \
+  -H "X-Ops-Agent-Token: $OPS_AGENT_TOKEN" \
+  --data '{"name":"gateway-deployment","status":"success","message":"frontend, ops API and nginx health checks passed"}' \
+  --resolve "ops.wangshun.work:443:127.0.0.1" \
+  "https://ops.wangshun.work/api/ops/agent/jobs" >/dev/null
 
 compose ps

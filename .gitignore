@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+ops-data/
+deploy/certbot/
+deploy/nginx-logs/
+deploy/ops-data/
+deploy/routes/*.conf
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +29,5 @@ dist-ssr
 *.sw?
 .claude
 CLAUDE.md
+__pycache__/
+*.pyc

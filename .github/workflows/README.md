@@ -57,10 +57,10 @@ sudo ./svc.sh start
 
 ## 工作流说明
 
-只有一个 `deploy.yml` 文件，包含两个 job：
+只有一个 `deploy.yml` 文件，包含三个 job：
 
 ### build (runs-on: ubuntu-latest)
-- 构建前端 Docker 镜像
+- 构建包含前端、Nginx 和 Ops 后端的单一 Docker 镜像
 - 同时推送到 GHCR 和阿里云 ACR
 - 使用 Buildx 缓存加速
 
@@ -69,9 +69,20 @@ sudo ./svc.sh start
 - 优先拉取 GHCR 不可变版本，失败时回退阿里云 ACR
 - 启动服务
 
+### deploy-wsl-agent (runs-on: self-hosted + wsl)
+- 更新 WSL 状态与 FRP 配置代理
+- 确认代理服务启动成功
+
 ## 后续优化
 
 ACR 密码保存在 GitHub Secret `ALIYUN_ACR_PASSWORD`，仓库地址、用户名和镜像名使用 GitHub Variables。
+
+Ops 管理后台还需要两个 GitHub Secrets：
+
+- `OPS_INITIAL_PASSWORD`：首次登录密码，当前按约定设置为 `wangshun`。数据库初始化后可在后台修改，后续部署不会重置。
+- `OPS_AGENT_TOKEN`：使用随机长字符串；同一个 Secret 会注入阿里云 Ops API，并由 WSL Runner 自动安装到 WSL Agent。
+
+部署成功后，工作流会在带有 `wsl` 标签的 Runner 上更新并重启 `wangshun-ops-agent.service`。
 
 ## 故障排查
 

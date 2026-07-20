@@ -1,0 +1,14 @@
+.git
+.github
+.idea
+.vscode
+node_modules
+ops-data
+ops/test
+ops-agent
+deploy/certbot
+deploy/nginx-logs
+deploy/ops-data
+deploy/routes
+*.log
+*.pdf

@@ -15,7 +15,7 @@ Run the installer with the shared agent token. It writes the root-owned private 
 file, installs the systemd unit and starts the agent:
 
 ```bash
-OPS_AGENT_TOKEN='replace-with-a-long-random-value' bash ops-agent/install.sh
+printf '%s\n' 'replace-with-a-long-random-value' | sudo bash ops-agent/install.sh
 ```
 
 The resulting `/etc/wangshun-ops-agent.env` contains:

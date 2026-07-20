@@ -135,4 +135,5 @@ jobs:
         env:
           OPS_AGENT_TOKEN: ${{ secrets.OPS_AGENT_TOKEN }}
         run: |
-          bash ops-agent/install.sh
+          printf '%s\n' "$OPS_AGENT_TOKEN" |
+            sudo -n /usr/bin/bash ops-agent/install.sh

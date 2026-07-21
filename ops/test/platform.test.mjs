@@ -4,7 +4,35 @@ import http from 'node:http'
 import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
-import { RouteManager } from '../platform.mjs'
+import { collectNginxBindings, RouteManager } from '../platform.mjs'
+
+test('reads existing reverse proxy bindings from the active Nginx config', (context) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'wangshun-nginx-'))
+  const configFile = path.join(directory, 'default.conf')
+  context.after(() => fs.rmSync(directory, { recursive: true, force: true }))
+  fs.writeFileSync(configFile, `
+    server {
+      listen 443 ssl;
+      server_name api.wangshun.work;
+      location / { proxy_pass http://host.docker.internal:18080; }
+    }
+    server {
+      listen 80;
+      server_name api_transfer.wangshun.work;
+      location / { proxy_pass http://host.docker.internal:7777; }
+    }
+  `)
+  assert.deepEqual(collectNginxBindings(configFile), [
+    {
+      domain: 'api.wangshun.work', protocol: 'http', targetHost: 'host.docker.internal',
+      targetPort: 18080, tls: true, source: 'nginx'
+    },
+    {
+      domain: 'api_transfer.wangshun.work', protocol: 'http', targetHost: 'host.docker.internal',
+      targetPort: 7777, tls: false, source: 'nginx'
+    }
+  ])
+})
 
 test('production route apply probes upstream, validates nginx and rolls back failures', async (context) => {
   const routeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'wangshun-routes-'))

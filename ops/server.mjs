@@ -4,7 +4,7 @@ import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { normalizeRoute, normalizeTunnel } from './core.mjs'
-import { collectCertificate, collectServices, collectTraffic, DockerClient, LocalNginxController, RouteManager } from './platform.mjs'
+import { collectCertificate, collectNginxBindings, collectServices, collectTraffic, DockerClient, LocalNginxController, RouteManager } from './platform.mjs'
 import { parseCookies, safeTokenEqual } from './security.mjs'
 import { OpsStore } from './store.mjs'
 
@@ -45,6 +45,7 @@ function defaultConfig(overrides = {}) {
     accessLog: process.env.OPS_NGINX_ACCESS_LOG || path.join(PROJECT_ROOT, 'ops-data', 'access.log'),
     dockerSocket: process.env.OPS_DOCKER_SOCKET || '/var/run/docker.sock',
     nginxBinary: process.env.OPS_NGINX_BINARY || 'nginx',
+    nginxConfig: process.env.OPS_NGINX_CONFIG || path.join(PROJECT_ROOT, 'deploy', 'nginx-https.conf'),
     applyRoutes: booleanEnv(process.env.OPS_APPLY_ROUTES, false),
     cookieSecure: booleanEnv(process.env.OPS_COOKIE_SECURE, production),
     initialUsername: process.env.OPS_INITIAL_USERNAME || 'admin',
@@ -342,7 +343,11 @@ export function createOpsServer(overrides = {}) {
         return
       }
       if (pathname === `${API_PREFIX}/routes` && request.method === 'GET') {
-        sendJson(response, 200, { routes: store.listRoutes(), applyEnabled: config.applyRoutes })
+        sendJson(response, 200, {
+          routes: store.listRoutes(),
+          staticRoutes: collectNginxBindings(config.nginxConfig),
+          applyEnabled: config.applyRoutes
+        })
         return
       }
       if (pathname === `${API_PREFIX}/routes` && request.method === 'POST') {

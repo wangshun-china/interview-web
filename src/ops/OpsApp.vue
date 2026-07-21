@@ -54,6 +54,12 @@
           <section v-if="tab === 'routes'">
             <div class="section-head"><div><p class="eyebrow">REVERSE PROXY</p><h1>域名绑定</h1></div></div>
             <div class="warning">请先在爱名网把子域名解析到服务器。HTTPS 默认关闭；需要 HTTPS 时，还要先把该域名加入证书。</div>
+            <h2>当前 Nginx 绑定（只读）</h2>
+            <div class="table-wrap"><table><thead><tr><th>域名</th><th>目标</th><th>HTTPS</th><th>来源</th></tr></thead><tbody>
+              <tr v-for="route in staticRoutes" :key="route.domain"><td>{{ route.domain }}</td><td>{{ route.protocol }}://{{ route.targetHost }}:{{ route.targetPort }}</td><td>{{ route.tls ? '是' : '否' }}</td><td><span class="pill">Nginx 配置</span></td></tr>
+              <tr v-if="!staticRoutes.length"><td colspan="4" class="empty">没有发现现有 Nginx 反向代理</td></tr>
+            </tbody></table></div>
+            <h2>后台管理的动态绑定</h2>
             <form class="form-grid card form-card" @submit.prevent="saveRoute">
               <label>子域名<input v-model.trim="routeForm.domain" placeholder="aaa.wangshun.work" required /></label>
               <label>目标主机<select v-model="routeForm.targetHost"><option value="host.docker.internal">宿主机</option><option value="127.0.0.1">网关容器自身</option><option value="agent-quest">Agent Quest 容器</option></select></label>
@@ -73,6 +79,12 @@
           <section v-if="tab === 'tunnels'">
             <div class="section-head"><div><p class="eyebrow">FRP / WSL</p><h1>内网穿透</h1></div><span class="pill" :class="statusClass(tunnelState.wsl.online)">{{ tunnelState.wsl.online ? 'WSL 在线' : 'WSL 离线' }}</span></div>
             <div v-if="!tunnelState.wsl.online" class="warning">最近没有收到 WSL 心跳。为避免写坏离线机器的配置，新增、修改和删除已锁定。</div>
+            <h2>当前 FRP 穿透（只读）</h2>
+            <div class="table-wrap"><table><thead><tr><th>名称</th><th>映射</th><th>协议</th><th>来源</th></tr></thead><tbody>
+              <tr v-for="proxy in tunnelState.wsl.proxies" :key="proxy.name"><td>{{ proxy.name }}</td><td>127.0.0.1:{{ proxy.localPort }} → :{{ proxy.remotePort }}</td><td>{{ proxy.type }}</td><td><span class="pill">frpc.toml</span></td></tr>
+              <tr v-if="!tunnelState.wsl.proxies.length"><td colspan="4" class="empty">尚未收到 WSL FRP 配置</td></tr>
+            </tbody></table></div>
+            <h2>后台管理的穿透配置</h2>
             <form class="form-grid card form-card" @submit.prevent="saveTunnel">
               <fieldset :disabled="!tunnelState.wsl.online || busy">
                 <label>名称<input v-model.trim="tunnelForm.name" placeholder="my-service" required /></label>
@@ -125,6 +137,7 @@ const error = ref('')
 const notice = ref('')
 const dashboard = ref<Json | null>(null)
 const routes = ref<Json[]>([])
+const staticRoutes = ref<Json[]>([])
 const tunnels = ref<Json[]>([])
 const tunnelState = reactive({ wsl: { online: false, lastSeen: null as string | null, proxies: [] as Json[] } })
 const loginForm = reactive({ username: 'admin', password: '' })
@@ -160,7 +173,7 @@ async function refreshAll() {
   error.value = ''
   try {
     const [dashboardData, routeData, tunnelData] = await Promise.all([api('/dashboard'), api('/routes'), api('/tunnels')])
-    dashboard.value = dashboardData; routes.value = routeData.routes; tunnels.value = tunnelData.tunnels; Object.assign(tunnelState.wsl, tunnelData.wsl)
+    dashboard.value = dashboardData; routes.value = routeData.routes; staticRoutes.value = routeData.staticRoutes ?? []; tunnels.value = tunnelData.tunnels; Object.assign(tunnelState.wsl, tunnelData.wsl)
   } catch (e) { error.value = e instanceof Error ? e.message : String(e) }
 }
 async function runDockerAction(target: 'aliyun' | 'wsl', container: Json, action: 'start' | 'stop' | 'restart' | 'delete') {

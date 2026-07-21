@@ -17,6 +17,7 @@ services:
       OPS_DATA_DIR: /data
       OPS_ROUTE_DIR: /etc/nginx/routes
       OPS_NGINX_ACCESS_LOG: /var/log/nginx/access-json.log
+      OPS_NGINX_CONFIG: /etc/nginx/conf.d/default.conf
       OPS_DOCKER_SOCKET: /var/run/docker.sock
       OPS_APPLY_ROUTES: "true"
       OPS_COOKIE_SECURE: "true"

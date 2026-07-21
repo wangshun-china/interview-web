@@ -234,3 +234,36 @@ export function collectTraffic(accessLog) {
   if (!fs.existsSync(accessLog)) return { available: false, hosts: [], message: 'Nginx access log unavailable' }
   return { available: true, hosts: summarizeTraffic(readTail(accessLog)) }
 }
+
+export function collectNginxBindings(configFile) {
+  if (!fs.existsSync(configFile)) return []
+  const config = fs.readFileSync(configFile, 'utf8')
+  const blocks = []
+  const serverPattern = /\bserver\s*\{/g
+  for (let match = serverPattern.exec(config); match; match = serverPattern.exec(config)) {
+    const start = config.indexOf('{', match.index)
+    let depth = 0
+    for (let index = start; index < config.length; index += 1) {
+      if (config[index] === '{') depth += 1
+      if (config[index] === '}') depth -= 1
+      if (depth === 0) {
+        blocks.push(config.slice(start + 1, index))
+        serverPattern.lastIndex = index + 1
+        break
+      }
+    }
+  }
+  return blocks.flatMap((block) => {
+    const names = /\bserver_name\s+([^;]+);/.exec(block)?.[1].trim().split(/\s+/) ?? []
+    const upstream = /\bproxy_pass\s+(https?):\/\/([^/:\s;]+)(?::(\d+))?/.exec(block)
+    if (!upstream) return []
+    return names.filter((domain) => /^(?:[a-z0-9_-]+\.)?wangshun\.work$/i.test(domain)).map((domain) => ({
+      domain,
+      protocol: upstream[1],
+      targetHost: upstream[2],
+      targetPort: Number(upstream[3] || (upstream[1] === 'https' ? 443 : 80)),
+      tls: /\blisten\s+443\b/.test(block),
+      source: 'nginx'
+    }))
+  })
+}

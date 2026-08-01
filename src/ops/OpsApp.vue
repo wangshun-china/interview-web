@@ -114,31 +114,32 @@
           </section>
 
           <section v-if="tab === 'singbox'">
-            <div class="section-head"><div><p class="eyebrow">SING-BOX</p><h1>代理管理</h1></div><button class="ghost" @click="fetchSbStatus">刷新状态</button></div>
+            <div class="section-head"><div><p class="eyebrow">SING-BOX</p><h1>代理管理</h1></div><button class="ghost" @click="refreshSb">刷新</button></div>
             <div class="metrics">
-              <article class="metric"><span>Sing-box</span><strong :class="statusClass(sbStatus?.running)">{{ sbStatus?.running ? '运行中' : (sbStatus ? '已停止' : '查询中…') }}</strong><small>{{ sbStatus?.version || sbStatus?.error || '' }}</small></article>
-              <article class="metric"><span>在线节点</span><strong>{{ sbGroups?.GLOBAL?.all?.length ?? 0 }}</strong><small>当前: {{ sbGroups?.GLOBAL?.now || '-' }}</small></article>
+              <article class="metric"><span>状态</span><strong :class="statusClass(sbStatus?.running)">{{ sbStatus?.running ? '运行中' : (sbStatus ? '已停止' : '查询中…') }}</strong><small>{{ sbStatus?.error || '' }}</small></article>
+              <article class="metric"><span>当前节点</span><strong>{{ sbGroups?.auto?.now || '-' }}</strong><small>{{ sbGroups?.auto?.type || '' }} · {{ sbGroups?.auto?.all?.length ?? 0 }} 个节点</small></article>
+              <article class="metric"><span>代理 IP</span><strong>{{ sbProxyIP?.ip || '查询中…' }}</strong><small>{{ sbProxyIP?.country ? sbProxyIP.country + ' ' + (sbProxyIP.city || '') : '' }} {{ sbProxyIP?.isp || '' }}</small></article>
+              <article class="metric"><span>延迟 / 带宽</span><strong>{{ sbSpeed?.latency ? sbSpeed.latency + 'ms' : '-' }}</strong><small>{{ sbSpeed?.download ? '↓' + sbSpeed.download + ' Mbps' : '' }}{{ sbSpeed?.upload ? ' ↑' + sbSpeed.upload + ' Mbps' : '' }}</small></article>
             </div>
 
-            <div class="tab-buttons"><button :class="{ active: sbSubTab === 'nodes' }" @click="sbSubTab = 'nodes'">节点切换</button><button :class="{ active: sbSubTab === 'traffic' }" @click="sbSubTab = 'traffic'; fetchSbTraffic(); fetchSbConns()">流量监控</button><button :class="{ active: sbSubTab === 'config' }" @click="sbSubTab = 'config'">节点配置</button></div>
+            <div class="tab-buttons"><button :class="{ active: sbSubTab === 'nodes' }" @click="sbSubTab = 'nodes'">节点管理</button><button :class="{ active: sbSubTab === 'traffic' }" @click="sbSubTab = 'traffic'; fetchSbTraffic(); fetchSbConns()">流量监控</button><button :class="{ active: sbSubTab === 'config' }" @click="sbSubTab = 'config'">节点配置</button></div>
 
             <template v-if="sbSubTab === 'nodes'">
-              <h2>延迟测试<div class="btn-inline"><button class="link" :disabled="busy" @click="testSbGroup('GLOBAL')">测试全部延迟</button><button class="ghost" :disabled="busy" @click="fetchSbGroups">刷新</button></div></h2>
+              <h2>操作<div class="btn-inline"><button class="primary sm" :disabled="busy" @click="testSbGroup('auto')">测试全部延迟</button><button class="ghost" :disabled="busy" @click="fetchSbSpeed">测速</button><button class="ghost" :disabled="busy" @click="refreshSb">刷新</button></div></h2>
               <div v-if="sbDelayResults.length" class="cards"><article v-for="r in sbDelayResults" :key="r.tag" class="card"><div class="row"><strong>{{ r.tag }}</strong><span class="pill" :class="statusClass(r.ok)">{{ r.ok ? r.latencyMs + 'ms' : '超时' }}</span></div></article></div>
-              <h2>所有节点 ({{ sbGroups?.GLOBAL?.all?.length ?? 0 }})</h2>
+              <h2>所有节点</h2>
               <div class="cards">
-                <article v-for="(name, idx) in (sbGroups?.GLOBAL?.all ?? [])" :key="idx" class="card" :class="{ selected: name === sbGroups?.GLOBAL?.now }">
-                  <div class="row"><strong>{{ name }}</strong><span class="pill" :class="statusClass(name === sbGroups?.GLOBAL?.now)">{{ name === sbGroups?.GLOBAL?.now ? '当前' : '备选' }}</span></div>
+                <article v-for="(name, idx) in (sbGroups?.auto?.all ?? [])" :key="idx" class="card" :class="{ selected: name === sbGroups?.auto?.now }">
+                  <div class="row"><strong>{{ name }}</strong><span class="pill" :class="statusClass(name === sbGroups?.auto?.now)">{{ name === sbGroups?.auto?.now ? '当前' : '备选' }}</span></div>
                   <div class="container-actions">
-                    <button v-if="name !== sbGroups?.GLOBAL?.now" class="primary sm" :disabled="busy" @click="switchSbNode('GLOBAL', name)">切换到此节点</button>
+                    <button v-if="name !== sbGroups?.auto?.now" class="primary sm" :disabled="busy" @click="switchSbNode('auto', name)">切换到此</button>
                   </div>
                 </article>
               </div>
-              <div class="form-actions"><button class="ghost" :disabled="busy" @click="reloadSb">重载 Sing-box</button></div>
             </template>
 
             <template v-if="sbSubTab === 'traffic'">
-              <h2>累计流量统计</h2>
+              <h2>累计流量<button class="ghost" style="margin-left:12px" @click="fetchSbTraffic">刷新</button></h2>
               <div class="table-wrap"><table><thead><tr><th>方向</th><th>上行</th><th>下行</th></tr></thead><tbody>
                 <tr v-if="sbConnections?.downloadTotal != null"><td>总流量</td><td>{{ ((sbConnections?.uploadTotal || 0) / 1073741824).toFixed(2) }} GB</td><td>{{ ((sbConnections?.downloadTotal || 0) / 1073741824).toFixed(2) }} GB</td></tr>
                 <tr v-else><td colspan="3" class="empty">暂无流量数据</td></tr>
@@ -182,7 +183,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 // Dashboard, Docker and agent payloads intentionally share one heterogeneous API shape.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -212,6 +213,8 @@ const sbOutbounds = ref<Json[]>([])
 const sbConnections = ref<Json>({})
 const sbTraffic = ref<Json>({})
 const sbDelayResults = ref<Json[]>([])
+const sbProxyIP = ref<Json | null>(null)
+const sbSpeed = ref<Json>({})
 const sbForm = reactive({ id: 0, tag: '', type: 'vmess', server: '', serverPort: 443, groupTag: 'proxy', protocolSettings: { uuid: '', alterId: 0, security: 'auto' }, tlsSettings: {}, transportSettings: {}, priority: 0, enabled: true, isDefault: false })
 const onlineServices = computed(() => dashboard.value?.services?.filter((item: Json) => item.online).length ?? 0)
 
@@ -278,6 +281,9 @@ function formatTime(value?: string | null) { return value ? new Date(value).toLo
 function formatDate(value?: string | null) { return value ? new Date(value).toLocaleDateString('zh-CN') : '未获取' }
 async function fetchSbStatus() { try { const data = await api('/singbox/status'); sbStatus.value = data; sbGroups.value = data.groups || {}; sbOutbounds.value = data.outbounds || [] } catch (e) { sbStatus.value = { running: false, error: String(e) } } }
 async function fetchSbGroups() { try { const data = await api('/singbox/groups'); sbGroups.value = data.groups || {} } catch { sbGroups.value = {} } }
+async function fetchSbIP() { try { const data = await api('/singbox/ip'); sbProxyIP.value = data } catch { sbProxyIP.value = { ip: '不可达' } } }
+async function fetchSbSpeed() { sbSpeed.value = { latency: null, download: null }; try { const data = await api('/singbox/speed'); sbSpeed.value = data } catch { sbSpeed.value = {} } }
+async function refreshSb() { await Promise.all([fetchSbStatus(), fetchSbIP(), fetchSbGroups()]) }
 async function switchSbNode(groupTag: string, outboundTag: string) { beginAction(); try { await api(`/singbox/groups/${groupTag}/select`, { method: 'POST', body: JSON.stringify({ outbound: outboundTag }) }); flash(`已切换到 ${outboundTag}`); await fetchSbStatus() } catch (e) { finishError(e) } finally { busy.value = false } }
 async function testSbGroup(tag: string) { beginAction(); try { const data = await api(`/singbox/groups/${tag}/test`, { method: 'POST' }); sbDelayResults.value = data.results; flash('延迟测试完成') } catch (e) { finishError(e) } finally { busy.value = false } }
 async function fetchSbConns() { try { const data = await api('/singbox/connections'); sbConnections.value = data } catch { sbConnections.value = {} } }
@@ -288,6 +294,7 @@ async function removeOutbound(outbound: Json) { if (!confirm(`确定删除节点
 async function reloadSb() { beginAction(); try { await api('/singbox/reload', { method: 'POST' }); flash('配置已重载'); await fetchSbStatus() } catch (e) { finishError(e) } finally { busy.value = false } }
 function resetSbForm() { Object.assign(sbForm, { id: 0, tag: '', type: 'vmess', server: '', serverPort: 443, groupTag: 'proxy', protocolSettings: { uuid: '', alterId: 0, security: 'auto' }, tlsSettings: {}, transportSettings: {}, priority: 0, enabled: true, isDefault: false }) }
 function editOutbound(o: Json) { Object.assign(sbForm, { ...o, protocolSettings: typeof o.protocolSettings === 'string' ? JSON.parse(o.protocolSettings || '{}') : o.protocolSettings, tlsSettings: typeof o.tlsSettings === 'string' ? JSON.parse(o.tlsSettings || '{}') : o.tlsSettings, transportSettings: typeof o.transportSettings === 'string' ? JSON.parse(o.transportSettings || '{}') : o.transportSettings }); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+watch(tab, (val) => { if (val === 'singbox' && !sbStatus.value) refreshSb() })
 onMounted(restoreSession)
 </script>
 

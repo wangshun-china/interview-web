@@ -364,4 +364,53 @@ export class SingboxController {
       return { ok: false, latencyMs: 0, error: error.message.slice(0, 200) }
     }
   }
+
+  async proxyIP() {
+    try {
+      const gw = hostGateway()
+      const { stdout } = await execFileAsync('curl', [
+        '-s', '--max-time', '8',
+        '-x', `socks5h://${gw}:7890`,
+        'https://api.ip.sb/geoip'
+      ], { timeout: 10_000, maxBuffer: 4096 })
+      const data = JSON.parse(stdout.trim())
+      return {
+        ok: true,
+        ip: data.ip ?? '',
+        country: data.country ?? '',
+        city: data.city ?? '',
+        isp: data.isp ?? data.organization ?? ''
+      }
+    } catch {
+      return { ok: false, ip: '', country: '', city: '', isp: '', error: 'unreachable' }
+    }
+  }
+
+  async speedTest() {
+    const results = { download: 0, upload: 0, latency: 0 }
+    try {
+      const gw = hostGateway()
+      const pingStart = Date.now()
+      const { stdout: pingOut } = await execFileAsync('curl', [
+        '-s', '-o', '/dev/null', '-w', '%{http_code}',
+        '--max-time', '5',
+        '-x', `socks5h://${gw}:7890`,
+        'https://www.gstatic.com/generate_204'
+      ], { timeout: 8000 })
+      if (pingOut.trim() === '204') {
+        results.latency = Date.now() - pingStart
+      }
+      const { stdout } = await execFileAsync('curl', [
+        '-s', '-o', '/dev/null', '-w', '%{speed_download}',
+        '--max-time', '12',
+        '-x', `socks5h://${gw}:7890`,
+        'https://speed.cloudflare.com/__down?bytes=5242880'
+      ], { timeout: 15_000 })
+      const bytesPerSec = Number(stdout.trim())
+      results.download = bytesPerSec > 0 ? Number((bytesPerSec * 8 / 1000000).toFixed(1)) : 0
+    } catch {
+      // partial results ok
+    }
+    return results
+  }
 }

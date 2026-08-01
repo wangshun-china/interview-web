@@ -1,6 +1,6 @@
 FROM node:24-alpine
 
-RUN apk add --no-cache nginx \
+RUN apk add --no-cache nginx curl \
     && mkdir -p /etc/nginx/conf.d /run/nginx \
     && rm -f /etc/nginx/http.d/default.conf
 

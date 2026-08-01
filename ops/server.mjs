@@ -558,6 +558,18 @@ export function createOpsServer(overrides = {}) {
         return
       }
 
+      if (pathname === `${API_PREFIX}/singbox/ip` && request.method === 'GET') {
+        const ip = await singbox.proxyIP()
+        sendJson(response, 200, ip)
+        return
+      }
+
+      if (pathname === `${API_PREFIX}/singbox/speed` && request.method === 'GET') {
+        const speed = await singbox.speedTest()
+        sendJson(response, 200, speed)
+        return
+      }
+
       if (pathname === `${API_PREFIX}/singbox/outbounds` && request.method === 'GET') {
         sendJson(response, 200, { outbounds: store.listOutbounds() })
         return

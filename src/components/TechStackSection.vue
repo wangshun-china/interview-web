@@ -15,6 +15,27 @@
 
     <div class="w-full px-12 md:px-20 lg:px-32">
       <div class="grid lg:grid-cols-2 gap-12">
+        <!-- AI Agent & LLM -->
+        <div class="card rounded-2xl p-8">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-10 h-10 rounded-lg bg-[#7B68A6]/10 flex items-center justify-center">
+              <Brain class="w-5 h-5 text-[#7B68A6]" />
+            </div>
+            <h3 class="text-xl font-bold text-[#222222]">AI Agent & LLM</h3>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <span v-for="tech in aiTechs" :key="tech.name"
+              class="group relative px-4 py-2 rounded-lg border border-[#7B68A6]/20 bg-[#7B68A6]/5 text-[#7B68A6] hover:bg-[#7B68A6]/15 hover:border-[#7B68A6]/40 transition-all cursor-default"
+            >
+              {{ tech.name }}
+              <span class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-[#222222] text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                {{ tech.level }}
+              </span>
+            </span>
+          </div>
+        </div>
+
         <!-- Backend & Cloud Native -->
         <div class="card rounded-2xl p-8">
           <div class="flex items-center gap-3 mb-8">
@@ -57,27 +78,6 @@
           </div>
         </div>
 
-        <!-- AI & Agent -->
-        <div class="card rounded-2xl p-8">
-          <div class="flex items-center gap-3 mb-8">
-            <div class="w-10 h-10 rounded-lg bg-[#7B68A6]/10 flex items-center justify-center">
-              <Brain class="w-5 h-5 text-[#7B68A6]" />
-            </div>
-            <h3 class="text-xl font-bold text-[#222222]">AI Agent & LLM</h3>
-          </div>
-
-          <div class="flex flex-wrap gap-3">
-            <span v-for="tech in aiTechs" :key="tech.name"
-              class="group relative px-4 py-2 rounded-lg border border-[#7B68A6]/20 bg-[#7B68A6]/5 text-[#7B68A6] hover:bg-[#7B68A6]/15 hover:border-[#7B68A6]/40 transition-all cursor-default"
-            >
-              {{ tech.name }}
-              <span class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-[#222222] text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                {{ tech.level }}
-              </span>
-            </span>
-          </div>
-        </div>
-
         <!-- AI Coding Tools & DevOps -->
         <div class="card rounded-2xl p-8">
           <div class="flex items-center gap-3 mb-8">
@@ -109,15 +109,14 @@
 import { Server, Monitor, Brain, Wrench } from 'lucide-vue-next'
 
 const backendTechs = [
+  { name: 'Python', level: '熟悉' },
   { name: 'Java 21', level: '熟悉' },
   { name: 'Spring Boot 3', level: '熟悉' },
-  { name: 'Dubbo 3', level: '熟悉' },
-  { name: 'Netty 4', level: '熟悉' },
-  { name: 'Nacos', level: '熟悉' },
-  { name: 'ByteBuddy', level: '熟悉' },
-  { name: 'Python', level: '熟悉' },
   { name: 'MySQL', level: '熟悉' },
   { name: 'Redis/Redisson', level: '熟悉' },
+  { name: '分布式基础', level: '熟悉' },
+  { name: 'RPC / 注册中心', level: '熟悉' },
+  { name: '限流 / 锁 / 容错', level: '熟悉' },
   { name: 'Caffeine', level: '熟悉' },
 ]
 
@@ -131,12 +130,18 @@ const frontendTechs = [
 ]
 
 const aiTechs = [
+  { name: 'LangChain4j', level: '熟悉' },
+  { name: 'LangGraph4j', level: '熟悉' },
   { name: 'Spring AI Alibaba', level: '熟悉' },
-  { name: 'OpenAI-compatible API', level: '熟悉' },
-  { name: 'DeepSeek', level: '熟悉' },
-  { name: 'Qwen', level: '熟悉' },
-  { name: 'Prompt Engineering', level: '熟悉' },
+  { name: 'ReAct Agent', level: '熟悉' },
   { name: 'Tool Calling', level: '熟悉' },
+  { name: 'RAG / 知识库', level: '熟悉' },
+  { name: '对话式应用', level: '熟悉' },
+  { name: 'Prompt Engineering', level: '熟悉' },
+  { name: '结构化输出', level: '熟悉' },
+  { name: 'SSE 流式', level: '熟悉' },
+  { name: '大模型 API 集成', level: '熟悉' },
+  { name: '数据清洗与标注', level: '熟悉' },
 ]
 
 const devopsTechs = [

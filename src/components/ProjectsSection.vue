@@ -288,12 +288,12 @@ const projects = [
     featured: true,
     icon: Cloud,
     color: 'var(--color-tertiary)',
-    tags: ['Java 21', 'Spring Boot 3', 'Spring AI Alibaba Graph', 'Dubbo 3', 'Nacos', 'Redis/Redisson', 'Vue 3', 'Docker'],
+    tags: ['LLM Agent 编排', 'LangChain4j', 'Spring AI Alibaba Graph', 'Tool Calling', 'RAG', 'Redis 记忆', 'SSE 流式', 'Vue 3', 'Docker'],
     summary:
-      '面向自然语言生成前端应用的全栈平台。后端基于 Spring AI Alibaba Graph/ReactAgent 编排规划、脚手架、UI、审查和修复流程，通过工具调用读写项目文件，前端提供源码工作区、实时预览、可视化编辑和一键部署能力。',
+      '面向自然语言生成前端应用的全栈平台。后端基于 Spring AI Alibaba Graph/ReactAgent 编排规划、脚手架、UI、审查和修复流程，通过工具调用读写项目文件；同一套 Agent 流水线另用 LangChain4j + LangGraph4j 双框架落地，验证 Agent 抽象与具体框架解耦。前端提供源码工作区、实时预览、可视化编辑和一键部署能力。',
     availability: '在线体验运行在本地 WSL，通过 FRP 内网穿透访问；一般工作日白天可访问。',
     why:
-      '现在的 springaialibaba 分支重点是把 Spring AI Alibaba 的 ChatClient、Tool Calling、Graph Agent 和 Redis 记忆落到可运行产品，而不是只做一次模型调用。项目核心放在工程闭环：让 AI 能持续规划、生成、审查、构建、修复、预览和部署。',
+      '项目核心放在工程闭环：让 AI 能持续规划、生成、审查、构建、修复、预览和部署。为保证 Agent 能力不被单一框架绑定，同一套流水线同时用 Spring AI Alibaba 的 ChatClient、Tool Calling、Graph Agent，以及 LangChain4j + LangGraph4j 双框架落地，两边共享同一批工具、Prompt 与 Redis 记忆设计。',
     flowDesign: {
       title: 'AI 开发闭环设计',
       detail:
@@ -318,6 +318,7 @@ const projects = [
     },
     highlights: [
       { title: 'Agent Graph 编排', detail: 'Spring AI Alibaba StateGraph 串联 scaffold_coder、ui_coder、reviewer、fix_coder，并设置最大迭代次数避免无限循环。' },
+      { title: 'LangChain4j 双实现', detail: '另用 LangChain4j + LangGraph4j 复刻 scaffold→ui→review→fix 图编排，LangChain 核心概念（Agent/Tool/RAG/Memory）一致，可快速迁移到 Python LangChain 生态。' },
       { title: 'AI 工具调用闭环', detail: 'writeFile/readFile/modifyFile/deleteFile/readDir/exit 支撑 Vue 多文件项目生成、审查和修复。' },
       { title: 'Redis 记忆与检查点', detail: 'RedissonRedisChatMemoryRepository 保存对话记忆，RedisSaver 保存 Graph checkpoint，MessageWindow 控制上下文长度。' },
       { title: '源码与预览工作区', detail: '文件树、源码 Tab、iframe 预览和拖拽分屏提高调试效率。' },
@@ -396,7 +397,8 @@ const projects = [
     ],
     links: [
       { label: '在线体验', href: 'http://ai-coder.wangshun.work', icon: Rocket },
-      { label: '源码', href: 'https://github.com/xixi-box/ai-code/tree/springaialibaba', icon: Github },
+      { label: '源码(Spring AI Alibaba)', href: 'https://github.com/xixi-box/ai-code/tree/springaialibaba', icon: Github },
+      { label: '源码(LangChain4j)', href: 'https://github.com/xixi-box/ai-code/tree/main', icon: Github },
     ],
   },
   {
@@ -405,12 +407,12 @@ const projects = [
     featured: false,
     icon: Rocket,
     color: 'var(--color-accent)',
-    tags: ['Java 21', 'Netty 4.1', 'Kryo', 'ByteBuddy', 'MySQL', 'Vue Flow', 'ECharts', 'Docker'],
+    tags: ['RPC 中间件', 'Netty 4.1', '服务治理', '负载均衡', '容错保护', '链路追踪', 'Vue Flow', 'ECharts', 'Docker'],
     summary:
-      '自研 RPC 框架，包含协议层、核心 SDK、控制面和可视化面板。项目重点覆盖服务注册发现、动态代理、负载均衡、容错、Mock、熔断限流和链路追踪。',
+      '自研 RPC 中间件，覆盖协议编解码、连接管理、服务注册发现、动态代理、负载均衡、容错、Mock、熔断限流和链路追踪，并配套可视化控制面。聚焦通信、治理与可观测等语言无关的后端核心能力。',
     availability: '在线演示运行在本地 WSL，通过 FRP 内网穿透访问；一般工作日白天可访问。',
     why:
-      'AI Coder 里用了 Dubbo 和 Nacos，但只会用还不够。我想把 RPC 从协议、编解码、连接管理、服务发现、负载均衡到容错保护完整写一遍，这样再看 Dubbo 或 Spring Cloud 的实现会更有底。',
+      'RPC 是通用后端的关键链路：通信协议、服务发现、负载均衡、容错与可观测，这些能力与语言无关。自研一遍能更好理解中间件设计，也更容易评估 Dubbo、Spring Cloud、gRPC 等主流实现的取舍。',
     metrics: [
       { value: '17B', label: '自定义协议头' },
       { value: '5 + 4', label: 'LB / 容错策略' },
@@ -543,9 +545,9 @@ const projects = [
     color: 'var(--color-secondary)',
     tags: ['Python 3.11', 'FastAPI', 'GitHub App', 'Webhook', 'httpx async', 'DeepSeek', 'JWT', 'HMAC'],
     summary:
-      '基于 GitHub App 的自动化 PR 审查服务，也是一次完整的 vibe coding 实践。项目先和 Claude Code / Codex 讨论需求、模块边界和错误处理流程，再按收敛后的方案分段落地、持续迭代和修复。',
+      '基于 GitHub App 的自动化 PR 审查服务，也是完整的 LLM 应用实践：Webhook 驱动、HMAC 验签 + JWT/Installation Token 鉴权、DeepSeek 大模型 API 集成、结构化 Prompt 约束输出与异常降级。项目先和 Claude Code / Codex 讨论需求、模块边界和错误处理流程，再按收敛后的方案分段落地。',
     why:
-      '前两个项目解决的是“生成代码”和“服务通信”，这个项目想补上代码进入仓库前的质量关。同时也作为一次 vibe coding 实践：先和 Claude Code、Codex 来回讨论几版方案，明确 webhook、鉴权、GitHub API、AI Review、错误回写这几个模块，再按模块逐段实现。',
+      '前两个项目解决的是“生成代码”和“服务通信”，这个项目想补上代码进入仓库前的质量关，同时完整走一遍 LLM 应用开发闭环：大模型 API 调用、结构化 Prompt、异步编排与优雅降级。',
     metrics: [
       { value: 'async', label: '全链路异步 HTTP' },
       { value: '10min', label: 'Installation Token' },
@@ -577,6 +579,7 @@ const projects = [
       ],
     },
     highlights: [
+      { title: 'LLM 应用开发', detail: 'DeepSeek 大模型 API 集成、结构化 Prompt 约束四类审查维度、AI 异常优雅降级，形成完整模型调用闭环。' },
       { title: 'Webhook 安全验证', detail: '使用 HMAC-SHA256 和 compare_digest 校验 GitHub 请求来源。' },
       { title: 'GitHub App 鉴权', detail: 'RS256 私钥签发 JWT，再换取 Installation Access Token 调用 GitHub API。' },
       { title: '异步编排', detail: 'FastAPI + httpx async 拉取 diff、调用 API、创建评论，减少阻塞等待。' },

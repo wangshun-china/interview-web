@@ -23,10 +23,10 @@
 
       <div class="mb-2">
         <p class="text-lg md:text-xl font-semibold text-[var(--color-text)]">
-          Java 后端 / AI Agent 应用开发实习生
+          AI 应用开发 / 通用后端开发实习生
         </p>
         <p class="mt-1 text-sm md:text-base text-[var(--color-text-secondary)]">
-          关注大模型工具调用、代码生成、AI Code Review 与工程化部署
+          关注大模型工具调用、RAG 检索、Agent 编排、代码生成与工程化部署
         </p>
       </div>
 
@@ -135,11 +135,11 @@
 
       <!-- Role badges -->
       <div class="flex flex-wrap justify-center gap-3 mb-2">
-        <span class="tag">
-          Java 后端
-        </span>
         <span class="tag" style="background: rgba(139, 115, 85, 0.1); color: var(--color-secondary);">
           AI Agent
+        </span>
+        <span class="tag">
+          通用后端
         </span>
         <span class="tag" style="background: rgba(107, 142, 107, 0.1); color: var(--color-tertiary);">
           工程化部署
@@ -173,8 +173,9 @@ import {
 } from 'lucide-vue-next'
 
 const roles = [
-  'Java Backend & AI Agent Developer',
-  'AI Application Builder',
+  'AI Agent & Backend Developer',
+  'LLM Application Builder',
+  'RAG & Agent Workflow Builder',
   'AI Code Review Builder',
   'Engineering Delivery'
 ]

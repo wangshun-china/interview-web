@@ -62,7 +62,7 @@ jobs:
           username: ${{ env.ALIYUN_ACR_USERNAME }}
           password: ${{ env.ALIYUN_ACR_PASSWORD }}
 
-      - name: Build and push to GHCR
+      - name: Build and push Application
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -71,21 +71,10 @@ jobs:
           tags: |
             ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE_NAME }}:latest
             ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE_NAME }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Push to Aliyun ACR (fallback, best-effort)
-        uses: docker/build-push-action@v6
-        continue-on-error: true
-        timeout-minutes: 5
-        with:
-          context: .
-          push: true
-          provenance: false
-          tags: |
             ${{ env.ALIYUN_ACR_REGISTRY }}/${{ env.INTERVIEW_IMAGE_NAME }}:latest
             ${{ env.ALIYUN_ACR_REGISTRY }}/${{ env.INTERVIEW_IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     name: Deploy to ${{ github.event.inputs.target_env || 'aliyun' }}

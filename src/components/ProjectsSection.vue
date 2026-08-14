@@ -73,38 +73,6 @@
       </article>
     </div>
 
-    <div class="jsm-compact-wrap w-full px-8 md:px-16 lg:px-28">
-      <div class="jsm-compact-entry">
-        <div class="jsm-compact-copy">
-          <Gamepad2 class="h-5 w-5" />
-          <div>
-            <strong>JoyShockMapper GUI</strong>
-            <span>Joy-Con 外部映射 + 陀螺仪瞄准工具，内置 DJI Mic 实时状态监视，单文件便携 EXE。</span>
-          </div>
-        </div>
-        <div class="jsm-compact-actions">
-          <a
-            href="https://jsm.wangshun.work"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="jsm-compact-button"
-          >
-            <span>官网</span>
-            <ExternalLink class="h-4 w-4" />
-          </a>
-          <a
-            href="https://github.com/xixi-box/JoyShockMapper"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="jsm-compact-button jsm-compact-button-secondary"
-          >
-            <Github class="h-4 w-4" />
-            <span>GitHub</span>
-          </a>
-        </div>
-      </div>
-    </div>
-
     <Teleport to="body">
       <div v-if="selectedProject" class="project-overlay" @click="closeProject">
         <article class="project-modal" @click.stop>
@@ -283,7 +251,6 @@ import {
   Code2,
   Lightbulb,
   GitBranch,
-  Gamepad2,
   X,
 } from 'lucide-vue-next'
 
@@ -1560,111 +1527,6 @@ const allProjects: any[] = [...projects, ciCdProject]
 
   .deploy-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-/* JoyShockMapper compact entry (matches API station style) */
-.jsm-compact-wrap {
-  margin-top: 1rem;
-}
-
-.jsm-compact-entry {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.8rem;
-  padding: 0.65rem 0.85rem;
-  border: 1px solid rgba(217, 119, 87, 0.24);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: var(--shadow-sm);
-  text-align: left;
-}
-
-.jsm-compact-copy {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  min-width: 0;
-  width: 100%;
-}
-
-.jsm-compact-copy > svg {
-  flex-shrink: 0;
-  color: var(--color-accent);
-}
-
-.jsm-compact-copy strong,
-.jsm-compact-copy span {
-  display: block;
-}
-
-.jsm-compact-copy strong {
-  color: var(--color-text);
-  font-size: 0.84rem;
-  font-weight: 800;
-}
-
-.jsm-compact-copy span {
-  margin-top: 0.15rem;
-  color: var(--color-text-secondary);
-  font-size: 0.76rem;
-  line-height: 1.45;
-}
-
-.jsm-compact-actions {
-  display: flex;
-  width: 100%;
-  gap: 0.6rem;
-}
-
-.jsm-compact-button {
-  display: inline-flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  min-height: 38px;
-  padding: 0.55rem 0.8rem;
-  border-radius: 8px;
-  background: var(--color-accent);
-  color: #fff;
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-.jsm-compact-button:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.jsm-compact-button-secondary {
-  background: var(--color-accent-light);
-  color: var(--color-accent);
-}
-
-@media (min-width: 720px) {
-  .jsm-compact-entry {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .jsm-compact-copy {
-    width: auto;
-    flex: 1;
-  }
-
-  .jsm-compact-actions {
-    width: auto;
-    flex: 0 0 auto;
-  }
-
-  .jsm-compact-button {
-    flex: 0 0 auto;
-    min-width: 110px;
   }
 }
 </style>

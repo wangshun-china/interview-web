@@ -104,6 +104,36 @@
 
         <div class="api-station-entry">
           <div class="api-station-copy">
+            <Joystick class="h-5 w-5" />
+            <div>
+              <strong>JoyShockMapper GUI</strong>
+              <span>Joy-Con 外部映射 + 陀螺仪瞄准工具，内置 DJI Mic 实时状态监视，单文件便携 EXE。</span>
+            </div>
+          </div>
+          <div class="api-station-actions">
+            <a
+              href="https://jsm.wangshun.work"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="api-station-button"
+            >
+              <span>官网</span>
+              <ExternalLink class="h-4 w-4" />
+            </a>
+            <a
+              href="https://github.com/xixi-box/JoyShockMapper"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="api-station-button api-station-button-secondary"
+            >
+              <Github class="h-4 w-4" />
+              <span>GitHub</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="api-station-entry">
+          <div class="api-station-copy">
             <Gamepad2 class="h-5 w-5" />
             <div>
               <strong>Agent Quest</strong>
@@ -170,6 +200,7 @@ import {
   ServerCog,
   ExternalLink,
   Gamepad2,
+  Joystick,
 } from 'lucide-vue-next'
 
 const roles = [

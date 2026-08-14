@@ -251,6 +251,7 @@ import {
   Code2,
   Lightbulb,
   GitBranch,
+  Gamepad2,
   X,
 } from 'lucide-vue-next'
 
@@ -674,6 +675,34 @@ const projects = [
     ],
     links: [
       { label: '源码', href: 'https://github.com/xixi-box/AutoGuard-AI-Reviewer', icon: Github },
+    ],
+  },
+  {
+    name: 'JoyShockMapper GUI',
+    subtitle: '社区版手柄映射与陀螺仪瞄准工具',
+    featured: false,
+    icon: Gamepad2,
+    color: 'var(--color-accent)',
+    tags: ['Tauri / Rust', 'C++ 核心', 'SDL3', 'ViGEm', '陀螺仪瞄准', '单文件便携 EXE', '中英双语'],
+    summary:
+      '基于上游 JoyShockMapper 的社区 GUI 版本：C++ 映射引擎静态链接进 Tauri/Rust 单 EXE，支持 DualSense / DS4 / Joy-Con / Pro Controller 的陀螺仪瞄准、单击双击与多键映射、按设备自动恢复配置，并保留 OnStartup.txt / GyroConfigs / AutoLoad 文本配置工作流。',
+    availability: '桌面应用，通过 GitHub Releases 分发便携版 EXE；官网介绍页部署在 jsm.wangshun.work。',
+    why:
+      '这个项目补的是“硬件输入到底层系统”的一环：把成熟的开源映射引擎（C++）用 Rust 重写界面层，并通过 C ABI 桥接进同一进程。锻炼 C/C++ 与 Rust 混合工程、驱动级设备交互和桌面 GUI 架构能力。',
+    metrics: [
+      { value: '单EXE', label: 'Tauri/Rust 静态链接 C++ 核心' },
+      { value: '4 系', label: 'DualSense/DS4/Joy-Con/Pro 手柄' },
+      { value: '双语', label: '中英文即时切换' },
+    ],
+    highlights: [
+      { title: '混合架构', detail: 'Rust 负责窗口、设置、托盘与持久化；C++ 核心经 C ABI 桥接处理 SDL 轮询、映射与陀螺仪，无独立后端进程。' },
+      { title: '陀螺仪瞄准', detail: '按住启用鼠标移动，灵敏度/加速/平滑对应原生参数，继承上游成熟算法。' },
+      { title: '便携发行', detail: '单文件 EXE 免安装分发，构建脚本与 CI 自动产出便携版和 SHA256 校验和。' },
+      { title: '文本配置兼容', detail: '保留 OnStartup.txt、OnReset.txt、GyroConfigs、AutoLoad 等原有工作流。' },
+    ],
+    links: [
+      { label: '官网', href: 'https://jsm.wangshun.work', icon: Rocket },
+      { label: 'GitHub', href: 'https://github.com/xixi-box/JoyShockMapper', icon: Github },
     ],
   },
 ]

@@ -107,7 +107,7 @@
             <Joystick class="h-5 w-5" />
             <div>
               <strong>JoyShockMapper GUI</strong>
-              <span>Joy-Con 外部映射 + 陀螺仪瞄准工具，内置 DJI Mic 实时状态监视，单文件便携 EXE。</span>
+              <span>为 vibe coding 打造：把 Joy-Con 变成 AI 编程辅助输入，保存、运行、聚焦输入框、截图等高频操作一键触发。</span>
             </div>
           </div>
           <div class="api-station-actions">

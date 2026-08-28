@@ -251,6 +251,7 @@ import {
   Code2,
   Lightbulb,
   GitBranch,
+  BookHeart,
   X,
 } from 'lucide-vue-next'
 
@@ -399,6 +400,79 @@ const projects = [
       { label: '在线体验', href: 'http://ai-coder.wangshun.work', icon: Rocket },
       { label: '源码(Spring AI Alibaba)', href: 'https://github.com/xixi-box/ai-code/tree/springaialibaba', icon: Github },
       { label: '源码(LangChain4j)', href: 'https://github.com/xixi-box/ai-code/tree/main', icon: Github },
+    ],
+  },
+  {
+    name: '《回忆录》',
+    subtitle: '为老人留存人生故事的 AI 采访与回忆录生成小程序',
+    featured: true,
+    icon: BookHeart,
+    color: 'var(--color-accent)',
+    tags: ['微信小程序', 'Rust', 'Axum', 'PostgreSQL', 'DashScope SSE 流式', 'TypeScript', 'Docker', 'GitHub Actions'],
+    summary:
+      '面向老龄化社会、为老人留存家庭记忆的微信小程序，以本人父母的真实需求为出发点。AI 文字采访把老人零散的人生讲述整理成故事卡片、自动归入章节并生成回忆录草稿。后端 Rust Axum + PostgreSQL，接入 DashScope 大模型实现流式 SSE 输出与思考过程实时展示，并针对长者场景做了大字大按钮、口语化引导等适老化设计。',
+    why:
+      '这个项目的出发点不是技术，而是人：希望给老人一个能安心留下自己故事的地方。核心指标不是功能数量，而是老人是否觉得"这确实是我的故事，而不是 AI 编的故事"。全栈链路从微信登录、AI 采访、故事卡片、章节生成到用户确认都走通了，也补上了我对 Rust 后端和微信小程序生态的实践。',
+    metrics: [
+      { value: 'Rust', label: 'Axum 后端单体' },
+      { value: 'SSE', label: '流式输出 + 思考过程展示' },
+      { value: '适老化', label: '大字大按钮 / 口语化引导' },
+    ],
+    processFlow: {
+      title: '回忆录生成链路',
+      steps: [
+        { title: 'AI 采访', detail: 'AI 以聊天式文字采访老人，围绕人生阶段逐个提问、追问细节。' },
+        { title: '故事卡片', detail: '把零散讲述整理成结构化故事卡片，提取时间、地点、人物、主题、情感等元数据。' },
+        { title: '章节归类', detail: '多个相关故事自动归入对应章节，形成回忆录骨架。' },
+        { title: '章节草稿', detail: '基于故事材料生成章节草稿，AI 只润色表达、不虚构事实。' },
+        { title: '用户确认', detail: '老人或子女可补充、修改、确认，最终沉淀为完整回忆录。' },
+      ],
+    },
+    highlights: [
+      { title: 'AI 采访与回忆录生成', detail: 'AI 文字采访把零散讲述整理为故事卡片，自动归入章节并生成草稿，用户可修改确认；所有内容可追溯到原始采访材料，不虚构事实。' },
+      { title: '微信小程序全栈', detail: 'WXML/WXSS/TypeScript 前端 + Rust Axum + PostgreSQL + Docker；wx.login / chooseAvatar / type="nickname" 等微信开放能力。' },
+      { title: '流式 SSE + 思考过程展示', detail: '接入 DashScope OpenAI 兼容接口，流式输出解决大模型响应慢的体验问题，思考过程实时可见。' },
+      { title: '适老化设计', detail: '大字大按钮、圆角柔和配色、口语化引导、"不知道/换一题"降门槛交互，为长者使用场景专项优化。' },
+      { title: '工程化交付', detail: 'GitHub Actions CI/CD 自动构建部署、Docker 容器化、本地/远程环境一键切换脚本、Argon2 密码加密。' },
+    ],
+    choices: [
+      {
+        title: 'Rust Axum 单体',
+        detail: '回忆录核心链路（采访→故事→章节→确认）单体就能跑通，MVP 不引入微服务、消息队列、向量库，先把主链路做扎实。',
+      },
+      {
+        title: 'DashScope OpenAI 兼容接口',
+        detail: 'Qwen 混合思考模型，SSE 流式输出 + 思考过程实时展示，解决大模型响应慢导致的等待感问题。',
+      },
+      {
+        title: 'PostgreSQL',
+        detail: '故事、章节、用户数据关系明确，用 SQL 最直接，避免过早引入复杂存储。',
+      },
+      {
+        title: 'Argon2 密码加密',
+        detail: '后端管理账号密码用 Argon2 哈希，安全且实现简单。',
+      },
+    ],
+    pitfalls: [
+      {
+        title: '思考过程与响应速度的取舍',
+        detail: '开启长 CoT 回答更准但很慢，老人等不住。按场景区分：访谈追问关思考（max_tokens 256），章节生成开思考（max_tokens 4096），兼顾质量与速度。',
+      },
+      {
+        title: 'AI 虚构事实',
+        detail: '回忆录最怕 AI 编故事。设计原则是生成内容必须可追溯到原始采访材料，AI 只润色表达不虚构，关键指标是用户认不认可。',
+      },
+      {
+        title: '微信开放能力接入',
+        detail: '真实 wx.login 换 openid、chooseAvatar 昵称头像；密钥不落地前端、未配置直接报错不伪造。',
+      },
+      {
+        title: '大模型响应慢的体验问题',
+        detail: '用流式 SSE 逐字输出 + 思考过程展示，让用户始终看到"在推进"，降低长等待的焦虑。',
+      },
+    ],
+    links: [
+      { label: '源码', href: 'https://github.com/wangshun-china/memoir', icon: Github },
     ],
   },
   {

@@ -26,7 +26,7 @@
               </div>
               <div class="period">
                 <CalendarDays class="h-4 w-4" />
-                <span>2026.05 - 2026.07</span>
+                <span>2026.05 - 2026.08</span>
               </div>
             </div>
             <div class="project-name">
@@ -39,8 +39,9 @@
         <div class="experience-body">
           <div class="experience-summary">
             <p>
-              设计 Agentic CAD 解析流程，自动完成图层分析、工具调度、空间识别、结果校验与异常重试，
-              并完成 Windows 桌面端开发和工程化交付。
+              设计规则驱动的 CAD 解析 Agent：自动完成图层分析、空间识别、结果校验与异常隔离重试，
+              端到端将 DWG/DXF 转换为标准 GIS 矢量数据；纯 Python 独立运行、不依赖 QGIS/ArcGIS，
+              交付为免安装桌面端。
             </p>
             <div class="tech-tags">
               <span v-for="tech in technologies" :key="tech" class="tag">{{ tech }}</span>
@@ -65,23 +66,25 @@
 <script setup lang="ts">
 import { BriefcaseBusiness, Building2, CalendarDays, Gauge, Layers3, MonitorCog } from 'lucide-vue-next'
 
-const technologies = ['Python', 'Rust', 'Tauri', 'Shapely', 'GeoJSON']
+const technologies = ['Python', 'Shapely', 'ezdxf', 'PySide6', 'numpy', 'PyInstaller', 'GeoJSON']
 
 const achievements = [
   {
     title: '空间对象识别与 GIS 转换',
     detail:
-      '融合文字语义、图层规则和几何拓扑，实现房间、楼梯、电梯等空间对象识别及 DWG/DXF 到 GIS 数据转换。',
+      '融合文字语义、图层规则和几何拓扑，实现房间、楼梯、电梯等空间对象识别及 DWG/DXF 到 GIS 数据转换；输出符合 OGC 标准（WGS84、属性字段最小集非空率 100%）。',
     icon: Layers3,
   },
   {
-    title: '几何算法优化',
-    detail: '设计局部聚类与轮廓聚合算法，解决楼梯网格碎片化、边界断裂和设施误识别问题。',
+    title: '规则驱动 Agent 与性能',
+    detail:
+      '用 shapely 自实现 GIS 接口垫片，脱离 QGIS/ArcGIS 独立运行；自适应并行调度完成"分析→识别→校验"全流程，12 层主楼图纸 224s 处理完，单文件支持至 1000MB，支持批量失败隔离与断点续跑。',
     icon: MonitorCog,
   },
   {
-    title: '处理性能提升',
-    detail: '引入 STRtree 空间索引，将大型图纸处理耗时由约 25 秒降至约 14 秒，单张图纸稳定生成 450+ 个有效空间对象。',
+    title: '工程化交付',
+    detail:
+      'PyInstaller 打包为自包含 exe（构建优化 6.3GB→163MB），集成 DWG 自动转换（ODA 无弹窗）与离线交互 HTML 地图导出。',
     icon: Gauge,
   },
 ]

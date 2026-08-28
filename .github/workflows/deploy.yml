@@ -116,7 +116,7 @@ jobs:
           ACR_IMAGE="${ALIYUN_ACR_REGISTRY}/${INTERVIEW_IMAGE_NAME}:${GITHUB_SHA}"
           if timeout 120 docker pull "$GHCR_IMAGE"; then
             DEPLOY_IMAGE="$GHCR_IMAGE"
-          elif docker pull "$ACR_IMAGE"; then
+          elif timeout 120 docker pull "$ACR_IMAGE"; then
             echo "GHCR pull failed or timed out; using Aliyun ACR (faster from this host)."
             DEPLOY_IMAGE="$ACR_IMAGE"
           else

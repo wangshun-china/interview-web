@@ -5,7 +5,9 @@ set -Eeuo pipefail
 SOURCE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:?GATEWAY_DEPLOY_DIR is required}"
 CERT_NAME="wangshun.work"
-CERTBOT_IMAGE="certbot/certbot:latest"
+# Pinned tag; the image is pre-pulled on the Aliyun runner so cert issuance
+# never depends on reaching docker.io at deploy time.
+CERTBOT_IMAGE="${CERTBOT_IMAGE:-certbot/certbot:v5.7.0}"
 DOMAINS=(
   wangshun.work
   www.wangshun.work
@@ -96,6 +98,12 @@ if [[ "$certificate_needs_update" == true ]]; then
   certbot_args=()
   if [[ "$certificate_was_present" == true ]]; then
     certbot_args+=(--expand)
+  fi
+
+  if ! docker image inspect "$CERTBOT_IMAGE" >/dev/null 2>&1; then
+    docker pull "$CERTBOT_IMAGE" || true
+    docker image inspect "$CERTBOT_IMAGE" >/dev/null 2>&1 \
+      || CERTBOT_IMAGE="certbot/certbot:latest"
   fi
 
   docker run --rm \

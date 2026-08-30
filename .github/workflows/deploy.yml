@@ -88,8 +88,32 @@ jobs:
       group: wangshun-gateway-${{ github.event.inputs.target_env || 'aliyun' }}
       cancel-in-progress: false
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout (with retry, self-hosted)
+        env:
+          REPO_URL: https://github.com/${{ github.repository }}.git
+          SHA: ${{ github.sha }}
+        run: |
+          set -Eeuo pipefail
+          cd "$GITHUB_WORKSPACE"
+          for attempt in 1 2 3 4 5; do
+            if [ ! -d .git ]; then
+              find . -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+              git init -q .
+              git remote add origin "$REPO_URL"
+            fi
+            if git -c http.version=HTTP/1.1 -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=45 \
+                 fetch -q --depth 1 origin "$SHA" \
+               && git checkout -q --force "$SHA" \
+               && git clean -ffdxq; then
+              echo "Checked out $SHA on attempt $attempt"
+              exit 0
+            fi
+            echo "Fetch attempt $attempt failed; resetting workspace copy and retrying"
+            rm -rf .git
+            sleep $((attempt * 10))
+          done
+          echo "Unable to fetch $SHA from GitHub after 5 attempts" >&2
+          exit 1
 
       - name: Deploy
         env:
@@ -133,8 +157,32 @@ jobs:
     needs: deploy
     runs-on: [self-hosted, wsl]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout (with retry, self-hosted)
+        env:
+          REPO_URL: https://github.com/${{ github.repository }}.git
+          SHA: ${{ github.sha }}
+        run: |
+          set -Eeuo pipefail
+          cd "$GITHUB_WORKSPACE"
+          for attempt in 1 2 3 4 5; do
+            if [ ! -d .git ]; then
+              find . -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+              git init -q .
+              git remote add origin "$REPO_URL"
+            fi
+            if git -c http.version=HTTP/1.1 -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=45 \
+                 fetch -q --depth 1 origin "$SHA" \
+               && git checkout -q --force "$SHA" \
+               && git clean -ffdxq; then
+              echo "Checked out $SHA on attempt $attempt"
+              exit 0
+            fi
+            echo "Fetch attempt $attempt failed; resetting workspace copy and retrying"
+            rm -rf .git
+            sleep $((attempt * 10))
+          done
+          echo "Unable to fetch $SHA from GitHub after 5 attempts" >&2
+          exit 1
 
       - name: Install and restart agent
         env:

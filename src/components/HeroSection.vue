@@ -161,6 +161,27 @@
             </a>
           </div>
         </div>
+
+        <div class="api-station-entry">
+          <div class="api-station-copy">
+            <Power class="h-5 w-5" />
+            <div>
+              <strong>ESP8266 WoL 远程开机</strong>
+              <span>ESP8266 + Cloudflare Workers 组成的远程开机方案：无公网 IP、免端口映射唤醒局域网电脑，命令队列幂等设计防重复开机。</span>
+            </div>
+          </div>
+          <div class="api-station-actions">
+            <a
+              href="https://github.com/xixi-box/esp8266-wol"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="api-station-button api-station-button-secondary"
+            >
+              <Github class="h-4 w-4" />
+              <span>GitHub</span>
+            </a>
+          </div>
+        </div>
       </div>
 
       <!-- Role badges -->
@@ -201,6 +222,7 @@ import {
   ExternalLink,
   Gamepad2,
   Joystick,
+  Power,
 } from 'lucide-vue-next'
 
 const roles = [

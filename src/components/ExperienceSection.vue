@@ -8,12 +8,13 @@
           <div class="h-px flex-1 bg-gradient-to-l from-transparent to-[var(--color-border)]"></div>
         </div>
         <h2 class="mb-2 text-center text-4xl font-bold md:text-5xl">
-          <span class="gradient-text">实习经历</span>
+          <span class="gradient-text">实习与开源</span>
         </h2>
-        <p class="text-center text-lg text-[var(--color-text-muted)]">Internship Experience</p>
+        <p class="text-center text-lg text-[var(--color-text-muted)]">Experience &amp; Open Source</p>
       </div>
 
-      <article class="experience-card card card-elevated">
+      <div class="duo-grid">
+        <article class="experience-card card card-elevated">
         <header class="experience-header">
           <div class="company-mark">
             <Building2 class="h-7 w-7" />
@@ -26,12 +27,12 @@
               </div>
               <div class="period">
                 <CalendarDays class="h-4 w-4" />
-                <span>2026.05 - 2026.08</span>
+                <span>2026.05 - 2026.09</span>
               </div>
             </div>
             <div class="project-name">
               <BriefcaseBusiness class="h-4 w-4" />
-              <span>CAD Spatial Agent · 建筑图纸智能空间解析系统</span>
+              <span>CAD Spatial Agent · 建筑图纸智能解析与自动化处理系统</span>
             </div>
           </div>
         </header>
@@ -39,9 +40,10 @@
         <div class="experience-body">
           <div class="experience-summary">
             <p>
-              设计规则驱动的 CAD 解析 Agent：自动完成图层分析、空间识别、结果校验与异常隔离重试，
-              端到端将 DWG/DXF 转换为标准 GIS 矢量数据；纯 Python 独立运行、不依赖 QGIS/ArcGIS，
-              交付为免安装桌面端。
+              设计并交付建筑图纸智能解析系统：将 DWG/DXF 图纸端到端转换为标准 GIS 矢量数据，
+              纯 Python 核心管线、无 QGIS/ArcGIS 运行时依赖，同一套管线支撑桌面端 / Web /
+              ArcGIS Pro 工具箱三种交付形态；在此基础上引入 LLM 构建自动化处理智能体，
+              实现自然语言指令驱动、人在回路审核与人工修正回流，识别准确率随使用持续提升。
             </p>
             <div class="tech-tags">
               <span v-for="tech in technologies" :key="tech" class="tag">{{ tech }}</span>
@@ -58,34 +60,53 @@
             </div>
           </div>
         </div>
-      </article>
+        </article>
+
+        <OpenSourceCard />
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { BriefcaseBusiness, Building2, CalendarDays, Gauge, Layers3, MonitorCog } from 'lucide-vue-next'
+import { Bot, BriefcaseBusiness, Building2, CalendarDays, Gauge, Layers3, RefreshCcw } from 'lucide-vue-next'
+import OpenSourceCard from './OpenSourceCard.vue'
 
-const technologies = ['Python', 'Shapely', 'ezdxf', 'PySide6', 'numpy', 'PyInstaller', 'GeoJSON']
+const technologies = [
+  'Python',
+  'ezdxf',
+  'Shapely (GEOS)',
+  'PySide6',
+  'OpenAI 兼容 LLM API',
+  'SQLite',
+  'PyInstaller',
+  'GeoJSON',
+]
 
 const achievements = [
   {
-    title: '空间对象识别与 GIS 转换',
+    title: '空间识别与 GIS 转换',
     detail:
-      '融合文字语义、图层规则和几何拓扑，实现房间、楼梯、电梯等空间对象识别及 DWG/DXF 到 GIS 数据转换；输出符合 OGC 标准（WGS84、属性字段最小集非空率 100%）。',
+      '融合文本锚定、图层规则与几何拓扑，实现房间、楼梯、电梯等空间对象识别；主楼 1146 个空间对象对齐人工基线 1144、匹配率 >99%；输出 OGC GeoJSON（RFC 7946）/ Shapefile，WGS84 坐标系，必填属性字段完整率 100%。',
     icon: Layers3,
   },
   {
-    title: '规则驱动 Agent 与性能',
+    title: '并行调度与可靠性',
     detail:
-      '用 shapely 自实现 GIS 接口垫片，脱离 QGIS/ArcGIS 独立运行；自适应并行调度完成"分析→识别→校验"全流程，12 层主楼图纸 224s 处理完，单文件支持至 1000MB，支持批量失败隔离与断点续跑。',
-    icon: MonitorCog,
+      '自适应并行调度"分析→识别→校验"闭环，单栋主楼图纸 224s 完成；支持 GB 级图纸与 50+ 文件批量，失败隔离、断点续跑；PyInstaller 自包含交付（构建优化 6.3GB→163MB），内嵌 ODA 静默转换 DWG，免安装离线可用。',
+    icon: Gauge,
   },
   {
-    title: '工程化交付',
+    title: 'LLM 意图驱动与任务编排',
     detail:
-      'PyInstaller 打包为自包含 exe（构建优化 6.3GB→163MB），集成 DWG 自动转换（ODA 无弹窗）与离线交互 HTML 地图导出。',
-    icon: Gauge,
+      '接入 OpenAI 兼容 LLM API，自然语言指令收敛为 10 个受限意图（JSON 约束，含槽位与置信度），生成可预览执行序列；落 SQLite 任务队列（状态机 + append-only 审计日志 + 重启恢复），高风险步骤挂起人工审核后继续；断网自动降级规则引擎，无外网的部署环境同样 100% 可用。',
+    icon: Bot,
+  },
+  {
+    title: '数据飞轮与持续改善',
+    detail:
+      '桌面端人工修正结构化回流样本库，固定评测集 + 防退化门禁保证版本指标不回退；置信度模型驱动低置信高价值样本优先标注；规则包版本化、快照回滚与指标看板，识别准确率随样本积累可量化上升。',
+    icon: RefreshCcw,
   },
 ]
 </script>
@@ -196,9 +217,22 @@ const achievements = [
 
 .achievement-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.85rem;
   margin-top: 1.25rem;
+}
+
+.duo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+@media (min-width: 1024px) {
+  .duo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .achievement-item {
@@ -232,10 +266,6 @@ const achievements = [
 @media (max-width: 900px) {
   .experience-title-row {
     flex-direction: column;
-  }
-
-  .achievement-grid {
-    grid-template-columns: 1fr;
   }
 }
 

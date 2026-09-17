@@ -617,21 +617,22 @@ const projects = [
     featured: false,
     icon: Shield,
     color: 'var(--color-secondary)',
-    tags: ['Python 3.11', 'FastAPI', 'GitHub App', 'Webhook', 'httpx async', 'DeepSeek', 'JWT', 'HMAC'],
+    tags: ['TypeScript', 'Cloudflare Workers', 'GitHub App', 'Webhook', 'Web Crypto API', 'DeepSeek', 'JWT', 'HMAC'],
     summary:
-      '基于 GitHub App 的自动化 PR 审查服务，也是完整的 LLM 应用实践：Webhook 驱动、HMAC 验签 + JWT/Installation Token 鉴权、DeepSeek 大模型 API 集成、结构化 Prompt 约束输出与异常降级。项目先和 Claude Code / Codex 讨论需求、模块边界和错误处理流程，再按收敛后的方案分段落地。',
+      '部署在 Cloudflare Workers 上的 GitHub App 自动化 PR 审查服务：使用 Web Crypto API 完成 HMAC 验签与 RS256 JWT 签名，通过 Installation Token 调用 GitHub API，并接入 DeepSeek 完成结构化代码审查。Webhook 验签和事件过滤后立即返回 200，再由 ctx.waitUntil 在后台拉取 Diff、调用模型并回写评论，避免长耗时 AI 请求触发 GitHub 超时重发。',
     why:
       '前两个项目解决的是“生成代码”和“服务通信”，这个项目想补上代码进入仓库前的质量关，同时完整走一遍 LLM 应用开发闭环：大模型 API 调用、结构化 Prompt、异步编排与优雅降级。',
     metrics: [
-      { value: 'async', label: '全链路异步 HTTP' },
-      { value: '10min', label: 'Installation Token' },
+      { value: 'Workers', label: 'Cloudflare Serverless' },
+      { value: '10min', label: 'GitHub App JWT' },
       { value: '4', label: '审查维度' },
     ],
     processFlow: {
       title: '审查链路',
       steps: [
-        { title: 'Webhook 触发', detail: '只处理 pull_request 的 opened / synchronize 事件。' },
-        { title: '验签与鉴权', detail: '先做 HMAC 验签，再用 GitHub App JWT 换 Installation Token。' },
+        { title: 'Workers 接收 Webhook', detail: '使用 Web Crypto API 完成 HMAC-SHA256 验签，只处理 pull_request 的 opened / synchronize 事件。' },
+        { title: '立即确认并后台调度', detail: '验签和过滤后立即返回 200，通过 ctx.waitUntil 在后台继续审查，避免 GitHub 10 秒超时重发。' },
+        { title: 'GitHub App 鉴权', detail: '使用 Web Crypto API 以 RS256 签发 JWT，再换取短期 Installation Token。' },
         { title: '拉取 Diff', detail: '通过 GitHub API 获取 PR diff，而不是 clone 整个仓库。' },
         { title: 'AI 审查', detail: '把 diff 和结构化 Prompt 送给 DeepSeek，聚焦四类问题。' },
         { title: '结果回写', detail: '成功时发布审查评论，失败时降级为友好提示，不阻塞流程。' },
@@ -644,6 +645,7 @@ const projects = [
         'Webhook 验签 + GitHub App 鉴权',
         'PR 总评评论输出',
         'AI 异常时优雅降级',
+        'Cloudflare Workers 线上部署',
       ],
       next: [
         'Inline comments 行级评论',
@@ -654,13 +656,13 @@ const projects = [
     },
     highlights: [
       { title: 'LLM 应用开发', detail: 'DeepSeek 大模型 API 集成、结构化 Prompt 约束四类审查维度、AI 异常优雅降级，形成完整模型调用闭环。' },
-      { title: 'Webhook 安全验证', detail: '使用 HMAC-SHA256 和 compare_digest 校验 GitHub 请求来源。' },
-      { title: 'GitHub App 鉴权', detail: 'RS256 私钥签发 JWT，再换取 Installation Access Token 调用 GitHub API。' },
-      { title: '异步编排', detail: 'FastAPI + httpx async 拉取 diff、调用 API、创建评论，减少阻塞等待。' },
+      { title: 'Webhook 安全验证', detail: '使用 Web Crypto API 的 HMAC-SHA256 验签校验 GitHub 请求来源，crypto.subtle.verify 提供常数时间比较。' },
+      { title: 'GitHub App 鉴权', detail: '通过 Web Crypto API 使用 RS256 私钥签发 JWT，再换取 Installation Access Token 调用 GitHub API。' },
+      { title: '后台异步编排', detail: 'Worker 在验签和事件过滤后立即响应，通过 ctx.waitUntil 与原生 fetch 在后台完成 Diff 拉取、AI 调用和评论回写。' },
       { title: '结构化审查 Prompt', detail: '聚焦逻辑错误、安全漏洞、代码风格和性能问题四类检查。' },
-      { title: 'Vibe Coding 工作流', detail: '先讨论需求和方案，再把改动拆成 webhook、auth、github api、reviewer、router 五段，让 Claude Code / Codex 按步骤实现。' },
+      { title: 'Vibe Coding 工作流', detail: '先讨论需求和方案，再按 webhook、鉴权、GitHub API、AI reviewer、审查编排和 Worker 入口拆分模块，让 Claude Code / Codex 分段实现与验证。' },
       { title: '优雅降级', detail: 'AI 服务异常时发布可读提示，不阻塞 PR 流程。' },
-      { title: '轻量部署', detail: '单服务适合 Zeabur/Railway/Heroku 等平台，通过环境变量完成配置。' },
+      { title: 'Cloudflare 部署', detail: '使用 Wrangler 部署到 Cloudflare Workers，非敏感配置放入 vars，GitHub 私钥、Webhook Secret 和模型 Key 通过 Cloudflare Secrets 注入。' },
     ],
     choices: [
       {
@@ -672,12 +674,12 @@ const projects = [
         detail: '这次刻意没有一上来就让模型生成项目骨架，而是先把需求整理成 PRD，再讨论模块划分、接口输入输出、失败路径和部署方式。这样后面的生成更像按图施工，不容易越写越散。',
       },
       {
-        title: 'FastAPI',
-        detail: '这个服务核心是接 Webhook、调 GitHub、调 AI，不需要复杂后台。FastAPI 启动快、类型提示清楚，写异步接口也自然。',
+        title: 'Cloudflare Workers',
+        detail: '服务核心是接收 Webhook、调用 GitHub 与 AI API，没有常驻进程和复杂后台需求。改用 TypeScript Worker 后无需维护服务器运行时，并可在边缘节点快速响应 Webhook。',
       },
       {
-        title: 'httpx async',
-        detail: '换 token、拉 diff、发评论都是网络 IO。requests 同步写法简单但会阻塞 worker，httpx async 更适合后续并发处理多个 PR 事件。',
+        title: '原生 fetch + waitUntil',
+        detail: '换 token、拉 diff、调用模型和发评论都是网络 IO。Worker 先返回 200，再通过 ctx.waitUntil 托管后台 Promise，兼顾 Webhook 响应时限和完整审查流程。',
       },
       {
         title: 'GitHub Diff API',
@@ -685,15 +687,15 @@ const projects = [
       },
       {
         title: 'DeepSeek',
-        detail: '兼容 OpenAI SDK，接入成本低，价格也适合频繁 Review。相比更强模型，DeepSeek 在成本和可用性之间更适合作为个人项目默认方案。',
+        detail: '通过 OpenAI 兼容 HTTP API 接入，使用原生 fetch 即可调用，价格也适合频繁 Review。相比更强模型，DeepSeek 在成本和可用性之间更适合作为个人项目默认方案。',
       },
       {
-        title: 'Pydantic Settings',
-        detail: 'GitHub App ID、私钥、Webhook Secret、模型 Key 都来自环境变量。用配置类集中校验，比在业务代码里到处读 process env 更清楚。',
+        title: 'Wrangler 配置与 Secrets',
+        detail: '模型地址等非敏感配置由 wrangler.jsonc 的 vars 注入，GitHub App 私钥、Webhook Secret 和模型 Key 使用 Cloudflare Secrets 保存，并在 Worker 入口统一检查必填项。',
       },
       {
         title: '分段让 AI 落地',
-        detail: '如果一次让模型同时写 webhook、鉴权、业务编排和评论模板，代码很容易耦合。这里按模块分段推进，每次只让它处理当前文件和当前职责，Review 成本更低。',
+        detail: '如果一次让模型同时写 Webhook、鉴权、业务编排和评论模板，代码很容易耦合。这里按 webhook、github_auth、github_api、ai_reviewer、review 和 Worker 入口分段推进，每次只处理当前职责。',
       },
       {
         title: '优雅降级',
@@ -707,7 +709,7 @@ const projects = [
     pitfalls: [
       {
         title: 'Webhook 签名验证',
-        detail: '不能只相信请求来自 GitHub，必须用 HMAC-SHA256 校验 body，并用 compare_digest 防止时序攻击。',
+        detail: '不能只相信请求来自 GitHub，必须保留原始 body 并使用 HMAC-SHA256 验签；Workers 版通过 crypto.subtle.verify 完成常数时间校验。',
       },
       {
         title: '私钥换行格式',
@@ -719,7 +721,7 @@ const projects = [
       },
       {
         title: '模块边界被 AI 写乱',
-        detail: '一开始如果让模型自由发挥，它会把验签、业务解析、调用 GitHub API 和评论格式化混在一起。后来明确拆成 webhook_handler、github_auth、github_api、ai_reviewer、router 五个模块。',
+        detail: '一开始如果让模型自由发挥，它会把验签、业务解析、GitHub API 和评论格式化混在一起。后来明确拆成 webhook、github_auth、github_api、ai_reviewer、review 和 Worker 入口，各模块只承担单一职责。',
       },
       {
         title: '重复事件触发',
@@ -731,7 +733,7 @@ const projects = [
       },
       {
         title: 'Vibe Coding 失控',
-        detail: '如果不先定方案，AI 很容易边写边改，最后模块职责混乱。后来先让它输出方案、再让我确认，然后按 webhook -> auth -> github api -> ai reviewer -> router 五段逐步落地。',
+        detail: '如果不先定方案，AI 很容易边写边改，最后模块职责混乱。后来先确定模块边界和失败路径，再按 Webhook、鉴权、GitHub API、AI reviewer、审查编排与 Worker 入口逐步落地。',
       },
       {
         title: 'AI 改着改着偏题',
@@ -739,14 +741,15 @@ const projects = [
       },
       {
         title: 'AI 服务异常',
-        detail: 'DeepSeek 超时或返回空内容时不能让 Webhook 直接 500 结束。统一捕获异常，回写友好失败评论并记录日志。',
+        detail: 'DeepSeek 超时或返回空内容时不能让后台任务静默失败。统一捕获异常，记录 Workers 日志并尽量回写友好提示，Webhook 本身已提前返回 200。',
       },
       {
-        title: '轻量平台部署',
-        detail: 'Zeabur/Heroku 类平台文件系统和环境变量处理方式不同，启动时增加配置检查和健康检查端点，方便定位部署问题。',
+        title: 'Cloudflare Workers 迁移',
+        detail: '从 FastAPI 常驻服务迁移到 Workers 后，需要将 PyJWT、hmac 和 httpx 分别替换为 Web Crypto API 与原生 fetch，并用 waitUntil 承接长耗时后台审查；同时保留健康检查和缺失配置诊断。',
       },
     ],
     links: [
+      { label: '线上服务', href: 'https://autoguard-ai-reviewer.2606209307.workers.dev', icon: Rocket },
       { label: '源码', href: 'https://github.com/xixi-box/AutoGuard-AI-Reviewer', icon: Github },
     ],
   },

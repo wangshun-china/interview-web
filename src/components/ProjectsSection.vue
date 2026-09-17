@@ -405,7 +405,7 @@ const projects = [
   {
     name: '《回忆录》',
     subtitle: '为老人留存人生故事的 AI 采访与回忆录生成小程序',
-    featured: true,
+    featured: false,
     icon: BookHeart,
     color: 'var(--color-accent)',
     tags: ['微信小程序', 'Rust', 'Axum', 'PostgreSQL', 'DashScope SSE 流式', 'TypeScript', 'Docker', 'GitHub Actions'],
@@ -478,7 +478,7 @@ const projects = [
   {
     name: 'Lumina-RPC',
     subtitle: '面向可观测性的轻量 RPC 框架',
-    featured: false,
+    featured: true,
     icon: Rocket,
     color: 'var(--color-accent)',
     tags: ['RPC 中间件', 'Netty 4.1', '服务治理', '负载均衡', '容错保护', '链路追踪', 'Vue Flow', 'ECharts', 'Docker'],
@@ -609,6 +609,92 @@ const projects = [
     links: [
       { label: '在线演示', href: 'http://rpc.wangshun.work', icon: Rocket },
       { label: '源码', href: 'https://github.com/xixi-box/lumina-rpc', icon: Github },
+    ],
+  },
+  {
+    name: 'Local Coding Agent Runtime',
+    subtitle: '面向 Windows 的本地 Coding Agent 运行时内核（持续开发）',
+    featured: false,
+    icon: Code2,
+    color: 'var(--color-tertiary)',
+    tags: ['TypeScript', 'Node.js 24', 'Agent Runtime', 'Tool Gateway', 'Session Events', 'JSONL', 'Pi AI', 'Vitest'],
+    summary:
+      '从零构建的 Provider-neutral Coding Agent 运行时内核，聚焦模型流式协议、Session→Run→Step 生命周期、事件持久化、工具执行网关与失败恢复。当前已打通多 Provider 模型路由和 read_file 工具闭环，并通过超时、重试预算、部分流丢弃及可取消 Run 保证运行时边界。',
+    why:
+      'AI Coder 偏向上层产品和 Agent 应用编排，这个项目则继续向下拆解 Coding Agent 的核心运行时：模型如何流式输出、工具如何受策略约束、哪些事件应持久化、失败后如何保证不执行不完整的工具调用。',
+    metrics: [
+      { value: '55', label: '离线测试通过' },
+      { value: '3', label: 'Provider 路由' },
+      { value: '1 Run', label: '单 Session 活跃边界' },
+    ],
+    processFlow: {
+      title: 'Agent 运行链路',
+      steps: [
+        { title: '启动 Run', detail: 'Application Service 统一管理单活跃 Run、取消、订阅和资源释放。' },
+        { title: '调用模型', detail: '通过 Provider-neutral 契约路由到 OpenAI 兼容、Anthropic 兼容或 OpenCode Provider。' },
+        { title: '组装流式响应', detail: '区分瞬时 delta 与可持久化事实，仅在完整响应确认后提交消息和工具调用。' },
+        { title: '执行工具', detail: '工具请求经 Registry、Schema 验证、Policy 与 Tool Gateway 后执行，当前只开放工作区边界内的 read_file。' },
+        { title: '记录与终止', detail: '按序写入 JSONL Session Events，由完成策略、取消或结构化失败生成确定的终态结果。' },
+      ],
+    },
+    highlights: [
+      { title: 'Provider-neutral 模型边界', detail: '统一流式事件和消息组装，已接入 OpenAI-compatible、Anthropic-compatible 与 OpenCode Provider 路由。' },
+      { title: '可靠的模型调用', detail: '区分请求首包超时与流空闲超时，分配独立重试预算，保留 HTTP 状态、Retry-After 和 request-id 诊断。' },
+      { title: '部分流恢复', detail: '模型流在中途失败时不持久化未完整输出，也不执行部分工具调用，避免不可预期副作用。' },
+      { title: 'Tool Gateway 安全边界', detail: '工具必须经过注册、参数验证和策略决策；read_file 同时校验工作区边界。' },
+      { title: '事件溯源会话', detail: '用类型化 Session Events 区分瞬时展示与持久事实，JSONL EventStore 保证单进程 writer 下的有序写入。' },
+      { title: '真实边界测试', detail: '离线单测覆盖 Runtime、Gateway、EventStore、凭据和流组装，并保留真实 Provider 的 read_file→tool result→final 冒烟测试。' },
+    ],
+    choices: [
+      {
+        title: 'TypeScript + 类型化契约',
+        detail: '运行时包含大量跨模块状态和事件，使用 strict TypeScript 把 Provider、Tool、Run 和 Session Event 的边界显式化。',
+      },
+      {
+        title: 'Session → Run → Step',
+        detail: '不额外引入持久化 Turn 聚合：Session 记录长期事实，Run 表示一次用户请求，Step 表示一轮模型或工具推进。',
+      },
+      {
+        title: '事件投影生成上下文',
+        detail: '模型上下文由已持久化的事件投影得到，避免内存消息和会话真相发生分叉。',
+      },
+      {
+        title: '先完成只读垂直切片',
+        detail: '当前只开放 read_file，先验证模型→工具→结果→最终回答的全链路，再扩展编辑、命令和审批能力。',
+      },
+    ],
+    pitfalls: [
+      {
+        title: '流式失败后误执行工具',
+        detail: '如果收到一半 tool call 就执行，重试后可能产生重复副作用。因此按 attempt 组装响应，失败 attempt 的文本和工具调用整体丢弃。',
+      },
+      {
+        title: '重试边界混乱',
+        detail: '请求未开始、已收到部分流和工具可能已执行是三种不同状态。对请求启动与流中断分开设置超时和重试预算。',
+      },
+      {
+        title: '持久事件与 UI delta 混用',
+        detail: '字符级 delta 适合展示但不适合成为会话事实。展示层接收瞬时事件，仅完成消息和工具结果进入 EventStore。',
+      },
+    ],
+    boundary: {
+      title: '当前能力边界',
+      done: [
+        'Provider-neutral 流式模型调用与响应组装',
+        '超时、重试、部分流恢复与结构化失败',
+        'Session Events + JSONL EventStore',
+        'Tool Gateway + 工作区边界内 read_file',
+        '可取消的单活跃 Run 与确定性终止',
+      ],
+      next: [
+        '文件编辑与 Patch 系统',
+        'Shell 命令、审批与权限策略',
+        'TUI / CLI 交互层',
+        'Skills、MCP、Memory 与子 Agent',
+      ],
+    },
+    links: [
+      { label: '源码', href: 'https://github.com/wangshun-china/local-coding-agent', icon: Github },
     ],
   },
   {

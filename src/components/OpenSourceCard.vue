@@ -17,17 +17,18 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>2 个外部仓库 · 3 个 PR</span>
+            <span>2 个上游项目 · 3 个 PR</span>
           </div>
         </div>
-        <p class="oss-subtitle">AI Agent 框架 · 外部代码贡献</p>
+        <p class="oss-subtitle">AI Agent 框架 · 上游贡献实践</p>
       </div>
     </header>
 
     <div class="oss-body">
       <p class="oss-blurb">
-        向主流 AI Agent 框架提交代码：审批门控安全语义、工具输出流式接口、废弃 API 告警——
-        与实习项目中的 LLM 意图驱动设计同源。
+        围绕智能体审批门控、嵌套工具摘要的流式兼容与存储 API 演进等真实问题，
+        向 OpenAI Agents SDK 和 Pydantic AI Harness 提交 3 个 PR，覆盖问题定位、
+        跨路径实现、回归测试、文档更新与评审迭代。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -68,16 +69,16 @@ const repos = [
   {
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
-    stars: '893',
+    stars: '890+',
     prs: [
       {
         title: 'Give ToolOutputLimits summaries a stream seam (#729)',
-        note: '为工具输出摘要补上流式接口，已获 Approve',
+        note: '为嵌套工具输出摘要增加可选事件流接口，覆盖流式传输、事件消费和端到端 Agent 回归测试',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/729',
       },
       {
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
-        note: '为废弃的单键 get/add 补充弃用告警',
+        note: '为内存与 Redis SpendStore 的废弃单键 API 补充迁移告警，更新内部调用并完善单元与集成测试',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
       },
     ],
@@ -85,11 +86,11 @@ const repos = [
   {
     name: 'openai / openai-agents-python',
     url: 'https://github.com/openai/openai-agents-python',
-    stars: '29.5k',
+    stars: '29k+',
     prs: [
       {
         title: 'Fail closed on non-bool needs_approval predicate results (#4848)',
-        note: '审批谓词非布尔返回时的 fail-closed 安全修复（+205/−5，含回归测试；官方以其他方案处理同一 issue）',
+        note: '提交审批门控 fail-closed 语义修复提案，统一 Runner、Realtime 与 MCP 路径并补充同步/异步回归测试',
         url: 'https://github.com/openai/openai-agents-python/pull/4848',
       },
     ],

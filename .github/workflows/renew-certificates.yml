@@ -68,8 +68,8 @@ jobs:
               --webroot \
               --webroot-path /var/www/certbot
 
-          docker exec wangshun-portfolio nginx -t
-          docker exec wangshun-portfolio nginx -s reload
+          docker exec wangshun-gateway nginx -t
+          docker exec wangshun-gateway nginx -s reload
           sleep 1
 
           # Validate the certificate chain end to end: the gateway must serve

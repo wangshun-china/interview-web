@@ -1,0 +1,189 @@
+name: Deploy Gateway (edge + ops backend)
+
+# Fires only when gateway infrastructure changes (nginx confs, ops backend,
+# compose topology). Resume content is deployed by deploy-portfolio.yml.
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "ops/**"
+      - "deploy/Dockerfile.gateway"
+      - "deploy/gateway-default.conf"
+      - "deploy/nginx-main.conf"
+      - "deploy/nginx-https.conf"
+      - "deploy/nginx-http.conf"
+      - "deploy/container-entrypoint.sh"
+      - "deploy/docker-compose.yml"
+      - "deploy/deploy-gateway.sh"
+      - ".github/workflows/deploy-gateway.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  GHCR_REGISTRY: ghcr.io
+  GHCR_IMAGE_NAME: ${{ github.repository }}-gateway
+  ALIYUN_ACR_REGISTRY: ${{ vars.ALIYUN_ACR_REGISTRY }}
+  ALIYUN_ACR_USERNAME: ${{ vars.ALIYUN_ACR_USERNAME }}
+  ALIYUN_ACR_PASSWORD: ${{ secrets.ALIYUN_ACR_PASSWORD }}
+  GATEWAY_IMAGE_NAME: ${{ vars.INTERVIEW_GATEWAY_IMAGE_NAME }}
+  PORTFOLIO_IMAGE_NAME: ${{ vars.INTERVIEW_IMAGE_NAME }}
+
+jobs:
+  build:
+    name: Build Gateway Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.GHCR_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Login to Aliyun ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.ALIYUN_ACR_REGISTRY }}
+          username: ${{ env.ALIYUN_ACR_USERNAME }}
+          password: ${{ env.ALIYUN_ACR_PASSWORD }}
+
+      - name: Build and push Gateway
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/Dockerfile.gateway
+          push: true
+          provenance: false
+          tags: |
+            ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE_NAME }}:latest
+            ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.ALIYUN_ACR_REGISTRY }}/${{ env.GATEWAY_IMAGE_NAME }}:latest
+            ${{ env.ALIYUN_ACR_REGISTRY }}/${{ env.GATEWAY_IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha,scope=gateway
+          cache-to: type=gha,scope=gateway,mode=max
+
+  deploy:
+    # DEPLOY_V2_ENABLED doubles as a kill switch for unattended deploys.
+    if: >-
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+      && vars.DEPLOY_V2_ENABLED == 'true'
+    name: Deploy Gateway to Aliyun
+    needs: build
+    runs-on: [self-hosted, aliyun]
+    concurrency:
+      group: wangshun-gateway-aliyun
+      cancel-in-progress: false
+    steps:
+      - name: Checkout (with retry, self-hosted)
+        env:
+          REPO_URL: https://github.com/${{ github.repository }}.git
+          SHA: ${{ github.sha }}
+        run: |
+          set -Eeuo pipefail
+          cd "$GITHUB_WORKSPACE"
+          for attempt in 1 2 3 4 5; do
+            if [ ! -d .git ]; then
+              find . -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+              git init -q .
+              git remote add origin "$REPO_URL"
+            fi
+            if git -c http.version=HTTP/1.1 -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=45 \
+                 fetch -q --depth 1 origin "$SHA" \
+               && git checkout -q --force "$SHA" \
+               && git clean -ffdxq; then
+              echo "Checked out $SHA on attempt $attempt"
+              exit 0
+            fi
+            echo "Fetch attempt $attempt failed; resetting workspace copy and retrying"
+            rm -rf .git
+            sleep $((attempt * 10))
+          done
+          echo "Unable to fetch $SHA from GitHub after 5 attempts" >&2
+          exit 1
+
+      - name: Deploy
+        env:
+          GATEWAY_DEPLOY_DIR: /opt/wangshun-portfolio
+          GHCR_REGISTRY: ${{ env.GHCR_REGISTRY }}
+          GHCR_IMAGE_NAME: ${{ env.GHCR_IMAGE_NAME }}
+          ALIYUN_ACR_REGISTRY: ${{ env.ALIYUN_ACR_REGISTRY }}
+          ALIYUN_ACR_USERNAME: ${{ env.ALIYUN_ACR_USERNAME }}
+          ALIYUN_ACR_PASSWORD: ${{ env.ALIYUN_ACR_PASSWORD }}
+          GATEWAY_IMAGE_NAME: ${{ env.GATEWAY_IMAGE_NAME }}
+          LETSENCRYPT_EMAIL: ${{ secrets.LETSENCRYPT_EMAIL }}
+          OPS_INITIAL_PASSWORD: ${{ secrets.OPS_INITIAL_PASSWORD }}
+          OPS_AGENT_TOKEN: ${{ secrets.OPS_AGENT_TOKEN }}
+        run: |
+          export DOCKER_CONFIG="$(mktemp -d)"
+          trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+
+          printf '%s' "${{ github.token }}" |
+            docker login "$GHCR_REGISTRY" -u "${{ github.actor }}" --password-stdin
+          printf '%s' "$ALIYUN_ACR_PASSWORD" |
+            docker login "$ALIYUN_ACR_REGISTRY" -u "$ALIYUN_ACR_USERNAME" --password-stdin
+
+          GHCR_IMAGE="${GHCR_REGISTRY}/${GHCR_IMAGE_NAME}:${GITHUB_SHA}"
+          ACR_IMAGE="${ALIYUN_ACR_REGISTRY}/${GATEWAY_IMAGE_NAME}:${GITHUB_SHA}"
+          if timeout 120 docker pull "$GHCR_IMAGE"; then
+            GATEWAY_IMAGE="$GHCR_IMAGE"
+          elif timeout 120 docker pull "$ACR_IMAGE"; then
+            echo "GHCR pull failed or timed out; using Aliyun ACR (faster from this host)."
+            GATEWAY_IMAGE="$ACR_IMAGE"
+          else
+            echo "Unable to pull the gateway image from GHCR or Aliyun ACR." >&2
+            exit 1
+          fi
+
+          export DEPLOY_GATEWAY_IMAGE="$GATEWAY_IMAGE"
+          export PORTFOLIO_LATEST="${ALIYUN_ACR_REGISTRY}/${PORTFOLIO_IMAGE_NAME}:latest"
+          export GATEWAY_LATEST="${ALIYUN_ACR_REGISTRY}/${GATEWAY_IMAGE_NAME}:latest"
+          bash deploy/deploy-gateway.sh
+          docker image prune -f
+
+  deploy-wsl-agent:
+    name: Deploy WSL Ops Agent
+    needs: deploy
+    runs-on: [self-hosted, wsl]
+    steps:
+      - name: Checkout (with retry, self-hosted)
+        env:
+          REPO_URL: https://github.com/${{ github.repository }}.git
+          SHA: ${{ github.sha }}
+        run: |
+          set -Eeuo pipefail
+          cd "$GITHUB_WORKSPACE"
+          for attempt in 1 2 3 4 5; do
+            if [ ! -d .git ]; then
+              find . -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+              git init -q .
+              git remote add origin "$REPO_URL"
+            fi
+            if git -c http.version=HTTP/1.1 -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=45 \
+                 fetch -q --depth 1 origin "$SHA" \
+               && git checkout -q --force "$SHA" \
+               && git clean -ffdxq; then
+              echo "Checked out $SHA on attempt $attempt"
+              exit 0
+            fi
+            echo "Fetch attempt $attempt failed; resetting workspace copy and retrying"
+            rm -rf .git
+            sleep $((attempt * 10))
+          done
+          echo "Unable to fetch $SHA from GitHub after 5 attempts" >&2
+          exit 1
+
+      - name: Install and restart agent
+        env:
+          OPS_AGENT_TOKEN: ${{ secrets.OPS_AGENT_TOKEN }}
+        run: |
+          printf '%s\n' "$OPS_AGENT_TOKEN" |
+            sudo -n /usr/bin/bash ops-agent/install.sh

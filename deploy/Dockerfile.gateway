@@ -1,0 +1,18 @@
+# Gateway: nginx edge (TLS, domain routing) + ops backend. No site content —
+# all static traffic is proxied to the portfolio container.
+FROM node:24-alpine
+
+RUN apk add --no-cache nginx curl \
+    && mkdir -p /etc/nginx/conf.d /run/nginx /var/www/certbot \
+    && rm -f /etc/nginx/http.d/default.conf
+
+WORKDIR /app
+COPY ops ./ops
+COPY deploy/nginx-main.conf /etc/nginx/nginx.conf
+COPY deploy/gateway-default.conf /etc/nginx/conf.d/default.conf
+COPY deploy/container-entrypoint.sh /usr/local/bin/wangshun-entrypoint
+
+RUN chmod 755 /usr/local/bin/wangshun-entrypoint
+
+EXPOSE 80 443
+CMD ["/usr/local/bin/wangshun-entrypoint"]

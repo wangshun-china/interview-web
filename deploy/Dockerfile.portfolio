@@ -1,0 +1,9 @@
+# Portfolio: static resume site only. The gateway terminates TLS and proxies
+# wangshun.work / www / ops. (non-API) here, so this image never publishes
+# host ports.
+FROM nginx:alpine
+
+COPY deploy/portfolio.nginx.conf /etc/nginx/conf.d/default.conf
+COPY dist /usr/share/nginx/html
+
+EXPOSE 80

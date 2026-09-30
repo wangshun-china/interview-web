@@ -238,8 +238,8 @@ const upstreamNew = reactive({ server: '', weight: 20 })
 const upstreamBusy = ref(false)
 const upstreamMessage = ref('')
 const UPSTREAM_DEFAULT_NODES = [
-  { server: '127.0.0.1:7777', weight: 90 },
-  { server: '47.251.94.131:7777', weight: 20 }
+  { server: '127.0.0.1:7777', weight: 10 },
+  { server: '47.251.94.131:7777', weight: 90 }
 ]
 const onlineServices = computed(() => dashboard.value?.services?.filter((item: Json) => item.online).length ?? 0)
 
@@ -328,7 +328,7 @@ async function saveUpstream() {
   } catch (e) { upstreamMessage.value = e instanceof Error ? e.message : String(e) } finally { upstreamBusy.value = false }
 }
 async function resetUpstream() {
-  if (!confirm('恢复默认节点（本机 90 : 新加坡 20）并立即应用？')) return
+  if (!confirm('恢复默认节点（新加坡 90 : 本机 10）并立即应用？')) return
   upstreamForm.nodes = UPSTREAM_DEFAULT_NODES.map((node) => ({ ...node }))
   await saveUpstream()
 }

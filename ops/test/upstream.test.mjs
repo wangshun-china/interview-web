@@ -43,8 +43,8 @@ test('upstream normalization dedupes and enforces node limits', () => {
 test('rendered upstream config is deterministic and constrained', () => {
   const config = renderUpstreamConfig(normalizeUpstream(DEFAULT_UPSTREAM))
   assert.match(config, /upstream new_api \{/)
-  assert.match(config, /server 127\.0\.0\.1:7777 weight=90 max_fails=2 fail_timeout=15s;/)
-  assert.match(config, /server 47\.251\.94\.131:7777 weight=20 max_fails=2 fail_timeout=15s;/)
+  assert.match(config, /server 127\.0\.0\.1:7777 weight=10 max_fails=2 fail_timeout=15s;/)
+  assert.match(config, /server 47\.251\.94\.131:7777 weight=90 max_fails=2 fail_timeout=15s;/)
   assert.doesNotMatch(config, /http:\/\//)
 })
 
@@ -52,5 +52,5 @@ test('percent view sums to 100', () => {
   const view = upstreamWithPercent(normalizeUpstream(DEFAULT_UPSTREAM))
   const total = view.nodes.reduce((sum, node) => sum + node.percent, 0)
   assert.equal(total, 100)
-  assert.deepEqual(view.nodes.map((node) => node.percent), [81.8, 18.2])
+  assert.deepEqual(view.nodes.map((node) => node.percent), [10, 90])
 })

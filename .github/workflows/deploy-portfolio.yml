@@ -96,7 +96,10 @@ jobs:
           cache-to: type=gha,scope=portfolio,mode=max
 
   deploy:
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    # DEPLOY_V2_ENABLED doubles as a kill switch for unattended deploys.
+    if: >-
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+      && vars.DEPLOY_V2_ENABLED == 'true'
     name: Deploy Portfolio to ${{ github.event.inputs.target_env || 'aliyun' }}
     needs: build
     runs-on: [self-hosted, "${{ github.event.inputs.target_env || 'aliyun' }}"]

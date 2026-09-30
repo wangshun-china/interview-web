@@ -143,6 +143,8 @@ jobs:
           ALIYUN_ACR_USERNAME: ${{ env.ALIYUN_ACR_USERNAME }}
           ALIYUN_ACR_PASSWORD: ${{ env.ALIYUN_ACR_PASSWORD }}
           INTERVIEW_IMAGE_NAME: ${{ env.INTERVIEW_IMAGE_NAME }}
+          LETSENCRYPT_EMAIL: ${{ secrets.LETSENCRYPT_EMAIL }}
+          OPS_INITIAL_PASSWORD: ${{ secrets.OPS_INITIAL_PASSWORD }}
           OPS_AGENT_TOKEN: ${{ secrets.OPS_AGENT_TOKEN }}
         run: |
           export DOCKER_CONFIG="$(mktemp -d)"

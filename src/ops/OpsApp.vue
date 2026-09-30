@@ -77,6 +77,23 @@
               <tr v-for="route in routes" :key="route.id"><td>{{ route.domain }}</td><td>{{ route.protocol }}://{{ route.targetHost }}:{{ route.targetPort }}</td><td>{{ route.tls ? '是' : '否' }}</td><td><span class="pill" :class="statusClass(route.applyState === 'applied' || route.applyState === 'staged')">{{ route.applyState }}</span><small class="block">{{ route.applyMessage }}</small></td><td><button class="link" @click="editRoute(route)">编辑</button><button class="link danger" @click="removeRoute(route)">删除</button></td></tr>
               <tr v-if="!routes.length"><td colspan="5" class="empty">还没有动态绑定</td></tr>
             </tbody></table></div>
+
+            <h2>API 中转站节点（upstream {{ upstreamForm.name }}）<div class="btn-inline"><button class="ghost sm" :disabled="upstreamBusy" @click="fetchUpstream">刷新</button></div></h2>
+            <div class="warning">权重按比例分摊流量；某节点连续失败时 Nginx 自动把流量回落到其余节点（max_fails={{ upstreamForm.maxFails }}，隔离 {{ upstreamForm.failTimeout }}s）。应用前会先执行 nginx -t 校验，失败自动回滚。</div>
+            <div class="table-wrap"><table><thead><tr><th>节点</th><th>权重</th><th>分流</th><th>操作</th></tr></thead><tbody>
+              <tr v-for="(node, index) in upstreamForm.nodes" :key="node.server"><td><code>{{ node.server }}</code></td><td><input class="wt" v-model.number="node.weight" type="number" min="1" max="1000" /></td><td>{{ upstreamPercent(node) }}%</td><td><button class="link danger" :disabled="upstreamForm.nodes.length <= 1" @click="upstreamForm.nodes.splice(index, 1)">删除</button></td></tr>
+              <tr v-if="!upstreamForm.nodes.length"><td colspan="4" class="empty">尚未加载节点配置</td></tr>
+            </tbody></table></div>
+            <form class="form-grid card form-card" @submit.prevent="addUpstreamNode">
+              <label>新节点 host:port<input v-model.trim="upstreamNew.server" placeholder="1.2.3.4:7777" /></label>
+              <label>初始权重<input v-model.number="upstreamNew.weight" type="number" min="1" max="1000" /></label>
+              <div class="form-actions"><button class="ghost" :disabled="upstreamBusy">添加节点</button></div>
+            </form>
+            <div class="form-actions">
+              <button class="primary" :disabled="upstreamBusy" @click="saveUpstream">应用配置</button>
+              <button class="ghost" :disabled="upstreamBusy" @click="resetUpstream">恢复默认</button>
+              <small v-if="upstreamMessage" class="block">{{ upstreamMessage }}</small>
+            </div>
           </section>
 
           <section v-if="tab === 'tunnels'">
@@ -216,6 +233,14 @@ const sbDelayResults = ref<Json[]>([])
 const sbProxyIP = ref<Json | null>(null)
 const sbSpeed = ref<Json>({})
 const sbForm = reactive({ id: 0, tag: '', type: 'vmess', server: '', serverPort: 443, groupTag: 'proxy', protocolSettings: { uuid: '', alterId: 0, security: 'auto' }, tlsSettings: {}, transportSettings: {}, priority: 0, enabled: true, isDefault: false })
+const upstreamForm = reactive<{ name: string; nodes: Json[]; maxFails: number; failTimeout: number }>({ name: 'new_api', nodes: [], maxFails: 2, failTimeout: 15 })
+const upstreamNew = reactive({ server: '', weight: 20 })
+const upstreamBusy = ref(false)
+const upstreamMessage = ref('')
+const UPSTREAM_DEFAULT_NODES = [
+  { server: '127.0.0.1:7777', weight: 90 },
+  { server: '47.251.94.131:7777', weight: 20 }
+]
 const onlineServices = computed(() => dashboard.value?.services?.filter((item: Json) => item.online).length ?? 0)
 
 async function api(path: string, options: RequestInit = {}) {
@@ -245,8 +270,9 @@ async function refreshAll() {
   error.value = ''
   refreshing.value = true
   try {
-    const [dashboardData, routeData, tunnelData] = await Promise.all([api('/dashboard'), api('/routes'), api('/tunnels')])
+    const [dashboardData, routeData, tunnelData, upstreamData] = await Promise.all([api('/dashboard'), api('/routes'), api('/tunnels'), api('/upstreams/new_api')])
     dashboard.value = dashboardData; routes.value = routeData.routes; staticRoutes.value = routeData.staticRoutes ?? []; tunnels.value = tunnelData.tunnels; Object.assign(tunnelState.wsl, tunnelData.wsl)
+    Object.assign(upstreamForm, { name: upstreamData.upstream.name, nodes: upstreamData.upstream.nodes.map((node: Json) => ({ server: node.server, weight: node.weight })), maxFails: upstreamData.upstream.maxFails, failTimeout: upstreamData.upstream.failTimeout })
   } catch (e) { error.value = e instanceof Error ? e.message : String(e) } finally { refreshing.value = false }
 }
 async function runDockerAction(target: 'aliyun' | 'wsl', container: Json, action: 'start' | 'stop' | 'restart' | 'delete') {
@@ -275,6 +301,37 @@ function resetTunnel() { Object.assign(tunnelForm, { id: 0, name: '', localPort:
 function editTunnel(tunnel: Json) { Object.assign(tunnelForm, tunnel); window.scrollTo({ top: 0, behavior: 'smooth' }) }
 async function saveTunnel() { beginAction(); try { const id = tunnelForm.id; await api(id ? `/tunnels/${id}` : '/tunnels', { method: id ? 'PUT' : 'POST', body: JSON.stringify(tunnelForm) }); resetTunnel(); await refreshAll(); flash('穿透同步任务已提交') } catch (e) { finishError(e) } finally { busy.value = false } }
 async function removeTunnel(tunnel: Json) { if (!confirm(`确定删除 ${tunnel.name} 吗？`)) return; beginAction(); try { await api(`/tunnels/${tunnel.id}`, { method: 'DELETE' }); await refreshAll(); flash('穿透删除任务已提交') } catch (e) { finishError(e) } finally { busy.value = false } }
+function upstreamPercent(node: Json) {
+  const total = upstreamForm.nodes.reduce((sum, item) => sum + (Number(item.weight) || 0), 0)
+  return total ? Math.round(((Number(node.weight) || 0) * 1000) / total) / 10 : 0
+}
+async function fetchUpstream() {
+  try {
+    const data = await api('/upstreams/new_api')
+    Object.assign(upstreamForm, { name: data.upstream.name, nodes: data.upstream.nodes.map((node: Json) => ({ server: node.server, weight: node.weight })), maxFails: data.upstream.maxFails, failTimeout: data.upstream.failTimeout })
+  } catch (e) { upstreamMessage.value = e instanceof Error ? e.message : String(e) }
+}
+async function addUpstreamNode() {
+  const server = upstreamNew.server.trim().toLowerCase()
+  if (!server) { upstreamMessage.value = '请填写节点地址（host:port）'; return }
+  if (upstreamForm.nodes.some((node) => node.server === server)) { upstreamMessage.value = '该节点已存在'; return }
+  upstreamForm.nodes.push({ server, weight: Number(upstreamNew.weight) || 1 })
+  upstreamNew.server = ''
+  upstreamMessage.value = '节点已加入列表，点击「应用配置」生效'
+}
+async function saveUpstream() {
+  upstreamBusy.value = true; upstreamMessage.value = ''
+  try {
+    const data = await api('/upstreams/new_api', { method: 'PUT', body: JSON.stringify({ nodes: upstreamForm.nodes.map((node) => ({ server: node.server, weight: Number(node.weight) })), maxFails: upstreamForm.maxFails, failTimeout: upstreamForm.failTimeout }) })
+    Object.assign(upstreamForm, { name: data.upstream.name, nodes: data.upstream.nodes.map((node: Json) => ({ server: node.server, weight: node.weight })), maxFails: data.upstream.maxFails, failTimeout: data.upstream.failTimeout })
+    upstreamMessage.value = data.message || (data.applied ? '配置已生效' : '配置已写入（未重载 Nginx）')
+  } catch (e) { upstreamMessage.value = e instanceof Error ? e.message : String(e) } finally { upstreamBusy.value = false }
+}
+async function resetUpstream() {
+  if (!confirm('恢复默认节点（本机 90 : 新加坡 20）并立即应用？')) return
+  upstreamForm.nodes = UPSTREAM_DEFAULT_NODES.map((node) => ({ ...node }))
+  await saveUpstream()
+}
 async function changePassword() { if (passwordForm.nextPassword !== passwordForm.confirm) { error.value = '两次输入的新密码不一致'; return } beginAction(); try { await api('/auth/password', { method: 'POST', body: JSON.stringify(passwordForm) }); alert('密码已修改，请重新登录'); authenticated.value = false; csrfToken.value = ''; Object.assign(passwordForm, { currentPassword: '', nextPassword: '', confirm: '' }) } catch (e) { finishError(e) } finally { busy.value = false } }
 function statusClass(ok: boolean | undefined) { return ok ? 'good' : 'bad' }
 function formatTime(value?: string | null) { return value ? new Date(value).toLocaleString('zh-CN') : '暂无' }
@@ -301,6 +358,7 @@ onMounted(restoreSession)
 <style scoped>
 .ops-shell{min-height:100vh;background:#f5f6f8;color:#18212f;font-family:Inter,"PingFang SC",sans-serif}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 20% 20%,#e6f0ff 0,transparent 32%),radial-gradient(circle at 80% 80%,#edf8f2 0,transparent 28%)}.login-card{width:min(420px,100%);padding:36px;background:#fff;border:1px solid #e3e7ed;border-radius:18px;box-shadow:0 18px 50px rgba(27,39,60,.09)}h1{font:600 28px/1.2 Inter,"PingFang SC",sans-serif;margin:5px 0 8px}h2{font:600 18px/1.2 Inter,"PingFang SC",sans-serif;margin:32px 0 14px}.eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;color:#5271ff}.muted{color:#788394}.login-card .muted{margin-bottom:28px}.login-card label,.password-card label,.form-grid label{display:grid;gap:7px;font-size:13px;font-weight:600;margin:14px 0}input,select{width:100%;border:1px solid #d9dee7;border-radius:8px;background:#fff;padding:10px 12px;font:inherit;color:inherit;outline:none}input:focus,select:focus{border-color:#5271ff;box-shadow:0 0 0 3px rgba(82,113,255,.1)}button{font:inherit;cursor:pointer}.primary{border:0;border-radius:8px;padding:10px 16px;background:#3155e7;color:#fff;font-weight:600}.primary:disabled,button:disabled{opacity:.45;cursor:not-allowed}.login-card .primary{width:100%;margin-top:12px}.back{display:block;text-align:center;color:#788394;margin-top:20px;text-decoration:none;font-size:13px}.topbar{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#fff;border-bottom:1px solid #e4e7ec;position:sticky;top:0;z-index:5}.brand{font-weight:750}.top-actions{display:flex;gap:8px}.ghost{border:1px solid #dce1e9;border-radius:7px;padding:7px 12px;background:#fff;color:#465266}.layout{display:grid;grid-template-columns:190px minmax(0,1fr);min-height:calc(100vh - 62px)}.nav{padding:22px 12px;background:#fff;border-right:1px solid #e4e7ec}.nav button{width:100%;border:0;border-radius:8px;padding:10px 12px;margin:2px 0;text-align:left;background:transparent;color:#647083}.nav button.active{background:#eef2ff;color:#3155e7;font-weight:650}.content{width:min(1260px,100%);padding:30px 34px 60px}.content section{padding:0}.section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:22px}.section-head small{color:#8a94a3}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric,.card{background:#fff;border:1px solid #e4e7ec;border-radius:11px;padding:17px;box-shadow:0 1px 2px rgba(22,34,51,.03)}.metric{display:grid;gap:6px}.metric span,.metric small,.card p,.card small{color:#788394}.metric strong{font-size:24px}.good{color:#16865b!important}.bad{color:#d04a4a!important}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:7px}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.card p{margin:8px 0;font-size:13px;word-break:break-all}.pill{display:inline-block;border-radius:999px;padding:3px 8px;background:#edf0f5;color:#677384;font-size:11px}.pill.good{background:#e9f7f0}.pill.bad{background:#fceeed}.table-wrap{overflow:auto;background:#fff;border:1px solid #e4e7ec;border-radius:10px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:12px 14px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}th{background:#fafbfc;color:#667284;font-weight:650;white-space:nowrap}td a{color:#3155e7;text-decoration:none}.empty{text-align:center;padding:24px;color:#8b95a3}.message,.warning{border-radius:8px;padding:10px 13px;margin:0 0 16px;font-size:13px}.message.error{background:#fff0ef;color:#b73535}.message.ok{background:#eaf8f1;color:#15744f}.warning{background:#fff8e4;border:1px solid #f2dfa4;color:#735b14}.form-card{margin-bottom:18px}.form-grid{padding:18px}.form-grid>label{margin:0}.form-grid,.form-grid fieldset{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.form-grid fieldset{border:0;grid-column:1/-1}.check{display:flex!important;align-items:center;gap:8px!important;align-self:end;min-height:40px}.check input{width:auto}.form-actions{grid-column:1/-1;display:flex;gap:8px;margin-top:4px}.link{border:0;background:transparent;color:#3155e7;padding:3px 6px}.link.danger{color:#c94343}.block{display:block;color:#8791a0;margin-top:5px;max-width:360px}.password-card{width:min(500px,100%);padding:20px}.password-card button{margin-top:14px}
 .container-actions{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px;padding-top:10px;border-top:1px solid #eef0f3}
+input.wt{width:5.5rem;padding:7px 10px;text-align:center}td code{background:#f4f6fa;border-radius:5px;padding:2px 6px;font-size:12px}
 .tab-buttons{display:flex;gap:6px;margin:18px 0 10px;border-bottom:2px solid #e4e7ec}.tab-buttons button{border:0;background:0 0;padding:8px 16px 10px;font-size:14px;font-weight:600;color:#788394;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer}.tab-buttons button.active{color:#3155e7;border-bottom-color:#3155e7}.card.selected{border-color:#5271ff;box-shadow:0 0 0 2px rgba(82,113,255,.15)}.primary.sm{padding:5px 12px;font-size:13px}.btn-inline{display:inline-flex;gap:6px;margin-left:12px;vertical-align:middle}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.nav{display:flex;overflow:auto;border-right:0;border-bottom:1px solid #e4e7ec;padding:8px;position:sticky;top:62px;z-index:4}.nav button{width:auto;white-space:nowrap}.content{padding:22px 15px 48px}.metrics{grid-template-columns:repeat(2,1fr)}.form-grid,.form-grid fieldset{grid-template-columns:1fr 1fr}.topbar{padding:0 15px}}@media(max-width:540px){.metrics{grid-template-columns:1fr}.form-grid,.form-grid fieldset{grid-template-columns:1fr}.topbar .muted{display:none}.section-head{align-items:start;gap:10px;flex-direction:column}th,td{padding:10px}.login-card{padding:26px 22px}}
 .skeleton-overview{padding:20px 0}.sk-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.sk-pulse{height:68px;border-radius:10px;background:linear-gradient(90deg,#e8ecf2 25%,#f2f4f7 50%,#e8ecf2 75%);background-size:200% 100%;animation:sk-shimmer 1.6s infinite}@keyframes sk-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}

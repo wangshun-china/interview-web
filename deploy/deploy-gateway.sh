@@ -42,6 +42,13 @@ install -d -m 755 \
   "$DEPLOY_DIR/nginx-logs" \
   "$DEPLOY_DIR/routes"
 install -d -m 700 "$DEPLOY_DIR/ops-data"
+# Seed the new_api upstream (weights editable from the ops panel) so nginx can
+# always resolve the upstream referenced by the api_transfer server block.
+# Panel-managed state is never overwritten by deploys.
+if [[ ! -f "$DEPLOY_DIR/routes/new_api_upstream.conf" ]]; then
+  install -m 644 "$SOURCE_DIR/new_api_upstream.conf" "$DEPLOY_DIR/routes/new_api_upstream.conf"
+  install -m 600 "$SOURCE_DIR/new_api_upstream.json" "$DEPLOY_DIR/routes/new_api_upstream.json"
+fi
 # Keep the pre-migration single-service compose for rollback until the new
 # topology has passed health checks; captured only while the gateway has
 # never existed, so .previous always holds the true legacy topology.

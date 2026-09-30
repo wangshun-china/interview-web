@@ -6,7 +6,7 @@ import { Buffer } from 'node:buffer'
 import { execFile } from 'node:child_process'
 import tls from 'node:tls'
 import { promisify } from 'node:util'
-import { assertSafeRoutePath, renderRouteConfig, summarizeTraffic } from './core.mjs'
+import { assertSafeRoutePath, DEFAULT_UPSTREAM, normalizeUpstream, renderRouteConfig, renderUpstreamConfig, summarizeTraffic } from './core.mjs'
 
 const execFileAsync = promisify(execFile)
 
@@ -162,6 +162,58 @@ export class RouteManager {
       return { state: 'removed', message: validation || 'Nginx configuration reloaded' }
     } catch (error) {
       fs.writeFileSync(file, previous, { mode: 0o600 })
+      throw error
+    }
+  }
+}
+
+export class UpstreamManager {
+  constructor({ routeDir, nginxController = new LocalNginxController(), applyEnabled = false }) {
+    this.routeDir = routeDir
+    this.nginxController = nginxController
+    this.applyEnabled = applyEnabled
+    fs.mkdirSync(routeDir, { recursive: true, mode: 0o700 })
+  }
+
+  get stateFile() {
+    return path.join(this.routeDir, `${DEFAULT_UPSTREAM.name}_upstream.json`)
+  }
+
+  get confFile() {
+    return path.join(this.routeDir, `${DEFAULT_UPSTREAM.name}_upstream.conf`)
+  }
+
+  load() {
+    try {
+      return normalizeUpstream(JSON.parse(fs.readFileSync(this.stateFile, 'utf8')))
+    } catch {
+      return normalizeUpstream(DEFAULT_UPSTREAM)
+    }
+  }
+
+  async apply(input) {
+    const state = normalizeUpstream(input)
+    const previousConf = fs.existsSync(this.confFile) ? fs.readFileSync(this.confFile, 'utf8') : null
+    const previousState = fs.existsSync(this.stateFile) ? fs.readFileSync(this.stateFile, 'utf8') : null
+
+    fs.writeFileSync(this.stateFile, `${JSON.stringify(state, null, 2)}\n`, { mode: 0o600 })
+    const temporary = `${this.confFile}.next`
+    fs.writeFileSync(temporary, renderUpstreamConfig(state), { mode: 0o600 })
+    fs.renameSync(temporary, this.confFile)
+
+    if (!this.applyEnabled) {
+      return { applied: false, message: `本地安全模式：配置已写入 ${path.basename(this.confFile)}，未重载 Nginx` }
+    }
+
+    try {
+      const validation = await this.nginxController.validate()
+      await this.nginxController.reload()
+      return { applied: true, message: validation || 'Nginx configuration reloaded' }
+    } catch (error) {
+      if (previousConf == null) fs.rmSync(this.confFile, { force: true })
+      else fs.writeFileSync(this.confFile, previousConf, { mode: 0o600 })
+      if (previousState == null) fs.rmSync(this.stateFile, { force: true })
+      else fs.writeFileSync(this.stateFile, previousState, { mode: 0o600 })
       throw error
     }
   }

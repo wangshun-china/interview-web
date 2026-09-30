@@ -85,6 +85,75 @@ export function normalizeTunnel(input) {
   }
 }
 
+export const DEFAULT_UPSTREAM = Object.freeze({
+  name: 'new_api',
+  maxFails: 2,
+  failTimeout: 15,
+  nodes: Object.freeze([
+    Object.freeze({ server: '127.0.0.1:7777', weight: 90 }),
+    Object.freeze({ server: '47.251.94.131:7777', weight: 20 })
+  ])
+})
+
+export function validateUpstreamServer(value) {
+  const server = String(value ?? '').trim().toLowerCase()
+  const match = /^([a-z0-9](?:[a-z0-9.-]*[a-z0-9])?):(\d{1,5})$/.exec(server)
+  if (!match) throw validationError('节点必须是 host:port 形式，例如 1.2.3.4:7777')
+  const port = Number(match[2])
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw validationError('节点端口必须是 1 到 65535 之间的整数')
+  }
+  return `${match[1]}:${port}`
+}
+
+export function validateUpstreamWeight(value) {
+  const weight = Number(value)
+  if (!Number.isInteger(weight) || weight < 1 || weight > 1000) {
+    throw validationError('权重必须是 1 到 1000 之间的整数')
+  }
+  return weight
+}
+
+export function normalizeUpstream(input) {
+  const rawNodes = Array.isArray(input?.nodes) ? input.nodes : []
+  if (rawNodes.length < 1) throw validationError('至少保留一个节点')
+  if (rawNodes.length > 8) throw validationError('节点数量不能超过 8 个')
+  const seen = new Set()
+  const nodes = rawNodes.map((node) => {
+    const server = validateUpstreamServer(node.server)
+    if (seen.has(server)) throw validationError(`节点重复：${server}`)
+    seen.add(server)
+    return { server, weight: validateUpstreamWeight(node.weight) }
+  })
+  const maxFails = Number(input?.maxFails ?? DEFAULT_UPSTREAM.maxFails)
+  const failTimeout = Number(input?.failTimeout ?? DEFAULT_UPSTREAM.failTimeout)
+  if (!Number.isInteger(maxFails) || maxFails < 1 || maxFails > 10) {
+    throw validationError('max_fails 必须是 1 到 10 之间的整数')
+  }
+  if (!Number.isInteger(failTimeout) || failTimeout < 5 || failTimeout > 300) {
+    throw validationError('fail_timeout 必须是 5 到 300 之间的整数')
+  }
+  return { name: DEFAULT_UPSTREAM.name, nodes, maxFails, failTimeout }
+}
+
+export function renderUpstreamConfig(state) {
+  const servers = state.nodes
+    .map((node) => `    server ${node.server} weight=${node.weight} max_fails=${state.maxFails} fail_timeout=${state.failTimeout}s;`)
+    .join('\n')
+  return `# Managed by Wangshun Ops from ${state.name}_upstream.json. Manual edits will be replaced.\nupstream ${state.name} {\n${servers}\n}\n`
+}
+
+export function upstreamWithPercent(state) {
+  const total = state.nodes.reduce((sum, node) => sum + node.weight, 0)
+  return {
+    ...state,
+    nodes: state.nodes.map((node) => ({
+      ...node,
+      percent: total ? Math.round((node.weight * 1000) / total) / 10 : 0
+    }))
+  }
+}
+
 export function routeFilename(domain) {
   return `${validateDomain(domain)}.conf`
 }

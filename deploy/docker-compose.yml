@@ -1,7 +1,9 @@
 services:
-  portfolio:
-    image: ${INTERVIEW_IMAGE:?set INTERVIEW_IMAGE}
-    container_name: wangshun-portfolio
+  # Edge: TLS termination + domain routing + ops backend. The only container
+  # with host ports; recreating it briefly interrupts every domain.
+  gateway:
+    image: ${GATEWAY_IMAGE:?set GATEWAY_IMAGE}
+    container_name: wangshun-gateway
     labels:
       wangshun.ops.protected: "true"
     restart: unless-stopped
@@ -11,7 +13,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      NODE_ENV: production
       OPS_HOST: 127.0.0.1
       OPS_PORT: 8787
       OPS_DATA_DIR: /data
@@ -32,3 +33,16 @@ services:
       - ./routes:/etc/nginx/routes
       - ./nginx-logs:/var/log/nginx
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - portfolio
+
+  # Site: static resume + ops panel frontend. No host ports; reached only
+  # through the gateway, so portfolio deploys never touch the TLS edge.
+  portfolio:
+    image: ${PORTFOLIO_IMAGE:?set PORTFOLIO_IMAGE}
+    container_name: wangshun-portfolio
+    labels:
+      wangshun.ops.protected: "true"
+    restart: unless-stopped
+    expose:
+      - "80"

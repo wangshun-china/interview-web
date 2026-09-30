@@ -1,18 +1,22 @@
-name: Build and Deploy
+name: Deploy Gateway (edge + ops backend)
 
+# Fires only when gateway infrastructure changes (nginx confs, ops backend,
+# compose topology). Resume content is deployed by deploy-portfolio.yml.
 on:
   push:
     branches: [main, master]
+    paths:
+      - "ops/**"
+      - "deploy/Dockerfile.gateway"
+      - "deploy/gateway-default.conf"
+      - "deploy/nginx-main.conf"
+      - "deploy/nginx-https.conf"
+      - "deploy/nginx-http.conf"
+      - "deploy/container-entrypoint.sh"
+      - "deploy/docker-compose.yml"
+      - "deploy/deploy-gateway.sh"
+      - ".github/workflows/deploy-gateway.yml"
   workflow_dispatch:
-    inputs:
-      target_env:
-        description: '请选择要部署的目标服务器 (默认推送到阿里云)'
-        required: true
-        default: 'aliyun'
-        type: choice
-        options:
-          - aliyun
-          - wsl
 
 permissions:
   contents: read
@@ -20,34 +24,20 @@ permissions:
 
 env:
   GHCR_REGISTRY: ghcr.io
-  GHCR_IMAGE_NAME: ${{ github.repository_owner }}/${{ github.event.repository.name }}
+  GHCR_IMAGE_NAME: ${{ github.repository }}-gateway
   ALIYUN_ACR_REGISTRY: ${{ vars.ALIYUN_ACR_REGISTRY }}
   ALIYUN_ACR_USERNAME: ${{ vars.ALIYUN_ACR_USERNAME }}
   ALIYUN_ACR_PASSWORD: ${{ secrets.ALIYUN_ACR_PASSWORD }}
-  INTERVIEW_IMAGE_NAME: ${{ vars.INTERVIEW_IMAGE_NAME }}
+  GATEWAY_IMAGE_NAME: ${{ vars.INTERVIEW_GATEWAY_IMAGE_NAME }}
+  PORTFOLIO_IMAGE_NAME: ${{ vars.INTERVIEW_IMAGE_NAME }}
 
 jobs:
   build:
-    name: Build Images
+    name: Build Gateway Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Build Frontend
-        run: |
-          pnpm install
-          pnpm build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -66,26 +56,28 @@ jobs:
           username: ${{ env.ALIYUN_ACR_USERNAME }}
           password: ${{ env.ALIYUN_ACR_PASSWORD }}
 
-      - name: Build and push Application
+      - name: Build and push Gateway
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: deploy/Dockerfile.gateway
           push: true
           provenance: false
           tags: |
             ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE_NAME }}:latest
             ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE_NAME }}:${{ github.sha }}
-            ${{ env.ALIYUN_ACR_REGISTRY }}/${{ env.INTERVIEW_IMAGE_NAME }}:latest
-            ${{ env.ALIYUN_ACR_REGISTRY }}/${{ env.INTERVIEW_IMAGE_NAME }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            ${{ env.ALIYUN_ACR_REGISTRY }}/${{ env.GATEWAY_IMAGE_NAME }}:latest
+            ${{ env.ALIYUN_ACR_REGISTRY }}/${{ env.GATEWAY_IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha,scope=gateway
+          cache-to: type=gha,scope=gateway,mode=max
 
   deploy:
-    name: Deploy to ${{ github.event.inputs.target_env || 'aliyun' }}
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    name: Deploy Gateway to Aliyun
     needs: build
-    runs-on: [self-hosted, "${{ github.event.inputs.target_env || 'aliyun' }}"]
+    runs-on: [self-hosted, aliyun]
     concurrency:
-      group: wangshun-gateway-${{ github.event.inputs.target_env || 'aliyun' }}
+      group: wangshun-gateway-aliyun
       cancel-in-progress: false
     steps:
       - name: Checkout (with retry, self-hosted)
@@ -123,7 +115,7 @@ jobs:
           ALIYUN_ACR_REGISTRY: ${{ env.ALIYUN_ACR_REGISTRY }}
           ALIYUN_ACR_USERNAME: ${{ env.ALIYUN_ACR_USERNAME }}
           ALIYUN_ACR_PASSWORD: ${{ env.ALIYUN_ACR_PASSWORD }}
-          INTERVIEW_IMAGE_NAME: ${{ env.INTERVIEW_IMAGE_NAME }}
+          GATEWAY_IMAGE_NAME: ${{ env.GATEWAY_IMAGE_NAME }}
           LETSENCRYPT_EMAIL: ${{ secrets.LETSENCRYPT_EMAIL }}
           OPS_INITIAL_PASSWORD: ${{ secrets.OPS_INITIAL_PASSWORD }}
           OPS_AGENT_TOKEN: ${{ secrets.OPS_AGENT_TOKEN }}
@@ -137,18 +129,20 @@ jobs:
             docker login "$ALIYUN_ACR_REGISTRY" -u "$ALIYUN_ACR_USERNAME" --password-stdin
 
           GHCR_IMAGE="${GHCR_REGISTRY}/${GHCR_IMAGE_NAME}:${GITHUB_SHA}"
-          ACR_IMAGE="${ALIYUN_ACR_REGISTRY}/${INTERVIEW_IMAGE_NAME}:${GITHUB_SHA}"
+          ACR_IMAGE="${ALIYUN_ACR_REGISTRY}/${GATEWAY_IMAGE_NAME}:${GITHUB_SHA}"
           if timeout 120 docker pull "$GHCR_IMAGE"; then
-            DEPLOY_IMAGE="$GHCR_IMAGE"
+            GATEWAY_IMAGE="$GHCR_IMAGE"
           elif timeout 120 docker pull "$ACR_IMAGE"; then
             echo "GHCR pull failed or timed out; using Aliyun ACR (faster from this host)."
-            DEPLOY_IMAGE="$ACR_IMAGE"
+            GATEWAY_IMAGE="$ACR_IMAGE"
           else
-            echo "Unable to pull the release image from GHCR or Aliyun ACR." >&2
+            echo "Unable to pull the gateway image from GHCR or Aliyun ACR." >&2
             exit 1
           fi
 
-          export DEPLOY_IMAGE
+          export DEPLOY_GATEWAY_IMAGE="$GATEWAY_IMAGE"
+          export PORTFOLIO_LATEST="${ALIYUN_ACR_REGISTRY}/${PORTFOLIO_IMAGE_NAME}:latest"
+          export GATEWAY_LATEST="${ALIYUN_ACR_REGISTRY}/${GATEWAY_IMAGE_NAME}:latest"
           bash deploy/deploy-gateway.sh
           docker image prune -f
 

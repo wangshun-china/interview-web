@@ -12,6 +12,7 @@ import {
 test('upstream server validation accepts host:port and rejects junk', () => {
   assert.equal(validateUpstreamServer('127.0.0.1:7777'), '127.0.0.1:7777')
   assert.equal(validateUpstreamServer('Api.Example.COM:8080'), 'api.example.com:8080')
+  assert.equal(validateUpstreamServer('Host.Docker.Internal:7777'), 'host.docker.internal:7777')
   assert.throws(() => validateUpstreamServer('http://1.2.3.4:7777'), /host:port/)
   assert.throws(() => validateUpstreamServer('1.2.3.4'), /host:port/)
   assert.throws(() => validateUpstreamServer('1.2.3.4:0'), /端口/)
@@ -43,7 +44,7 @@ test('upstream normalization dedupes and enforces node limits', () => {
 test('rendered upstream config is deterministic and constrained', () => {
   const config = renderUpstreamConfig(normalizeUpstream(DEFAULT_UPSTREAM))
   assert.match(config, /upstream new_api \{/)
-  assert.match(config, /server 127\.0\.0\.1:7777 weight=10 max_fails=2 fail_timeout=15s;/)
+  assert.match(config, /server host\.docker\.internal:7777 weight=10 max_fails=2 fail_timeout=15s;/)
   assert.match(config, /server 47\.251\.94\.131:7777 weight=90 max_fails=2 fail_timeout=15s;/)
   assert.doesNotMatch(config, /http:\/\//)
 })

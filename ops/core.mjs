@@ -90,7 +90,7 @@ export const DEFAULT_UPSTREAM = Object.freeze({
   maxFails: 2,
   failTimeout: 15,
   nodes: Object.freeze([
-    Object.freeze({ server: '127.0.0.1:7777', weight: 10 }),
+    Object.freeze({ server: 'host.docker.internal:7777', weight: 10 }),
     Object.freeze({ server: '47.251.94.131:7777', weight: 90 })
   ])
 })

@@ -238,7 +238,7 @@ const upstreamNew = reactive({ server: '', weight: 20 })
 const upstreamBusy = ref(false)
 const upstreamMessage = ref('')
 const UPSTREAM_DEFAULT_NODES = [
-  { server: '127.0.0.1:7777', weight: 10 },
+  { server: 'host.docker.internal:7777', weight: 10 },
   { server: '47.251.94.131:7777', weight: 90 }
 ]
 const onlineServices = computed(() => dashboard.value?.services?.filter((item: Json) => item.online).length ?? 0)

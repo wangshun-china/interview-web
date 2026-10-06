@@ -163,8 +163,10 @@ if [[ -z "$gateway_running" ]]; then
   done
   echo "Cutover complete; gateway is serving the edge"
 else
-  # Steady state: compose recreates only the service whose image/config changed.
-  compose up -d --remove-orphans --pull never
+  # Steady state: each deploy touches only its own service (DEPLOY_SERVICE is
+  # exported by the matching workflow), so a stale/missing image pinned for
+  # the other service can never fail this deploy.
+  compose up -d --pull never --no-deps "${DEPLOY_SERVICE:-portfolio gateway}"
 fi
 
 if [[ "$certificate_needs_update" == true ]]; then

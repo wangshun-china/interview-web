@@ -144,6 +144,7 @@ jobs:
           fi
 
           export DEPLOY_GATEWAY_IMAGE="$GATEWAY_IMAGE"
+          export DEPLOY_SERVICE="gateway"
           export PORTFOLIO_LATEST="${ALIYUN_ACR_REGISTRY}/${PORTFOLIO_IMAGE_NAME}:latest"
           export GATEWAY_LATEST="${ALIYUN_ACR_REGISTRY}/${GATEWAY_IMAGE_NAME}:latest"
           bash deploy/deploy-gateway.sh

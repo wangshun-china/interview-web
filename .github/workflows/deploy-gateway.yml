@@ -153,6 +153,11 @@ jobs:
   deploy-wsl-agent:
     name: Deploy WSL Ops Agent
     needs: deploy
+    # Own concurrency group: a hung WSL agent job (offline WSL runner) must
+    # never block future gateway or portfolio deploys.
+    concurrency:
+      group: wangshun-wsl-agent
+      cancel-in-progress: false
     runs-on: [self-hosted, wsl]
     steps:
       - name: Checkout (with retry, self-hosted)

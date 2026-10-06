@@ -38,3 +38,12 @@ test('traffic summary ignores old and malformed lines and groups referrers', () 
     averageRequestTime: 0.2, referrers: [{ source: 'google.com', count: 1 }]
   }])
 })
+
+test('rendered route for container-DNS target re-resolves via variable proxy_pass', () => {
+  const config = renderRouteConfig({ domain: 'demo.wangshun.work', targetHost: 'agent-quest', targetPort: 8080, protocol: 'http', healthPath: '/', tls: false })
+  assert.match(config, /set \$route_upstream http:\/\/agent-quest:8080;/)
+  assert.match(config, /proxy_pass \$route_upstream;/)
+  const stable = renderRouteConfig({ domain: 'demo.wangshun.work', targetHost: 'host.docker.internal', targetPort: 20000, protocol: 'http', healthPath: '/', tls: false })
+  assert.match(stable, /proxy_pass http:\/\/host\.docker\.internal:20000;/)
+  assert.doesNotMatch(stable, /route_upstream/)
+})

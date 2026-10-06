@@ -94,8 +94,15 @@ function proxyLocation(route) {
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";`
+  // agent-quest is a container DNS name whose IP changes on recreation; use a
+  // variable so nginx re-resolves per request (resolver is defined in
+  // nginx-main.conf). host.docker.internal and 127.0.0.1 are stable.
+  const proxyPass = route.targetHost === 'agent-quest'
+    ? `set $route_upstream ${route.protocol}://${route.targetHost}:${route.targetPort};
+        proxy_pass $route_upstream;`
+    : `proxy_pass ${route.protocol}://${route.targetHost}:${route.targetPort};`
   return `    location / {
-        proxy_pass ${route.protocol}://${route.targetHost}:${route.targetPort};
+        ${proxyPass}
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

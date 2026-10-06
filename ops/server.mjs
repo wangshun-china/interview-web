@@ -3,8 +3,8 @@ import path from 'node:path'
 import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { domainConflicts, normalizeRoute, normalizeTunnel, normalizeUpstream, upstreamWithPercent, validateDomain } from './core.mjs'
-import { collectCertificate, collectNginxBindings, collectServices, collectTraffic, DockerClient, LocalNginxController, RouteManager, SingboxController, UpstreamManager } from './platform.mjs'
+import { domainConflicts, normalizeRoute, normalizeTunnel, validateDomain } from './core.mjs'
+import { collectCertificate, collectNginxBindings, collectServices, collectTraffic, DockerClient, LocalNginxController, RouteManager, SingboxController } from './platform.mjs'
 import { parseCookies, safeTokenEqual } from './security.mjs'
 import { OpsStore } from './store.mjs'
 
@@ -171,11 +171,6 @@ export function createOpsServer(overrides = {}) {
   const docker = overrides.dockerClient ?? new DockerClient(config.dockerSocket)
   const nginxController = overrides.nginxController ?? new LocalNginxController(config.nginxBinary)
   const routeManager = overrides.routeManager ?? new RouteManager({
-    routeDir: config.routeDir,
-    nginxController,
-    applyEnabled: config.applyRoutes
-  })
-  const upstreamManager = overrides.upstreamManager ?? new UpstreamManager({
     routeDir: config.routeDir,
     nginxController,
     applyEnabled: config.applyRoutes
@@ -442,26 +437,6 @@ export function createOpsServer(overrides = {}) {
         store.audit(username, 'delete-route', existing.domain, existing, ip)
         dashboardCache = null
         sendJson(response, 200, { ok: true })
-        return
-      }
-
-      if (pathname === `${API_PREFIX}/upstreams/new_api` && request.method === 'GET') {
-        sendJson(response, 200, {
-          upstream: upstreamWithPercent(upstreamManager.load()),
-          applyEnabled: config.applyRoutes
-        })
-        return
-      }
-      if (pathname === `${API_PREFIX}/upstreams/new_api` && request.method === 'PUT') {
-        const applied = await upstreamManager.apply(normalizeUpstream(await readJson(request)))
-        store.audit(username, 'update-upstream', 'new_api', applied, ip)
-        dashboardCache = null
-        sendJson(response, 200, {
-          ok: true,
-          applied: applied.applied,
-          message: applied.message,
-          upstream: upstreamWithPercent(upstreamManager.load())
-        })
         return
       }
 

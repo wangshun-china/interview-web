@@ -17,6 +17,7 @@ DOMAINS=(
   api.wangshun.work
   ops.wangshun.work
   jsm.wangshun.work
+  oss.wangshun.work
 )
 HEALTHCHECK_DOMAINS=(
   wangshun.work

@@ -27,7 +27,7 @@
               </div>
               <div class="period">
                 <CalendarDays class="h-4 w-4" />
-                <span>2026.05 - 2026.09</span>
+                <span>2026.05 - 2026.10</span>
               </div>
             </div>
             <div class="project-name">

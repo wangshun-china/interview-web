@@ -17,18 +17,18 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>2 个上游项目 · 3 个 PR</span>
+            <span>4 个上游项目 · 6 个 PR · 120k+ ★</span>
           </div>
         </div>
-        <p class="oss-subtitle">AI Agent 框架 · 上游贡献实践</p>
+        <p class="oss-subtitle">AI Agent 框架与 Python 工具链 · 上游贡献实践</p>
       </div>
     </header>
 
     <div class="oss-body">
       <p class="oss-blurb">
-        围绕智能体审批门控、嵌套工具摘要的流式兼容与存储 API 演进等真实问题，
-        向 OpenAI Agents SDK 和 Pydantic AI Harness 提交 3 个 PR，覆盖问题定位、
-        跨路径实现、回归测试、文档更新与评审迭代。
+        围绕智能体审批门控、嵌套工具摘要的流式兼容、类型检查报错质量与 linter
+        规则精度等真实问题，向 OpenAI Agents SDK、Pydantic AI、Ruff 与 Mypy
+        提交 6 个 PR，覆盖问题定位、跨路径实现、回归测试与评审迭代。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -67,17 +67,46 @@ import { GitPullRequest, Star } from 'lucide-vue-next'
 
 const repos = [
   {
-    name: 'pydantic / pydantic-ai-harness',
-    url: 'https://github.com/pydantic/pydantic-ai-harness',
-    stars: '890+',
+    name: 'astral-sh / ruff',
+    url: 'https://github.com/astral-sh/ruff',
+    stars: '50k+',
     prs: [
       {
-        title: 'Give ToolOutputLimits summaries a stream seam (#729)',
+        title: 'Ignore doctest output when detecting docstring sections',
+        note: '让 docstring 章节检测忽略 doctest 的预期输出段落，避免示例输出被误判为缺失章节，并补充回归测试',
+        url: 'https://github.com/astral-sh/ruff/pull/29784',
+      },
+    ],
+  },
+  {
+    name: 'python / mypy',
+    url: 'https://github.com/python/mypy',
+    stars: '21k+',
+    prs: [
+      {
+        title: 'Use the paired error\'s code for union operand notes',
+        note: 'union 类型不兼容的逐操作数提示复用配对错误的错误码，使 disable 注释可以精确抑制对应报错',
+        url: 'https://github.com/python/mypy/pull/22317',
+      },
+    ],
+  },
+  {
+    name: 'pydantic / pydantic-ai',
+    url: 'https://github.com/pydantic/pydantic-ai',
+    stars: '21k+',
+    prs: [
+      {
+        title: 'Add event_stream_handler to ToolOutputLimits\' Summarize action',
+        note: '为嵌套工具输出摘要接入流式请求路径，让摘要复用与 #729 同源的事件流消费能力',
+        url: 'https://github.com/pydantic/pydantic-ai/pull/9285',
+      },
+      {
+        title: 'Give ToolOutputLimits summaries a stream seam (pydantic-ai-harness #729)',
         note: '为嵌套工具输出摘要增加可选事件流接口，覆盖流式传输、事件消费和端到端 Agent 回归测试',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/729',
       },
       {
-        title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
+        title: 'Warn on the deprecated single-key get/add of spend stores (pydantic-ai-harness #747)',
         note: '为内存与 Redis SpendStore 的废弃单键 API 补充迁移告警，更新内部调用并完善单元与集成测试',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
       },

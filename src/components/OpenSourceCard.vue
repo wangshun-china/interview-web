@@ -17,7 +17,7 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>已合并 7 · 覆盖 100k+ ★</span>
+            <span>已合并 8 · 覆盖 100k+ ★</span>
           </div>
         </div>
         <p class="oss-subtitle">数据库 / AI 基础设施 / Agent 网关 · 全部已被上游合并</p>
@@ -26,9 +26,9 @@
 
     <div class="oss-body">
       <p class="oss-blurb">
-        向 ClickHouse、Qdrant、MCP 官方 Rust SDK、AgentGateway、RuVector
-        等上游项目提交缺陷修复：覆盖驱动兼容性、检索正确性、连接生命周期与跨平台崩溃，
-        全部通过维护者评审并合并。
+        向 ClickHouse、Qdrant、MCP 官方 Rust SDK、AgentGateway、RuVector、
+        Pydantic AI Harness 等上游项目提交缺陷修复：覆盖驱动兼容性、检索正确性、
+        连接生命周期与跨平台崩溃，全部通过维护者评审并合并。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -133,6 +133,18 @@ const repos = [
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
         note: '修复 Jetson AGX Xavier、树莓派 4 等 ARMv8.2 无 LRCPC 指令平台上原生模块启动即崩溃的问题',
         url: 'https://github.com/ruvnet/RuVector/pull/1384',
+      },
+    ],
+  },
+  {
+    name: 'pydantic / pydantic-ai-harness',
+    url: 'https://github.com/pydantic/pydantic-ai-harness',
+    stars: '900+',
+    prs: [
+      {
+        title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
+        note: '为内存与 Redis SpendStore 的废弃单键 API 补充迁移告警，更新内部调用并完善单元与集成测试',
+        url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
       },
     ],
   },

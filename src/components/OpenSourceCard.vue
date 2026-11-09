@@ -17,7 +17,7 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>已合并 8 · 覆盖 100k+ ★</span>
+            <span>已合并 9 · 覆盖 100k+ ★</span>
           </div>
         </div>
         <p class="oss-subtitle">数据库 / AI 基础设施 / Agent 网关 · 全部已被上游合并</p>
@@ -133,6 +133,11 @@ const repos = [
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
         note: '修复 Jetson AGX Xavier、树莓派 4 等 ARMv8.2 无 LRCPC 指令平台上原生模块启动即崩溃的问题',
         url: 'https://github.com/ruvnet/RuVector/pull/1384',
+      },
+      {
+        title: 'fix: @ruvector/core 0.1.30 HNSW misses results on very small graphs (#1299)',
+        note: '修复 @ruvector/core 0.1.30 在极小图上 HNSW 检索漏召回的问题',
+        url: 'https://github.com/ruvnet/RuVector/pull/1299',
       },
     ],
   },

@@ -41,6 +41,7 @@
             {{ repo.stars }}
           </span>
         </div>
+        <p class="oss-repo-desc">{{ repo.desc }}</p>
         <a
           v-for="pr in repo.prs"
           :key="pr.url"
@@ -70,6 +71,7 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
+    desc: '全球领先的开源列式 OLAP 数据库，主打超大规模实时分析查询',
     prs: [
       {
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
@@ -82,6 +84,7 @@ const repos = [
     name: 'qdrant / qdrant',
     url: 'https://github.com/qdrant/qdrant',
     stars: '35k+',
+    desc: '高性能向量数据库，RAG 与语义检索场景的主流存储引擎（Rust 实现）',
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
@@ -99,6 +102,7 @@ const repos = [
     name: 'modelcontextprotocol / rust-sdk',
     url: 'https://github.com/modelcontextprotocol/rust-sdk',
     stars: '4k+',
+    desc: 'MCP（Model Context Protocol）官方 Rust SDK——连接大模型与工具、数据源的标准协议',
     prs: [
       {
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
@@ -111,6 +115,7 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
+    desc: '面向 AI Agent 的轻量网关（CNCF 项目），代理 MCP / A2A 等智能体协议',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
@@ -128,6 +133,7 @@ const repos = [
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4k+',
+    desc: 'Rust 实现的向量数据库，支持 HNSW 索引、WASM 与嵌入式部署',
     prs: [
       {
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
@@ -145,6 +151,7 @@ const repos = [
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',
+    desc: 'Pydantic AI 官方的 Agent Harness 子项目，聚焦工具输出摘要、限额与事件流',
     prs: [
       {
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
@@ -254,6 +261,13 @@ const repos = [
 
 .oss-repo {
   margin-top: 1.1rem;
+}
+
+.oss-repo-desc {
+  margin-top: 0.3rem;
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 
 .oss-repo-row {

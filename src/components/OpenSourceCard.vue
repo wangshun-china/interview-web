@@ -17,18 +17,18 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>4 个上游项目 · 6 个 PR · 120k+ ★</span>
+            <span>已合并 7 · 覆盖 100k+ ★</span>
           </div>
         </div>
-        <p class="oss-subtitle">AI Agent 框架与 Python 工具链 · 上游贡献实践</p>
+        <p class="oss-subtitle">数据库 / AI 基础设施 / Agent 网关 · 全部已被上游合并</p>
       </div>
     </header>
 
     <div class="oss-body">
       <p class="oss-blurb">
-        围绕智能体审批门控、嵌套工具摘要的流式兼容、类型检查报错质量与 linter
-        规则精度等真实问题，向 OpenAI Agents SDK、Pydantic AI、Ruff 与 Mypy
-        提交 6 个 PR，覆盖问题定位、跨路径实现、回归测试与评审迭代。
+        向 ClickHouse、Qdrant、MCP 官方 Rust SDK、AgentGateway、RuVector
+        等上游项目提交缺陷修复：覆盖驱动兼容性、检索正确性、连接生命周期与跨平台崩溃，
+        全部通过维护者评审并合并。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -67,60 +67,72 @@ import { GitPullRequest, Star } from 'lucide-vue-next'
 
 const repos = [
   {
-    name: 'astral-sh / ruff',
-    url: 'https://github.com/astral-sh/ruff',
+    name: 'ClickHouse / ClickHouse',
+    url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
     prs: [
       {
-        title: 'Ignore doctest output when detecting docstring sections',
-        note: '让 docstring 章节检测忽略 doctest 的预期输出段落，避免示例输出被误判为缺失章节，并补充回归测试',
-        url: 'https://github.com/astral-sh/ruff/pull/29784',
+        title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
+        note: '修复 MySQL 接口在 Connector/J 9.x 驱动下握手失败（Buffer length 断言）的问题，恢复与 5.1.49 驱动一致的行为',
+        url: 'https://github.com/ClickHouse/ClickHouse/pull/129709',
       },
     ],
   },
   {
-    name: 'python / mypy',
-    url: 'https://github.com/python/mypy',
-    stars: '21k+',
+    name: 'qdrant / qdrant',
+    url: 'https://github.com/qdrant/qdrant',
+    stars: '35k+',
     prs: [
       {
-        title: 'Use the paired error\'s code for union operand notes',
-        note: 'union 类型不兼容的逐操作数提示复用配对错误的错误码，使 disable 注释可以精确抑制对应报错',
-        url: 'https://github.com/python/mypy/pull/22317',
+        title: 'fix: group-by silently returns empty results (#11370)',
+        note: '修复 group-by 在不支持的 payload 值耗尽候选预算时静默返回空结果的问题',
+        url: 'https://github.com/qdrant/qdrant/pull/11370',
+      },
+      {
+        title: 'fix: RecommendBestScore applies score_threshold in the wrong direction (#11350)',
+        note: '修复 Euclid 距离下 RecommendBestScore 将 score_threshold 方向用反的问题',
+        url: 'https://github.com/qdrant/qdrant/pull/11350',
       },
     ],
   },
   {
-    name: 'pydantic / pydantic-ai',
-    url: 'https://github.com/pydantic/pydantic-ai',
-    stars: '21k+',
+    name: 'modelcontextprotocol / rust-sdk',
+    url: 'https://github.com/modelcontextprotocol/rust-sdk',
+    stars: '4k+',
     prs: [
       {
-        title: 'Add event_stream_handler to ToolOutputLimits\' Summarize action',
-        note: '为嵌套工具输出摘要接入流式请求路径，让摘要复用与 #729 同源的事件流消费能力',
-        url: 'https://github.com/pydantic/pydantic-ai/pull/9285',
-      },
-      {
-        title: 'Give ToolOutputLimits summaries a stream seam (pydantic-ai-harness #729)',
-        note: '为嵌套工具输出摘要增加可选事件流接口，覆盖流式传输、事件消费和端到端 Agent 回归测试',
-        url: 'https://github.com/pydantic/pydantic-ai-harness/pull/729',
-      },
-      {
-        title: 'Warn on the deprecated single-key get/add of spend stores (pydantic-ai-harness #747)',
-        note: '为内存与 Redis SpendStore 的废弃单键 API 补充迁移告警，更新内部调用并完善单元与集成测试',
-        url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
+        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
+        note: '修复 streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活的问题',
+        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
       },
     ],
   },
   {
-    name: 'openai / openai-agents-python',
-    url: 'https://github.com/openai/openai-agents-python',
-    stars: '29k+',
+    name: 'agentgateway / agentgateway',
+    url: 'https://github.com/agentgateway/agentgateway',
+    stars: '6k+',
     prs: [
       {
-        title: 'Fail closed on non-bool needs_approval predicate results (#4848)',
-        note: '提交审批门控 fail-closed 语义修复提案，统一 Runner、Realtime 与 MCP 路径并补充同步/异步回归测试',
-        url: 'https://github.com/openai/openai-agents-python/pull/4848',
+        title: 'fix: Windows CLI shows version as True (#4276)',
+        note: '修复 Windows CLI 将版本号显示为 True 而非实际版本的问题',
+        url: 'https://github.com/agentgateway/agentgateway/pull/4276',
+      },
+      {
+        title: 'fix: resolve the user\'s home directory on Windows (#4264)',
+        note: '修复 Windows 下无法正确解析用户主目录的问题',
+        url: 'https://github.com/agentgateway/agentgateway/pull/4264',
+      },
+    ],
+  },
+  {
+    name: 'ruvnet / RuVector',
+    url: 'https://github.com/ruvnet/RuVector',
+    stars: '4k+',
+    prs: [
+      {
+        title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
+        note: '修复 Jetson AGX Xavier、树莓派 4 等 ARMv8.2 无 LRCPC 指令平台上原生模块启动即崩溃的问题',
+        url: 'https://github.com/ruvnet/RuVector/pull/1384',
       },
     ],
   },

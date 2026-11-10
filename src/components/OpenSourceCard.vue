@@ -17,7 +17,7 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>已合并 9 · 覆盖 100k+ ★</span>
+            <span>已合并 10 · 覆盖 120k+ ★</span>
           </div>
         </div>
         <p class="oss-subtitle">数据库 / AI 基础设施 / Agent 网关 · 全部已被上游合并</p>
@@ -157,6 +157,19 @@ const repos = [
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
         note: '为内存与 Redis SpendStore 的废弃单键 API 补充迁移告警，更新内部调用并完善单元与集成测试',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
+      },
+    ],
+  },
+  {
+    name: 'bytecodealliance / wasmtime',
+    url: 'https://github.com/bytecodealliance/wasmtime',
+    stars: '18k+',
+    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）',
+    prs: [
+      {
+        title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
+        note: '修复复制式垃圾回收器的增长-回收启发式按整个堆而非活动半空间比较的问题',
+        url: 'https://github.com/bytecodealliance/wasmtime/pull/15207',
       },
     ],
   },

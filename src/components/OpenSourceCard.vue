@@ -17,10 +17,10 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>已合并 10 · 覆盖 120k+ ★</span>
+            <span>已合并 11 · 覆盖 145k+ ★</span>
           </div>
         </div>
-        <p class="oss-subtitle">数据库 / AI 基础设施 / Agent 网关 · 全部已被上游合并</p>
+        <p class="oss-subtitle">数据库 / MCP 生态 / AI 基础设施 · 全部已被上游合并</p>
       </div>
     </header>
 
@@ -108,6 +108,19 @@ const repos = [
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
         note: '修复 streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活的问题',
         url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
+      },
+    ],
+  },
+  {
+    name: 'PrefectHQ / fastmcp',
+    url: 'https://github.com/PrefectHQ/fastmcp',
+    stars: '28k+',
+    desc: 'Python 生态最流行的 MCP 框架——用装饰器即可把函数暴露为 MCP 工具与资源',
+    prs: [
+      {
+        title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
+        note: '修复资源或资源模板声明 UserSession 依赖时注册阶段直接报错的问题',
+        url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
       },
     ],
   },

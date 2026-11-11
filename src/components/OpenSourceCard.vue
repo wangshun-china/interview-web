@@ -26,9 +26,9 @@
 
     <div class="oss-body">
       <p class="oss-blurb">
-        向 ClickHouse、Qdrant、MCP 官方 Rust SDK、AgentGateway、RuVector、
-        Pydantic AI Harness 等上游项目提交缺陷修复：覆盖驱动兼容性、检索正确性、
-        连接生命周期与跨平台崩溃，全部通过维护者评审并合并。
+        长期向上游项目回馈维护级修复：每个 PR 均包含复现路径、根因分析与回归测试，
+        覆盖驱动兼容、检索正确性、连接生命周期、跨平台崩溃等疑难场景，
+        已在 ClickHouse、Qdrant、FastMCP、Wasmtime 等项目合并 10 个 PR。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -71,7 +71,7 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
-    desc: '全球领先的开源列式 OLAP 数据库，主打超大规模实时分析查询',
+    desc: 'C++ 列式 OLAP 数据库 · GitHub 顶级数据基础设施，单节点每秒可扫描数亿行，广泛应用于实时分析',
     prs: [
       {
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
@@ -84,7 +84,7 @@ const repos = [
     name: 'qdrant / qdrant',
     url: 'https://github.com/qdrant/qdrant',
     stars: '35k+',
-    desc: '高性能向量数据库，RAG 与语义检索场景的主流存储引擎（Rust 实现）',
+    desc: 'Rust 向量数据库 · RAG/语义检索的主流引擎，支持分布式部署与标量过滤，GitHub 向量数据库类 Top 2',
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
@@ -102,7 +102,7 @@ const repos = [
     name: 'modelcontextprotocol / rust-sdk',
     url: 'https://github.com/modelcontextprotocol/rust-sdk',
     stars: '4k+',
-    desc: 'MCP（Model Context Protocol）官方 Rust SDK——连接大模型与工具、数据源的标准协议',
+    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起的模型-工具连接标准，服务端/客户端双端实现',
     prs: [
       {
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
@@ -115,7 +115,7 @@ const repos = [
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
-    desc: 'Python 生态最流行的 MCP 框架——用装饰器即可把函数暴露为 MCP 工具与资源',
+    desc: 'Python MCP 框架事实标准 · 曾登 GitHub Trending 日榜第 1，装饰器即可把函数暴露为 MCP 工具与资源',
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
@@ -128,7 +128,7 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
-    desc: '面向 AI Agent 的轻量网关（CNCF 项目），代理 MCP / A2A 等智能体协议',
+    desc: 'CNCF 项目 · AI Agent 的 MCP/A2A 协议网关（Rust 实现），统一代理、鉴权与可观测性',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
@@ -177,7 +177,7 @@ const repos = [
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
-    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）',
+    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）· Firefox/Cloudflare 等在生产使用',
     prs: [
       {
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',

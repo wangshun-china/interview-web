@@ -28,7 +28,7 @@
       <p class="oss-blurb">
         长期向上游项目回馈维护级修复：每个 PR 均包含复现路径、根因分析与回归测试，
         覆盖驱动兼容、检索正确性、连接生命周期、跨平台崩溃等疑难场景，
-        已在 ClickHouse、Qdrant、FastMCP、Wasmtime 等项目合并 10 个 PR。
+        已在 ClickHouse、Qdrant、FastMCP、Wasmtime 等项目合并 11 个 PR。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">

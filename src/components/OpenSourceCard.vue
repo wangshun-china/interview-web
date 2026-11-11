@@ -99,19 +99,6 @@ const repos = [
     ],
   },
   {
-    name: 'modelcontextprotocol / rust-sdk',
-    url: 'https://github.com/modelcontextprotocol/rust-sdk',
-    stars: '4k+',
-    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起的模型-工具连接标准，服务端/客户端双端实现',
-    prs: [
-      {
-        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
-        note: '修复 streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活的问题',
-        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
-      },
-    ],
-  },
-  {
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
@@ -121,6 +108,19 @@ const repos = [
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
         note: '修复资源或资源模板声明 UserSession 依赖时注册阶段直接报错的问题',
         url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
+      },
+    ],
+  },
+  {
+    name: 'bytecodealliance / wasmtime',
+    url: 'https://github.com/bytecodealliance/wasmtime',
+    stars: '18k+',
+    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）· Firefox/Cloudflare 等在生产使用',
+    prs: [
+      {
+        title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
+        note: '修复复制式垃圾回收器的增长-回收启发式按整个堆而非活动半空间比较的问题',
+        url: 'https://github.com/bytecodealliance/wasmtime/pull/15207',
       },
     ],
   },
@@ -139,6 +139,19 @@ const repos = [
         title: 'fix: resolve the user\'s home directory on Windows (#4264)',
         note: '修复 Windows 下无法正确解析用户主目录的问题',
         url: 'https://github.com/agentgateway/agentgateway/pull/4264',
+      },
+    ],
+  },
+  {
+    name: 'modelcontextprotocol / rust-sdk',
+    url: 'https://github.com/modelcontextprotocol/rust-sdk',
+    stars: '4k+',
+    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起的模型-工具连接标准，服务端/客户端双端实现',
+    prs: [
+      {
+        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
+        note: '修复 streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活的问题',
+        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
       },
     ],
   },
@@ -170,19 +183,6 @@ const repos = [
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
         note: '为内存与 Redis SpendStore 的废弃单键 API 补充迁移告警，更新内部调用并完善单元与集成测试',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
-      },
-    ],
-  },
-  {
-    name: 'bytecodealliance / wasmtime',
-    url: 'https://github.com/bytecodealliance/wasmtime',
-    stars: '18k+',
-    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）· Firefox/Cloudflare 等在生产使用',
-    prs: [
-      {
-        title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
-        note: '修复复制式垃圾回收器的增长-回收启发式按整个堆而非活动半空间比较的问题',
-        url: 'https://github.com/bytecodealliance/wasmtime/pull/15207',
       },
     ],
   },

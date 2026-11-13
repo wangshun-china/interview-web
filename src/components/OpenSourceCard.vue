@@ -102,7 +102,7 @@ const repos = [
     name: 'redis / go-redis',
     url: 'https://github.com/redis/go-redis',
     stars: '22k+',
-    desc: 'Go 后端访问 Redis 的事实标准客户端，由 Redis 官方组织接管维护——几乎所有 Go 技术栈公司的核心依赖',
+    desc: 'Go 后端访问 Redis 的事实标准客户端，由 Redis 官方组织接管维护——Argo CD、Gitea、Casdoor 等知名开源项目直接依赖',
     prs: [
       {
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',

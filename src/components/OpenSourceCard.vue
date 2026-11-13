@@ -17,7 +17,7 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>已合并 12 · 覆盖 165k+ ★</span>
+            <span>已合并 13 · 覆盖 165k+ ★</span>
           </div>
         </div>
         <p class="oss-subtitle">数据库 / MCP 生态 / AI 基础设施 · 全部已被上游合并</p>
@@ -108,6 +108,11 @@ const repos = [
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
         note: '安全加固：定位 RESP3 聚合回复递归解析无深度限制的 DoS 面——恶意服务端可打爆客户端 Go 栈（+383/−32，跨 5 文件）。引入嵌套深度追踪、补齐 reader_depth_test.go 回归测试，并附修复前后性能基准对比（无回退），由官方维护者合并',
         url: 'https://github.com/redis/go-redis/pull/4296',
+      },
+      {
+        title: 'fix: multidb — FD outcomes settle into the window after a reselect of the active member (#4283)',
+        note: '可用性核心修复：MultiDB 重选活跃节点后，迟到的全双工结果会错误结算进新熔断窗口与故障检测期（+176/−81，涉及安全与可用性关键路径）；先在基线复现失败再验证补丁通过，由官方维护者合并',
+        url: 'https://github.com/redis/go-redis/pull/4283',
       },
     ],
   },

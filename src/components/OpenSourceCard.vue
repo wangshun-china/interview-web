@@ -71,7 +71,7 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
-    desc: 'C++ 列式 OLAP 数据库 · GitHub 数据基础设施顶级项目，单节点每秒扫描数亿行，Cloudflare/eBay 等头部公司生产使用',
+    desc: 'Yandex 研发、2014 开源的 C++ 列式 OLAP 数据库——实时分析领域的事实标准，Cloudflare/eBay/Spotify 等大量头部公司生产使用，单节点每秒可扫描数亿行',
     prs: [
       {
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
@@ -84,7 +84,7 @@ const repos = [
     name: 'qdrant / qdrant',
     url: 'https://github.com/qdrant/qdrant',
     stars: '35k+',
-    desc: 'Rust 向量数据库 · RAG/语义检索的主流引擎（LangChain/LlamaIndex 官方集成），GitHub 向量数据库类 Top 2',
+    desc: 'Rust 编写的高性能向量数据库 · GitHub 同类项目 Top 2，LangChain/LlamaIndex 官方集成，支撑亿级向量的 RAG 与语义检索场景',
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
@@ -102,7 +102,7 @@ const repos = [
     name: 'redis / go-redis',
     url: 'https://github.com/redis/go-redis',
     stars: '22k+',
-    desc: 'Go 生态事实标准的 Redis 客户端 · Redis 官方与社区共同维护，服务海量互联网后端',
+    desc: 'Go 后端访问 Redis 的事实标准客户端，由 Redis 官方组织接管维护——几乎所有 Go 技术栈公司的核心依赖',
     prs: [
       {
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
@@ -115,7 +115,7 @@ const repos = [
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
-    desc: 'Python MCP 框架事实标准 · 曾登 GitHub Trending 日榜第 1，装饰器即可把函数暴露为 MCP 工具与资源',
+    desc: 'Python MCP 框架事实标准，由 Prefect 官方维护 · 曾登 GitHub Trending 日榜第 1——MCP 已成业界模型连接工具的协议标准，OpenAI/Google 均宣布支持',
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
@@ -128,7 +128,7 @@ const repos = [
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
-    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）· Firefox、Cloudflare 等生产使用',
+    desc: 'Bytecode Alliance（Mozilla/Fastly/Intel 联合创立）出品的 Wasm 运行时——Cloudflare Workers 全球边缘计算与 Fastly 生产工作负载的底层引擎',
     prs: [
       {
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
@@ -141,7 +141,7 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
-    desc: 'CNCF 项目 · AI Agent 的 MCP/A2A 协议网关（Rust 实现），统一代理、鉴权与可观测性',
+    desc: 'CNCF 项目 · 面向 Agent 流量的新一代数据平面（Rust 实现），为 MCP/A2A 智能体协议提供统一的代理、鉴权与可观测性',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
@@ -159,7 +159,7 @@ const repos = [
     name: 'modelcontextprotocol / rust-sdk',
     url: 'https://github.com/modelcontextprotocol/rust-sdk',
     stars: '4k+',
-    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起的模型-工具连接标准，服务端/客户端双端实现',
+    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起、业界公认的模型-工具连接标准，覆盖服务端/客户端双端实现',
     prs: [
       {
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
@@ -172,7 +172,7 @@ const repos = [
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4k+',
-    desc: 'Rust 向量数据库 · HNSW 引擎 + WASM/嵌入式部署，面向边缘与本地推理场景',
+    desc: 'Rust 向量数据库 · HNSW 引擎，支持 WASM 浏览器运行与嵌入式部署，覆盖本地推理与边缘设备场景',
     prs: [
       {
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
@@ -190,7 +190,7 @@ const repos = [
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',
-    desc: 'Pydantic AI 官方 Agent Harness 子项目 · 工具输出摘要、限额与事件流的演进主场',
+    desc: 'Pydantic（下载量亿级的校验库）官方 Agent Harness 子项目 · 承载工具输出摘要、限额与事件流的演进',
     prs: [
       {
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',

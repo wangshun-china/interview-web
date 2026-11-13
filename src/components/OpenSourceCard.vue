@@ -71,11 +71,11 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
-    desc: 'C++ 列式 OLAP 数据库 · GitHub 顶级数据基础设施，单节点每秒可扫描数亿行，广泛应用于实时分析',
+    desc: 'C++ 列式 OLAP 数据库 · GitHub 数据基础设施顶级项目，单节点每秒扫描数亿行，Cloudflare/eBay 等头部公司生产使用',
     prs: [
       {
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
-        note: '修复 MySQL 接口在 Connector/J 9.x 驱动下握手失败（Buffer length 断言）的问题，恢复与 5.1.49 驱动一致的行为',
+        note: '生产级连接故障：新版 MySQL JDBC 驱动（Connector/J 9.x）握手缓冲区断言失败导致升级即无法连接；定位协议层根因并修复，恢复与 5.1.49 驱动一致的行为，附驱动兼容性回归验证',
         url: 'https://github.com/ClickHouse/ClickHouse/pull/129709',
       },
     ],
@@ -84,17 +84,30 @@ const repos = [
     name: 'qdrant / qdrant',
     url: 'https://github.com/qdrant/qdrant',
     stars: '35k+',
-    desc: 'Rust 向量数据库 · RAG/语义检索的主流引擎，支持分布式部署与标量过滤，GitHub 向量数据库类 Top 2',
+    desc: 'Rust 向量数据库 · RAG/语义检索的主流引擎（LangChain/LlamaIndex 官方集成），GitHub 向量数据库类 Top 2',
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
-        note: '修复 group-by 在不支持的 payload 值耗尽候选预算时静默返回空结果的问题',
+        note: '检索正确性缺陷：不支持的 payload 值耗尽候选预算时 group-by 静默返回空结果——生产 RAG 场景最危险的静默丢数据类问题；定位失败路径并修复，附边界条件回归',
         url: 'https://github.com/qdrant/qdrant/pull/11370',
       },
       {
         title: 'fix: RecommendBestScore applies score_threshold in the wrong direction (#11350)',
-        note: '修复 Euclid 距离下 RecommendBestScore 将 score_threshold 方向用反的问题',
+        note: '修复推荐接口在 Euclid 距离下 score_threshold 方向用反、有效结果被错误过滤的正确性问题',
         url: 'https://github.com/qdrant/qdrant/pull/11350',
+      },
+    ],
+  },
+  {
+    name: 'redis / go-redis',
+    url: 'https://github.com/redis/go-redis',
+    stars: '22k+',
+    desc: 'Go 生态事实标准的 Redis 客户端 · Redis 官方与社区共同维护，服务海量互联网后端',
+    prs: [
+      {
+        title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
+        note: '安全加固：定位 RESP3 聚合回复递归解析无深度限制、可被恶意服务端打爆 Go 栈的 DoS 面（+383/−32，5 文件）；引入嵌套深度追踪与回归测试，附修复前后性能基准对比，由官方维护者合并',
+        url: 'https://github.com/redis/go-redis/pull/4296',
       },
     ],
   },
@@ -106,7 +119,7 @@ const repos = [
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
-        note: '修复资源或资源模板声明 UserSession 依赖时注册阶段直接报错的问题',
+        note: '修复资源/资源模板声明 UserSession 依赖时注册阶段报错的缺陷，打通会话级鉴权与 MCP 资源的组合用法',
         url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
       },
     ],
@@ -115,25 +128,12 @@ const repos = [
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
-    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）· Firefox/Cloudflare 等在生产使用',
+    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）· Firefox、Cloudflare 等生产使用',
     prs: [
       {
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
-        note: '修复复制式垃圾回收器的增长-回收启发式按整个堆而非活动半空间比较的问题',
+        note: '运行时内核级修复：复制式 GC 的增长-回收启发式按整个堆而非活动半空间比较，导致内存峰值误判的问题',
         url: 'https://github.com/bytecodealliance/wasmtime/pull/15207',
-      },
-    ],
-  },
-  {
-    name: 'redis / go-redis',
-    url: 'https://github.com/redis/go-redis',
-    stars: '22k+',
-    desc: 'Go 生态最主流的 Redis 客户端，Redis 官方与社区共同维护，服务海量后端系统',
-    prs: [
-      {
-        title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
-        note: '修复 RESP3 聚合回复递归解析无深度限制、可被恶意服务端触发 Go 栈耗尽的安全问题（+383/−32），增加嵌套深度追踪与回归测试',
-        url: 'https://github.com/redis/go-redis/pull/4296',
       },
     ],
   },
@@ -145,26 +145,13 @@ const repos = [
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
-        note: '修复 Windows CLI 将版本号显示为 True 而非实际版本的问题',
+        note: '修复 Windows CLI 将版本号显示为 True 的缺陷',
         url: 'https://github.com/agentgateway/agentgateway/pull/4276',
       },
       {
-        title: 'fix: resolve the user\'s home directory on Windows (#4264)',
-        note: '修复 Windows 下无法正确解析用户主目录的问题',
+        title: "fix: resolve the user's home directory on Windows (#4264)",
+        note: '修复 Windows 下用户主目录解析错误的问题',
         url: 'https://github.com/agentgateway/agentgateway/pull/4264',
-      },
-    ],
-  },
-  {
-    name: 'modelcontextprotocol / rust-sdk',
-    url: 'https://github.com/modelcontextprotocol/rust-sdk',
-    stars: '4k+',
-    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起的模型-工具连接标准，服务端/客户端双端实现',
-    prs: [
-      {
-        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
-        note: '修复 streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活的问题',
-        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
       },
     ],
   },
@@ -172,11 +159,11 @@ const repos = [
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4k+',
-    desc: 'Rust 实现的向量数据库，支持 HNSW 索引、WASM 与嵌入式部署',
+    desc: 'Rust 向量数据库 · HNSW 引擎 + WASM/嵌入式部署，面向边缘与本地推理场景',
     prs: [
       {
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
-        note: '修复 Jetson AGX Xavier、树莓派 4 等 ARMv8.2 无 LRCPC 指令平台上原生模块启动即崩溃的问题',
+        note: '跨平台编译兼容：修复 ARMv8.2 无 LRCPC 平台（Jetson AGX Xavier、树莓派 4）原生模块启动即 SIGILL 崩溃的问题，恢复边缘设备可用性',
         url: 'https://github.com/ruvnet/RuVector/pull/1384',
       },
       {
@@ -190,11 +177,11 @@ const repos = [
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',
-    desc: 'Pydantic AI 官方的 Agent Harness 子项目，聚焦工具输出摘要、限额与事件流',
+    desc: 'Pydantic AI 官方 Agent Harness 子项目 · 工具输出摘要、限额与事件流的演进主场',
     prs: [
       {
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
-        note: '为内存与 Redis SpendStore 的废弃单键 API 补充迁移告警，更新内部调用并完善单元与集成测试',
+        note: 'API 演进期维护：为废弃的单键 get/add 补充迁移告警，同步更新全部内部调用点并完善单元与集成测试',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
       },
     ],

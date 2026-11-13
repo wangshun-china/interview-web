@@ -99,19 +99,6 @@ const repos = [
     ],
   },
   {
-    name: 'redis / go-redis',
-    url: 'https://github.com/redis/go-redis',
-    stars: '22k+',
-    desc: 'Go 生态事实标准的 Redis 客户端 · Redis 官方与社区共同维护，服务海量互联网后端',
-    prs: [
-      {
-        title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
-        note: '安全加固：定位 RESP3 聚合回复递归解析无深度限制、可被恶意服务端打爆 Go 栈的 DoS 面（+383/−32，5 文件）；引入嵌套深度追踪与回归测试，附修复前后性能基准对比，由官方维护者合并',
-        url: 'https://github.com/redis/go-redis/pull/4296',
-      },
-    ],
-  },
-  {
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
@@ -121,6 +108,19 @@ const repos = [
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
         note: '修复资源/资源模板声明 UserSession 依赖时注册阶段报错的缺陷，打通会话级鉴权与 MCP 资源的组合用法',
         url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
+      },
+    ],
+  },
+  {
+    name: 'redis / go-redis',
+    url: 'https://github.com/redis/go-redis',
+    stars: '22k+',
+    desc: 'Go 生态事实标准的 Redis 客户端 · Redis 官方与社区共同维护，服务海量互联网后端',
+    prs: [
+      {
+        title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
+        note: '安全加固：定位 RESP3 聚合回复递归解析无深度限制、可被恶意服务端打爆 Go 栈的 DoS 面（+383/−32，5 文件）；引入嵌套深度追踪与回归测试，附修复前后性能基准对比，由官方维护者合并',
+        url: 'https://github.com/redis/go-redis/pull/4296',
       },
     ],
   },

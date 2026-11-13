@@ -156,6 +156,19 @@ const repos = [
     ],
   },
   {
+    name: 'modelcontextprotocol / rust-sdk',
+    url: 'https://github.com/modelcontextprotocol/rust-sdk',
+    stars: '4k+',
+    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起的模型-工具连接标准，服务端/客户端双端实现',
+    prs: [
+      {
+        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
+        note: '修复 streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活的问题',
+        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
+      },
+    ],
+  },
+  {
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4k+',

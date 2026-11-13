@@ -28,7 +28,7 @@
       <p class="oss-blurb">
         长期向上游项目回馈维护级修复：每个 PR 均包含复现路径、根因分析与回归测试，
         覆盖驱动兼容、检索正确性、连接生命周期、跨平台崩溃等疑难场景，
-        已在 ClickHouse、Qdrant、FastMCP、Wasmtime 等项目合并 11 个 PR。
+        已在 ClickHouse、Qdrant、Redis Go 客户端、FastMCP、Wasmtime 等上游项目合并 12 个 PR。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -75,7 +75,7 @@ const repos = [
     prs: [
       {
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
-        note: '生产级连接故障：新版 MySQL JDBC 驱动（Connector/J 9.x）握手缓冲区断言失败导致升级即无法连接；定位协议层根因并修复，恢复与 5.1.49 驱动一致的行为，附驱动兼容性回归验证',
+        note: '生产级连接故障排查：用户升级 MySQL JDBC 驱动到 Connector/J 9.x 后全量无法连接（"Buffer length is less than expected payload length"，回退 5.1.49 才恢复）。独立定位到 MySQL 接口对新驱动握手行为的兼容性缺陷并修复，恢复与 5.1.49 一致的行为，附驱动兼容性回归验证',
         url: 'https://github.com/ClickHouse/ClickHouse/pull/129709',
       },
     ],
@@ -88,26 +88,13 @@ const repos = [
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
-        note: '检索正确性缺陷：不支持的 payload 值耗尽候选预算时 group-by 静默返回空结果——生产 RAG 场景最危险的静默丢数据类问题；定位失败路径并修复，附边界条件回归',
+        note: '生产 RAG 最危险的静默丢数据类缺陷：不支持的 payload 值耗尽候选预算时，group-by 不报错、直接返回空结果。从 issue 复现路径独立定位到该失败分支并修复，附边界条件回归测试',
         url: 'https://github.com/qdrant/qdrant/pull/11370',
       },
       {
         title: 'fix: RecommendBestScore applies score_threshold in the wrong direction (#11350)',
-        note: '修复推荐接口在 Euclid 距离下 score_threshold 方向用反、有效结果被错误过滤的正确性问题',
+        note: '正确性缺陷：推荐接口在 Euclid 距离下 score_threshold 方向用反，导致有效结果被批量错误过滤',
         url: 'https://github.com/qdrant/qdrant/pull/11350',
-      },
-    ],
-  },
-  {
-    name: 'PrefectHQ / fastmcp',
-    url: 'https://github.com/PrefectHQ/fastmcp',
-    stars: '28k+',
-    desc: 'Python MCP 框架事实标准 · 曾登 GitHub Trending 日榜第 1，装饰器即可把函数暴露为 MCP 工具与资源',
-    prs: [
-      {
-        title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
-        note: '修复资源/资源模板声明 UserSession 依赖时注册阶段报错的缺陷，打通会话级鉴权与 MCP 资源的组合用法',
-        url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
       },
     ],
   },
@@ -119,8 +106,21 @@ const repos = [
     prs: [
       {
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
-        note: '安全加固：定位 RESP3 聚合回复递归解析无深度限制、可被恶意服务端打爆 Go 栈的 DoS 面（+383/−32，5 文件）；引入嵌套深度追踪与回归测试，附修复前后性能基准对比，由官方维护者合并',
+        note: '安全加固：定位 RESP3 聚合回复递归解析无深度限制的 DoS 面——恶意服务端可打爆客户端 Go 栈（+383/−32，跨 5 文件）。引入嵌套深度追踪、补齐 reader_depth_test.go 回归测试，并附修复前后性能基准对比（无回退），由官方维护者合并',
         url: 'https://github.com/redis/go-redis/pull/4296',
+      },
+    ],
+  },
+  {
+    name: 'PrefectHQ / fastmcp',
+    url: 'https://github.com/PrefectHQ/fastmcp',
+    stars: '28k+',
+    desc: 'Python MCP 框架事实标准 · 曾登 GitHub Trending 日榜第 1，装饰器即可把函数暴露为 MCP 工具与资源',
+    prs: [
+      {
+        title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
+        note: '修复资源/资源模板声明 UserSession 依赖时注册阶段直接报错的缺陷，打通会话级鉴权与 MCP 资源的组合用法',
+        url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
       },
     ],
   },
@@ -132,7 +132,7 @@ const repos = [
     prs: [
       {
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
-        note: '运行时内核级修复：复制式 GC 的增长-回收启发式按整个堆而非活动半空间比较，导致内存峰值误判的问题',
+        note: '运行时内核级修复：复制式 GC 的增长-回收启发式错误地按整个堆而非活动半空间比较，导致内存峰值误判——从 GC 触发条件的语义入手定位并修正',
         url: 'https://github.com/bytecodealliance/wasmtime/pull/15207',
       },
     ],
@@ -163,7 +163,7 @@ const repos = [
     prs: [
       {
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
-        note: '修复 streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活的问题',
+        note: '资源生命周期缺陷：streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活——定位连接关闭与任务取消的信号传递断点并修复',
         url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
       },
     ],
@@ -176,7 +176,7 @@ const repos = [
     prs: [
       {
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
-        note: '跨平台编译兼容：修复 ARMv8.2 无 LRCPC 平台（Jetson AGX Xavier、树莓派 4）原生模块启动即 SIGILL 崩溃的问题，恢复边缘设备可用性',
+        note: '跨平台编译兼容：修复 ARMv8.2 无 LRCPC 指令平台（Jetson AGX Xavier、树莓派 4）原生模块启动即 SIGILL 崩溃的问题，恢复边缘设备可用性',
         url: 'https://github.com/ruvnet/RuVector/pull/1384',
       },
       {

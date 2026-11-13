@@ -17,7 +17,7 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>已合并 11 · 覆盖 145k+ ★</span>
+            <span>已合并 12 · 覆盖 165k+ ★</span>
           </div>
         </div>
         <p class="oss-subtitle">数据库 / MCP 生态 / AI 基础设施 · 全部已被上游合并</p>
@@ -121,6 +121,19 @@ const repos = [
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
         note: '修复复制式垃圾回收器的增长-回收启发式按整个堆而非活动半空间比较的问题',
         url: 'https://github.com/bytecodealliance/wasmtime/pull/15207',
+      },
+    ],
+  },
+  {
+    name: 'redis / go-redis',
+    url: 'https://github.com/redis/go-redis',
+    stars: '22k+',
+    desc: 'Go 生态最主流的 Redis 客户端，Redis 官方与社区共同维护，服务海量后端系统',
+    prs: [
+      {
+        title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
+        note: '修复 RESP3 聚合回复递归解析无深度限制、可被恶意服务端触发 Go 栈耗尽的安全问题（+383/−32），增加嵌套深度追踪与回归测试',
+        url: 'https://github.com/redis/go-redis/pull/4296',
       },
     ],
   },

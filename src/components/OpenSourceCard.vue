@@ -141,6 +141,24 @@ const repos = [
         note: '运行时内核级修复：复制式 GC 的增长-回收启发式错误地按整个堆而非活动半空间比较，导致内存峰值误判——从 GC 触发条件的语义入手定位并修正',
         url: 'https://github.com/bytecodealliance/wasmtime/pull/15207',
       },
+      {
+        title: 'fix: Core dumps of custom-page-size memories truncate their data and declare the wrong size (#15275)',
+        note: '修复自定义页大小 memory 的 core dump 截断数据且声明尺寸错误的问题',
+        url: 'https://github.com/bytecodealliance/wasmtime/pull/15275',
+      },
+    ],
+  },
+  {
+    name: 'bytecodealliance / wasm-tools',
+    url: 'https://github.com/bytecodealliance/wasm-tools',
+    stars: '1.8k+',
+    desc: 'Wasmtime 生态的 WebAssembly 工具链仓库（wit-bindgen、wasm-compose 等），Wasm 组件模型的标准工具集',
+    prs: [
+      {
+        title: 'fix: Code-motion mutation retains a full syntax-tree clone at every nesting level (#2825)',
+        note: '修复代码移动变换在每层嵌套都保留完整语法树克隆导致的内存爆炸问题',
+        url: 'https://github.com/bytecodealliance/wasm-tools/pull/2825',
+      },
     ],
   },
   {

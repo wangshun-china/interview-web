@@ -162,6 +162,32 @@ const repos = [
     ],
   },
   {
+    name: 'opensandbox-group / OpenSandbox',
+    url: 'https://github.com/opensandbox-group/OpenSandbox',
+    stars: '17k+',
+    desc: '面向 AI Agent 的安全、高速、可扩展沙箱运行时——智能体执行代码与工具调用的隔离底座',
+    prs: [
+      {
+        title: 'fix(python-sdk): normalize legacy SSE streams in linear time (#2845)',
+        note: '修复 Python SDK 对旧版 SSE 流的解析退化为非线性处理的问题，长会话下不再随流增长而卡顿',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2845',
+      },
+    ],
+  },
+  {
+    name: 'The-PR-Agent / pr-agent',
+    url: 'https://github.com/The-PR-Agent/pr-agent',
+    stars: '16k+',
+    desc: '开源 AI 代码评审的鼻祖（Qodo 出品）——自动执行 PR 审查、变更分析与建议',
+    prs: [
+      {
+        title: 'fix: guard GitLab ticket context with project issue visibility (#4932)',
+        note: '修复 GitLab ticket 上下文未校验项目 issue 可见性的越权读取问题',
+        url: 'https://github.com/The-PR-Agent/pr-agent/pull/4932',
+      },
+    ],
+  },
+  {
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',

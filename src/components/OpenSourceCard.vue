@@ -17,7 +17,7 @@
           </div>
           <div class="oss-badge">
             <Star class="h-4 w-4" />
-            <span>已合并 {{ mergedCount }} · 覆盖 165k+ ★</span>
+            <span>已合并 {{ mergedCount }} · 覆盖 {{ starsCoverage }} ★</span>
           </div>
         </div>
         <p class="oss-subtitle">数据库 / MCP 生态 / AI 基础设施 · 全部已被上游合并</p>
@@ -254,6 +254,14 @@ const repos = [
 const mergedCount = computed(
   () => repos.reduce((sum, repo) => sum + repo.prs.length, 0)
 )
+
+const starsCoverage = computed(() => {
+  const total = repos.reduce((sum, repo) => {
+    const m = /([\d.]+)(k\+|\+)?/.exec(repo.stars)
+    return m ? sum + parseFloat(m[1]) * (m[2] === 'k+' ? 1000 : 1) : sum
+  }, 0)
+  return total >= 1000 ? Math.round(total / 1000) + 'k+' : Math.round(total) + '+'
+})
 </script>
 
 <style scoped>

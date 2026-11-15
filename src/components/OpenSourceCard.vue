@@ -271,7 +271,7 @@ const starsCoverage = computed(() => {
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--color-veil);
 }
 
 .oss-header {
@@ -279,7 +279,7 @@ const starsCoverage = computed(() => {
   gap: 1rem;
   padding: 1.4rem 1.5rem;
   border-bottom: 1px solid var(--color-border-light);
-  background: linear-gradient(135deg, var(--color-secondary-light, #eef2f7), #fff 60%);
+  background: linear-gradient(135deg, var(--color-secondary-light, #eef2f7), var(--color-surface) 60%);
 }
 
 .oss-mark {
@@ -290,7 +290,7 @@ const starsCoverage = computed(() => {
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-secondary);
   box-shadow: var(--shadow-sm);
 }
@@ -334,7 +334,7 @@ const starsCoverage = computed(() => {
   padding: 0.45rem 0.7rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--color-veil);
   color: var(--color-text-secondary);
   font-size: 0.8rem;
   font-weight: 700;

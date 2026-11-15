@@ -945,7 +945,7 @@ const allProjects: any[] = [...projects, ciCdProject]
 
 .project-summary-card.project-featured {
   border: 2px solid rgba(217, 119, 87, 0.28);
-  background: linear-gradient(135deg, #fff, rgba(217, 119, 87, 0.05));
+  background: linear-gradient(135deg, var(--color-surface), rgba(217, 119, 87, 0.05));
 }
 
 .summary-card-head,
@@ -1009,7 +1009,7 @@ const allProjects: any[] = [...projects, ciCdProject]
   padding: 0.75rem 1rem;
   border: 1px solid rgba(217, 119, 87, 0.28);
   border-radius: 12px;
-  background: linear-gradient(90deg, var(--color-accent-light), #fff);
+  background: linear-gradient(90deg, var(--color-accent-light), var(--color-surface));
   color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.65;
@@ -1078,7 +1078,7 @@ const allProjects: any[] = [...projects, ciCdProject]
   padding: 0.55rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-text);
   font-size: 0.84rem;
   font-weight: 700;
@@ -1114,7 +1114,7 @@ const allProjects: any[] = [...projects, ciCdProject]
   height: 88vh;
   overflow: hidden;
   border-radius: 20px;
-  background: #fff;
+  background: var(--color-surface);
   box-shadow: var(--shadow-xl);
 }
 
@@ -1128,7 +1128,7 @@ const allProjects: any[] = [...projects, ciCdProject]
   gap: 1rem;
   padding: 0.9rem 1.2rem;
   border-bottom: 1px solid var(--color-border-light);
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--color-veil);
   backdrop-filter: blur(10px);
 }
 
@@ -1168,7 +1168,7 @@ const allProjects: any[] = [...projects, ciCdProject]
   justify-content: center;
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-text);
   cursor: pointer;
   transition: transform var(--transition-base), background var(--transition-base), color var(--transition-base);
@@ -1190,7 +1190,7 @@ const allProjects: any[] = [...projects, ciCdProject]
   padding: 1.1rem;
   border: 1px solid var(--color-border-light);
   border-radius: 14px;
-  background: #fff;
+  background: var(--color-surface);
 }
 
 .modal-section + .modal-section {
@@ -1253,13 +1253,13 @@ const allProjects: any[] = [...projects, ciCdProject]
 }
 
 .project-side {
-  background: linear-gradient(180deg, var(--color-bg-alt), #ffffff);
+  background: linear-gradient(180deg, var(--color-bg-alt), var(--color-surface));
 }
 
 .why-box {
   padding: 1rem;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--color-accent-light), #fff);
+  background: linear-gradient(135deg, var(--color-accent-light), var(--color-surface));
   border: 1px solid var(--color-border-light);
 }
 
@@ -1272,7 +1272,7 @@ const allProjects: any[] = [...projects, ciCdProject]
 .detail-box {
   padding: 1rem;
   border-radius: 14px;
-  background: #fff;
+  background: var(--color-surface);
   border: 1px solid var(--color-border-light);
 }
 
@@ -1335,7 +1335,7 @@ const allProjects: any[] = [...projects, ciCdProject]
   width: 100%;
   padding: 0.7rem 0.9rem;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--color-accent-light), #fff);
+  background: linear-gradient(135deg, var(--color-accent-light), var(--color-surface));
   border: 1px dashed rgba(217, 119, 87, 0.35);
 }
 
@@ -1477,7 +1477,7 @@ const allProjects: any[] = [...projects, ciCdProject]
   padding: 0.65rem 0.9rem;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-accent);
   font-size: 0.88rem;
   font-weight: 800;

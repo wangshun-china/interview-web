@@ -1,5 +1,10 @@
 <template>
   <div class="app">
+    <!-- Theme Toggle: system / light / dark -->
+    <button class="theme-toggle" :title="themeTitle" @click="cycleTheme">
+      <component :is="themeIcon" class="h-5 w-5" />
+    </button>
+
     <!-- Particle Background -->
     <canvas id="particles-canvas" ref="canvasRef"></canvas>
 
@@ -12,7 +17,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-8 text-center text-[#666666] text-sm border-t border-[#E5E3DD]">
+    <footer class="py-8 text-center text-[var(--color-text-muted)] text-sm border-t border-[var(--color-border)]">
       <p class="flex items-center justify-center gap-1">
         <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">鲁ICP备2026026854号</a>
         <span class="mx-1">|</span>
@@ -26,7 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watchEffect, onMounted, onUnmounted } from 'vue'
+import { Sun, Moon, Monitor } from 'lucide-vue-next'
 import HeroSection from './components/HeroSection.vue'
 import ExperienceSection from './components/ExperienceSection.vue'
 import ProjectsSection from './components/ProjectsSection.vue'
@@ -36,6 +42,39 @@ const canvasRef = ref<HTMLCanvasElement | null>(null)
 const opsUrl = ['wangshun.work', 'www.wangshun.work'].includes(window.location.hostname)
   ? 'https://ops.wangshun.work'
   : '/ops'
+
+// ---- Theme: defaults to system, cycles system -> light -> dark ----
+type ThemeMode = 'system' | 'light' | 'dark'
+const THEME_KEY = 'wangshun-theme'
+const systemDark = window.matchMedia('(prefers-color-scheme: dark)')
+const themeMode = ref<ThemeMode>(
+  (localStorage.getItem(THEME_KEY) as ThemeMode | null) ?? 'system'
+)
+const isDark = computed(
+  () => themeMode.value === 'dark' || (themeMode.value === 'system' && systemDark.matches)
+)
+const themeIcon = computed(() =>
+  themeMode.value === 'system' ? Monitor : isDark.value ? Moon : Sun
+)
+const themeTitle = computed(() => ({
+  system: '当前：跟随系统（点击切换为亮色）',
+  light: '当前：亮色（点击切换为暗色）',
+  dark: '当前：暗色（点击恢复跟随系统）'
+}[themeMode.value]))
+function applyTheme() {
+  document.documentElement.classList.toggle('dark', isDark.value)
+}
+function cycleTheme() {
+  themeMode.value = themeMode.value === 'system'
+    ? 'light'
+    : themeMode.value === 'light' ? 'dark' : 'system'
+  localStorage.setItem(THEME_KEY, themeMode.value)
+  applyTheme()
+}
+watchEffect(applyTheme)
+systemDark.addEventListener('change', () => {
+  if (themeMode.value === 'system') applyTheme()
+})
 let animationId: number
 
 onMounted(() => {
@@ -131,6 +170,31 @@ onMounted(() => {
 <style scoped>
 .app {
   min-height: 100vh;
-  background-color: #FAFAFA;
+  background-color: var(--color-bg);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-veil);
+  backdrop-filter: blur(10px);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
+}
+
+.theme-toggle:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
 }
 </style>

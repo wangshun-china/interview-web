@@ -113,14 +113,14 @@ const achievements = [
 
 <style scoped>
 .experience-section {
-  background: linear-gradient(180deg, transparent, rgba(245, 244, 240, 0.72), transparent);
+  background: linear-gradient(180deg, transparent, var(--color-section-veil), transparent);
 }
 
 .experience-card {
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--color-veil);
 }
 
 .experience-header {
@@ -128,7 +128,7 @@ const achievements = [
   gap: 1rem;
   padding: 1.4rem 1.5rem;
   border-bottom: 1px solid var(--color-border-light);
-  background: linear-gradient(135deg, var(--color-accent-light), #fff 60%);
+  background: linear-gradient(135deg, var(--color-accent-light), var(--color-surface) 60%);
 }
 
 .company-mark {
@@ -139,7 +139,7 @@ const achievements = [
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-accent);
   box-shadow: var(--shadow-sm);
 }
@@ -181,7 +181,7 @@ const achievements = [
   padding: 0.45rem 0.7rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--color-veil);
   color: var(--color-text-secondary);
   font-size: 0.82rem;
   font-weight: 700;

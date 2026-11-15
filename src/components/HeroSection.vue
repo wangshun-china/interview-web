@@ -330,7 +330,7 @@ onMounted(() => {
 .workflow-line {
   border: 1px solid var(--color-border-light);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.86);
+  background: var(--color-veil);
   box-shadow: var(--shadow-sm);
 }
 
@@ -392,7 +392,7 @@ onMounted(() => {
   margin-bottom: 0.75rem;
   padding: 0.55rem 0.85rem;
   text-align: left;
-  background: linear-gradient(90deg, var(--color-accent-light), rgba(245, 244, 240, 0.9));
+  background: linear-gradient(90deg, var(--color-accent-light), var(--color-section-veil));
 }
 
 .workflow-line p {
@@ -416,7 +416,7 @@ onMounted(() => {
   padding: 0.65rem 0.85rem;
   border: 1px solid rgba(217, 119, 87, 0.24);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--color-veil);
   box-shadow: var(--shadow-sm);
   text-align: left;
 }
@@ -477,7 +477,7 @@ onMounted(() => {
 
 .api-station-button-secondary {
   border: 1px solid var(--color-border);
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-text);
 }
 

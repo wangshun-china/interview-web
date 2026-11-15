@@ -100,6 +100,19 @@ const repos = [
     ],
   },
   {
+    name: 'PrefectHQ / fastmcp',
+    url: 'https://github.com/PrefectHQ/fastmcp',
+    stars: '28k+',
+    desc: 'Python MCP 框架事实标准，由 Prefect 官方维护 · 曾登 GitHub Trending 日榜第 1——MCP 已成业界模型连接工具的协议标准，OpenAI/Google 均宣布支持',
+    prs: [
+      {
+        title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
+        note: '修复资源/资源模板声明 UserSession 依赖时注册阶段直接报错的缺陷，打通会话级鉴权与 MCP 资源的组合用法',
+        url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
+      },
+    ],
+  },
+  {
     name: 'redis / go-redis',
     url: 'https://github.com/redis/go-redis',
     stars: '22k+',
@@ -118,19 +131,6 @@ const repos = [
     ],
   },
   {
-    name: 'PrefectHQ / fastmcp',
-    url: 'https://github.com/PrefectHQ/fastmcp',
-    stars: '28k+',
-    desc: 'Python MCP 框架事实标准，由 Prefect 官方维护 · 曾登 GitHub Trending 日榜第 1——MCP 已成业界模型连接工具的协议标准，OpenAI/Google 均宣布支持',
-    prs: [
-      {
-        title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
-        note: '修复资源/资源模板声明 UserSession 依赖时注册阶段直接报错的缺陷，打通会话级鉴权与 MCP 资源的组合用法',
-        url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
-      },
-    ],
-  },
-  {
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
@@ -145,19 +145,6 @@ const repos = [
         title: 'fix: Core dumps of custom-page-size memories truncate their data and declare the wrong size (#15275)',
         note: '修复自定义页大小 memory 的 core dump 截断数据且声明尺寸错误的问题',
         url: 'https://github.com/bytecodealliance/wasmtime/pull/15275',
-      },
-    ],
-  },
-  {
-    name: 'bytecodealliance / wasm-tools',
-    url: 'https://github.com/bytecodealliance/wasm-tools',
-    stars: '1.8k+',
-    desc: 'Wasmtime 生态的 WebAssembly 工具链仓库（wit-bindgen、wasm-compose 等），Wasm 组件模型的标准工具集',
-    prs: [
-      {
-        title: 'fix: Code-motion mutation retains a full syntax-tree clone at every nesting level (#2825)',
-        note: '修复代码移动变换在每层嵌套都保留完整语法树克隆导致的内存爆炸问题',
-        url: 'https://github.com/bytecodealliance/wasm-tools/pull/2825',
       },
     ],
   },
@@ -237,6 +224,19 @@ const repos = [
     ],
   },
   {
+    name: 'bytecodealliance / wasm-tools',
+    url: 'https://github.com/bytecodealliance/wasm-tools',
+    stars: '1.8k+',
+    desc: 'Wasmtime 生态的 WebAssembly 工具链仓库（wit-bindgen、wasm-compose 等），Wasm 组件模型的标准工具集',
+    prs: [
+      {
+        title: 'fix: Code-motion mutation retains a full syntax-tree clone at every nesting level (#2825)',
+        note: '修复代码移动变换在每层嵌套都保留完整语法树克隆导致的内存爆炸问题',
+        url: 'https://github.com/bytecodealliance/wasm-tools/pull/2825',
+      },
+    ],
+  },
+  {
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',
@@ -248,7 +248,7 @@ const repos = [
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
       },
     ],
-  },
+  }
 ]
 
 const mergedCount = computed(

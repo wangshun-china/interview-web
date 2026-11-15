@@ -152,7 +152,7 @@ const repos = [
     name: 'opensandbox-group / OpenSandbox',
     url: 'https://github.com/opensandbox-group/OpenSandbox',
     stars: '17k+',
-    desc: '面向 AI Agent 的安全、高速、可扩展沙箱运行时——智能体执行代码与工具调用的隔离底座',
+    desc: 'Agentic AI Foundation（AAIF）旗下项目 · 曾登 GitHub Trending 日榜第 1 · 通过 OpenSSF 最佳实践认证——面向 AI Agent 的安全沙箱运行时，智能体执行代码与工具调用的隔离底座',
     prs: [
       {
         title: 'fix(python-sdk): normalize legacy SSE streams in linear time (#2845)',
@@ -165,7 +165,7 @@ const repos = [
     name: 'The-PR-Agent / pr-agent',
     url: 'https://github.com/The-PR-Agent/pr-agent',
     stars: '16k+',
-    desc: '开源 AI 代码评审的鼻祖（Qodo 出品）——自动执行 PR 审查、变更分析与建议',
+    desc: 'Qodo（原 CodiumAI，AI 代码完整性领域的头部公司）发起的开源 AI 代码评审 Agent——该赛道开创者，支持 GitHub/GitLab/Bitbucket/Azure DevOps 自动审查、变更分析与建议',
     prs: [
       {
         title: 'fix: guard GitLab ticket context with project issue visibility (#4932)',

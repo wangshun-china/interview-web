@@ -172,6 +172,11 @@ const repos = [
         note: '可用性核心修复：MultiDB 重选活跃节点后，迟到的全双工结果会错误结算进新熔断窗口与故障检测期（+176/−81，涉及安全与可用性关键路径）；先在基线复现失败再验证补丁通过，由官方维护者合并',
         url: 'https://github.com/redis/go-redis/pull/4283',
       },
+      {
+        title: 'fix(pool): return acquired idle connections (#4322)',
+        note: '连接池生命周期修复：获取到的空闲连接未正确归还连接池，长期运行下造成连接泄漏（+81/−1）；补齐归还路径与回归测试，由官方维护者合并',
+        url: 'https://github.com/redis/go-redis/pull/4322',
+      },
     ],
   },
   {

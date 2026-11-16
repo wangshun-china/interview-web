@@ -142,7 +142,7 @@ const repos = [
     name: 'redis / go-redis',
     url: 'https://github.com/redis/go-redis',
     stars: '22k+',
-    desc: 'Go 后端访问 Redis 的事实标准客户端，由 Redis 官方组织接管维护——Argo CD、Gitea、Casdoor 等知名开源项目直接依赖',
+    desc: 'Go 后端访问 Redis 的事实标准客户端，由 Redis 官方接管维护——Argo CD、Gitea 等知名项目直接依赖，DragonflyDB 官方兼容性验证也用它',
     prs: [
       {
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
@@ -214,7 +214,7 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
-    desc: 'CNCF 项目 · AI Agent 的 MCP/A2A 协议网关（Rust 实现），统一代理、鉴权与可观测性',
+    desc: 'Linux Foundation / CNCF 项目 · AI Agent 的 MCP/A2A 协议网关（Rust 实现），统一代理、鉴权与可观测性',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',

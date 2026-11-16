@@ -120,7 +120,7 @@ const repos = [
       },
       {
         title: 'fix: RecommendBestScore applies score_threshold in the wrong direction (#11350)',
-        note: '正确性缺陷：推荐接口在 Euclid 距离下 score_threshold 方向用反，导致有效结果被批量错误过滤',
+        note: '正确性缺陷：score_threshold 的比较逻辑未随距离度量方向适配——Euclid 距离（越小越优）下阈值方向用反，导致有效推荐结果被批量错误过滤；修正度量感知的判定逻辑',
         url: 'https://github.com/qdrant/qdrant/pull/11350',
       },
     ],
@@ -133,7 +133,7 @@ const repos = [
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
-        note: '修复资源/资源模板声明 UserSession 依赖时注册阶段直接报错的缺陷，打通会话级鉴权与 MCP 资源的组合用法',
+        note: '定位注册阶段依赖注入的报错路径：资源/资源模板声明 UserSession 会话依赖时直接抛异常。修复后，会话级鉴权与 MCP 资源声明可作为一等用法组合，打通带鉴权的工具/资源场景',
         url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
       },
     ],
@@ -213,12 +213,12 @@ const repos = [
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
-        note: '修复 Windows CLI 将版本号显示为 True 的缺陷',
+        note: '定位 Windows 平台版本探测逻辑误将布尔值作为版本信息输出的类型处理缺陷并修正，保证多平台 CLI 行为一致',
         url: 'https://github.com/agentgateway/agentgateway/pull/4276',
       },
       {
         title: "fix: resolve the user's home directory on Windows (#4264)",
-        note: '修复 Windows 下用户主目录解析错误的问题',
+        note: '修复 Windows 平台用户主目录解析错误导致的配置定位失败，补齐跨平台路径解析验证',
         url: 'https://github.com/agentgateway/agentgateway/pull/4264',
       },
     ],
@@ -236,7 +236,7 @@ const repos = [
       },
       {
         title: 'fix: @ruvector/core 0.1.30 HNSW misses results on very small graphs (#1299)',
-        note: '修复 @ruvector/core 0.1.30 在极小图上 HNSW 检索漏召回的问题',
+        note: '定位 HNSW 在极小图场景下的层遍历边界缺陷——0.1.30 版本检索结果大面积漏召回；修复并补齐小图场景的召回率验证',
         url: 'https://github.com/ruvnet/RuVector/pull/1299',
       },
     ],

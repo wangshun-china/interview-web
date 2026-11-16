@@ -72,7 +72,7 @@ const repos = [
     name: 'prometheus / prometheus',
     url: 'https://github.com/prometheus/prometheus',
     stars: '67k+',
-    desc: '监控与告警领域的事实标准 · CNCF 毕业项目（Go 编写），普罗米修斯指标生态的核心',
+    desc: '监控与告警领域的事实标准 · CNCF 最早毕业的项目之一（Go 编写）——诞生于 SoundCloud，现为 Kubernetes 生态默认监控方案，全球云原生监控的基石',
     prs: [
       {
         title: 'web: ui: align literal and duration keyword parsing with PromQL (#20456)',
@@ -98,7 +98,7 @@ const repos = [
     name: 'volcengine / OpenViking',
     url: 'https://github.com/volcengine/OpenViking',
     stars: '42k+',
-    desc: '火山引擎开源的 AI Agent 自进化上下文数据库——统一 Agent 记忆、知识 RAG 与技能',
+    desc: '字节跳动旗下（火山引擎）开源的 AI Agent 自进化上下文数据库——统一 Agent 记忆、知识 RAG 与技能，曾登 GitHub Trending 日榜',
     prs: [
       {
         title: 'fix(vlm): inherit configured reasoning effort in LiteLLM requests (#7703)',

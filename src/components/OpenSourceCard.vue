@@ -69,6 +69,19 @@ import { GitPullRequest, Star } from 'lucide-vue-next'
 
 const repos = [
   {
+    name: 'prometheus / prometheus',
+    url: 'https://github.com/prometheus/prometheus',
+    stars: '67k+',
+    desc: '监控与告警领域的事实标准 · CNCF 毕业项目（Go 编写），普罗米修斯指标生态的核心',
+    prs: [
+      {
+        title: 'web: ui: align literal and duration keyword parsing with PromQL (#20456)',
+        note: '修复 Web UI 的 PromQL 解析与真实 PromQL 语义不一致的问题——字面量与持续时间关键字解析对齐',
+        url: 'https://github.com/prometheus/prometheus/pull/20456',
+      },
+    ],
+  },
+  {
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
@@ -78,6 +91,32 @@ const repos = [
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
         note: '生产级连接故障排查：用户升级 MySQL JDBC 驱动到 Connector/J 9.x 后全量无法连接（"Buffer length is less than expected payload length"，回退 5.1.49 才恢复）。独立定位到 MySQL 接口对新驱动握手行为的兼容性缺陷并修复，恢复与 5.1.49 一致的行为，附驱动兼容性回归验证',
         url: 'https://github.com/ClickHouse/ClickHouse/pull/129709',
+      },
+    ],
+  },
+  {
+    name: 'milvus-io / milvus',
+    url: 'https://github.com/milvus-io/milvus',
+    stars: '46k+',
+    desc: '大规模向量数据库头部项目（Go/C++），支持数十亿向量，AI 检索基础设施的核心组件',
+    prs: [
+      {
+        title: 'fix: AISAQ over FLOAT16/BFLOAT16_VECTOR loses most of its recall under IP (#55315)',
+        note: '正确性缺陷：AISAQ 在 FLOAT16/BFLOAT16 向量的内积检索下，rerank 把邻居 ID 误当坐标读取，导致召回大面积丢失',
+        url: 'https://github.com/milvus-io/milvus/pull/55315',
+      },
+    ],
+  },
+  {
+    name: 'volcengine / OpenViking',
+    url: 'https://github.com/volcengine/OpenViking',
+    stars: '42k+',
+    desc: '火山引擎开源的 AI Agent 自进化上下文数据库——统一 Agent 记忆、知识 RAG 与技能',
+    prs: [
+      {
+        title: 'fix(vlm): inherit configured reasoning effort in LiteLLM requests (#7703)',
+        note: '修复 VLM 模块经 LiteLLM 发起请求时未继承已配置 reasoning effort 的问题',
+        url: 'https://github.com/volcengine/OpenViking/pull/7703',
       },
     ],
   },
@@ -193,19 +232,6 @@ const repos = [
     ],
   },
   {
-    name: 'modelcontextprotocol / rust-sdk',
-    url: 'https://github.com/modelcontextprotocol/rust-sdk',
-    stars: '4k+',
-    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起、业界公认的模型-工具连接标准，覆盖服务端/客户端双端实现',
-    prs: [
-      {
-        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
-        note: '资源生命周期缺陷：streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活——定位连接关闭与任务取消的信号传递断点并修复',
-        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
-      },
-    ],
-  },
-  {
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4k+',
@@ -233,6 +259,19 @@ const repos = [
         title: 'fix: Code-motion mutation retains a full syntax-tree clone at every nesting level (#2825)',
         note: '修复代码移动变换在每层嵌套都保留完整语法树克隆导致的内存爆炸问题',
         url: 'https://github.com/bytecodealliance/wasm-tools/pull/2825',
+      },
+    ],
+  },
+  {
+    name: 'modelcontextprotocol / rust-sdk',
+    url: 'https://github.com/modelcontextprotocol/rust-sdk',
+    stars: '4k+',
+    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起、业界公认的模型-工具连接标准，覆盖服务端/客户端双端实现',
+    prs: [
+      {
+        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
+        note: '资源生命周期缺陷：streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活——定位连接关闭与任务取消的信号传递断点并修复',
+        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
       },
     ],
   },

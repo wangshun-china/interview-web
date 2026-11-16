@@ -150,6 +150,11 @@ const repos = [
         url: 'https://github.com/redis/go-redis/pull/4296',
       },
       {
+        title: 'fix(tx): discard uncleared transaction state (#4316)',
+        note: '状态机缺陷：事务异常路径下残留的 transaction state 未被清理，污染后续命令执行（+204/−1）；定位残留状态的存活路径并补齐清理与回归测试',
+        url: 'https://github.com/redis/go-redis/pull/4316',
+      },
+      {
         title: 'fix: multidb — FD outcomes settle into the window after a reselect of the active member (#4283)',
         note: '可用性核心修复：MultiDB 重选活跃节点后，迟到的全双工结果会错误结算进新熔断窗口与故障检测期（+176/−81，涉及安全与可用性关键路径）；先在基线复现失败再验证补丁通过，由官方维护者合并',
         url: 'https://github.com/redis/go-redis/pull/4283',

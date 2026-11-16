@@ -28,7 +28,7 @@
       <p class="oss-blurb">
         长期向上游项目回馈维护级修复：每个 PR 均包含复现路径、根因分析与回归测试，
         覆盖驱动兼容、检索正确性、连接生命周期、运行时内核与跨平台崩溃等疑难场景，
-        已在 Prometheus、ClickHouse、Milvus、OpenViking、Redis Go 客户端、FastMCP、Wasmtime 等上游项目合并 {{ mergedCount }} 个 PR。
+        已在 Prometheus、ClickHouse、OpenViking、Redis Go 客户端、FastMCP、Wasmtime 等上游项目合并 {{ mergedCount }} 个 PR。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -91,19 +91,6 @@ const repos = [
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
         note: '生产级连接故障排查：用户升级 MySQL JDBC 驱动到 Connector/J 9.x 后全量无法连接（"Buffer length is less than expected payload length"，回退 5.1.49 才恢复）。独立定位到 MySQL 接口对新驱动握手行为的兼容性缺陷并修复，恢复与 5.1.49 一致的行为，附驱动兼容性回归验证',
         url: 'https://github.com/ClickHouse/ClickHouse/pull/129709',
-      },
-    ],
-  },
-  {
-    name: 'milvus-io / milvus',
-    url: 'https://github.com/milvus-io/milvus',
-    stars: '46k+',
-    desc: '大规模向量数据库头部项目（Go/C++），支持数十亿向量，AI 检索基础设施的核心组件',
-    prs: [
-      {
-        title: 'fix: AISAQ over FLOAT16/BFLOAT16_VECTOR loses most of its recall under IP (#55315)',
-        note: '正确性缺陷：AISAQ 在 FLOAT16/BFLOAT16 向量的内积检索下，rerank 把邻居 ID 误当坐标读取，导致召回大面积丢失',
-        url: 'https://github.com/milvus-io/milvus/pull/55315',
       },
     ],
   },

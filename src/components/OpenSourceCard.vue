@@ -95,19 +95,6 @@ const repos = [
     ],
   },
   {
-    name: 'milvus-io / milvus',
-    url: 'https://github.com/milvus-io/milvus',
-    stars: '46k+',
-    desc: '大规模向量数据库头部项目（Go/C++），支持数十亿向量，AI 检索基础设施的核心组件',
-    prs: [
-      {
-        title: 'fix: AISAQ over FLOAT16/BFLOAT16_VECTOR loses most of its recall under IP (#55315)',
-        note: '正确性缺陷：AISAQ 在 FLOAT16/BFLOAT16 向量的内积检索下，rerank 把邻居 ID 误当坐标读取，导致召回大面积丢失',
-        url: 'https://github.com/milvus-io/milvus/pull/55315',
-      },
-    ],
-  },
-  {
     name: 'volcengine / OpenViking',
     url: 'https://github.com/volcengine/OpenViking',
     stars: '42k+',

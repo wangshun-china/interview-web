@@ -20,15 +20,15 @@
             <span>已合并 {{ mergedCount }} · 覆盖 {{ starsCoverage }} ★</span>
           </div>
         </div>
-        <p class="oss-subtitle">数据库 / MCP 生态 / AI 基础设施 · 全部已被上游合并</p>
+        <p class="oss-subtitle">数据库 / 监控 / MCP 生态 / AI 基础设施 · 全部已被上游合并</p>
       </div>
     </header>
 
     <div class="oss-body">
       <p class="oss-blurb">
         长期向上游项目回馈维护级修复：每个 PR 均包含复现路径、根因分析与回归测试，
-        覆盖驱动兼容、检索正确性、连接生命周期、跨平台崩溃等疑难场景，
-        已在 ClickHouse、Qdrant、Redis Go 客户端、FastMCP、Wasmtime 等上游项目合并 {{ mergedCount }} 个 PR。
+        覆盖驱动兼容、检索正确性、连接生命周期、运行时内核与跨平台崩溃等疑难场景，
+        已在 Prometheus、ClickHouse、Milvus、OpenViking、Redis Go 客户端、FastMCP、Wasmtime 等上游项目合并 {{ mergedCount }} 个 PR。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -91,6 +91,19 @@ const repos = [
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
         note: '生产级连接故障排查：用户升级 MySQL JDBC 驱动到 Connector/J 9.x 后全量无法连接（"Buffer length is less than expected payload length"，回退 5.1.49 才恢复）。独立定位到 MySQL 接口对新驱动握手行为的兼容性缺陷并修复，恢复与 5.1.49 一致的行为，附驱动兼容性回归验证',
         url: 'https://github.com/ClickHouse/ClickHouse/pull/129709',
+      },
+    ],
+  },
+  {
+    name: 'milvus-io / milvus',
+    url: 'https://github.com/milvus-io/milvus',
+    stars: '46k+',
+    desc: '大规模向量数据库头部项目（Go/C++），支持数十亿向量，AI 检索基础设施的核心组件',
+    prs: [
+      {
+        title: 'fix: AISAQ over FLOAT16/BFLOAT16_VECTOR loses most of its recall under IP (#55315)',
+        note: '正确性缺陷：AISAQ 在 FLOAT16/BFLOAT16 向量的内积检索下，rerank 把邻居 ID 误当坐标读取，导致召回大面积丢失',
+        url: 'https://github.com/milvus-io/milvus/pull/55315',
       },
     ],
   },
@@ -165,7 +178,7 @@ const repos = [
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
-    desc: 'Bytecode Alliance（Mozilla/Fastly/Intel 联合创立）出品的 Wasm 运行时——Cloudflare Workers 全球边缘计算与 Fastly 生产工作负载的底层引擎',
+    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）· Firefox、Cloudflare 等生产使用',
     prs: [
       {
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
@@ -209,7 +222,7 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
-    desc: 'CNCF 项目 · 面向 Agent 流量的新一代数据平面（Rust 实现），为 MCP/A2A 智能体协议提供统一的代理、鉴权与可观测性',
+    desc: 'CNCF 项目 · AI Agent 的 MCP/A2A 协议网关（Rust 实现），统一代理、鉴权与可观测性',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
@@ -226,18 +239,31 @@ const repos = [
   {
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
-    stars: '4k+',
+    stars: '4.7k+',
     desc: 'Rust 向量数据库 · HNSW 引擎，支持 WASM 浏览器运行与嵌入式部署，覆盖本地推理与边缘设备场景',
     prs: [
       {
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
-        note: '跨平台编译兼容：修复 ARMv8.2 无 LRCPC 指令平台（Jetson AGX Xavier、树莓派 4）原生模块启动即 SIGILL 崩溃的问题，恢复边缘设备可用性',
+        note: '跨平台编译兼容：修复 ARMv8.2 无 LRCPC 平台（Jetson AGX Xavier、树莓派 4）原生模块启动即 SIGILL 崩溃的问题，恢复边缘设备可用性',
         url: 'https://github.com/ruvnet/RuVector/pull/1384',
       },
       {
         title: 'fix: @ruvector/core 0.1.30 HNSW misses results on very small graphs (#1299)',
         note: '定位 HNSW 在极小图场景下的层遍历边界缺陷——0.1.30 版本检索结果大面积漏召回；修复并补齐小图场景的召回率验证',
         url: 'https://github.com/ruvnet/RuVector/pull/1299',
+      },
+    ],
+  },
+  {
+    name: 'modelcontextprotocol / rust-sdk',
+    url: 'https://github.com/modelcontextprotocol/rust-sdk',
+    stars: '4.1k+',
+    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起、业界公认的模型-工具连接标准，覆盖服务端/客户端双端实现',
+    prs: [
+      {
+        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
+        note: '资源生命周期缺陷：streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活——定位连接关闭与任务取消的信号传递断点并修复',
+        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
       },
     ],
   },
@@ -255,19 +281,6 @@ const repos = [
     ],
   },
   {
-    name: 'modelcontextprotocol / rust-sdk',
-    url: 'https://github.com/modelcontextprotocol/rust-sdk',
-    stars: '4k+',
-    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起、业界公认的模型-工具连接标准，覆盖服务端/客户端双端实现',
-    prs: [
-      {
-        title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
-        note: '资源生命周期缺陷：streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活——定位连接关闭与任务取消的信号传递断点并修复',
-        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
-      },
-    ],
-  },
-  {
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',
@@ -279,7 +292,7 @@ const repos = [
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
       },
     ],
-  }
+  },
 ]
 
 const mergedCount = computed(
@@ -365,7 +378,7 @@ const starsCoverage = computed(() => {
   padding: 0.45rem 0.7rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: var(--color-veil);
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   font-size: 0.8rem;
   font-weight: 700;

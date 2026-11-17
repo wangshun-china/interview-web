@@ -150,6 +150,12 @@ const repos = [
         url: 'https://github.com/redis/go-redis/pull/4296',
       },
       {
+        title: 'fix(pool): wait for idle reauthentication (#4313)',
+        note: '并发缺陷：空闲连接在后台重认证完成前即可被取出使用，导致认证信息不完整（+481/−5）；补齐等待-认证完成的生命周期同步与回归测试',
+        url: 'https://github.com/redis/go-redis/pull/4313',
+      },
+      },
+      {
         title: 'fix(tx): discard uncleared transaction state (#4316)',
         note: '状态机缺陷：事务异常路径下残留的 transaction state 未被清理，污染后续命令执行（+204/−1）；定位残留状态的存活路径并补齐清理与回归测试',
         url: 'https://github.com/redis/go-redis/pull/4316',

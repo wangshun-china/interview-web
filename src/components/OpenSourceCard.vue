@@ -167,19 +167,6 @@ const repos = [
     ],
   },
   {
-    name: 'pypa / pipx',
-    url: 'https://github.com/pypa/pipx',
-    stars: '13k+',
-    desc: 'Python 应用隔离安装与运行的事实标准工具——pipx 让 CLI 工具各享独立虚拟环境',
-    prs: [
-      {
-        title: 'docs(environment): explain what --value prints for unset variables (#2450)',
-        note: '补充 environment 模块文档：说明 --value 对未设置变量的输出行为，消除使用者歧义',
-        url: 'https://github.com/pypa/pipx/pull/2450',
-      },
-    ],
-  },
-  {
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
@@ -220,6 +207,19 @@ const repos = [
         title: 'fix: guard GitLab ticket context with project issue visibility (#4932)',
         note: '修复 GitLab ticket 上下文未校验项目 issue 可见性的越权读取问题',
         url: 'https://github.com/The-PR-Agent/pr-agent/pull/4932',
+      },
+    ],
+  },
+  {
+    name: 'pypa / pipx',
+    url: 'https://github.com/pypa/pipx',
+    stars: '13k+',
+    desc: 'Python 应用隔离安装与运行的事实标准工具——pipx 让 CLI 工具各享独立虚拟环境',
+    prs: [
+      {
+        title: 'docs(environment): explain what --value prints for unset variables (#2450)',
+        note: '补充 environment 模块文档：说明 --value 对未设置变量的输出行为，消除使用者歧义',
+        url: 'https://github.com/pypa/pipx/pull/2450',
       },
     ],
   },

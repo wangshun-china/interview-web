@@ -72,7 +72,7 @@ const repos = [
     name: 'prometheus / prometheus',
     url: 'https://github.com/prometheus/prometheus',
     stars: '67k+',
-    desc: '监控与告警领域的事实标准 · CNCF 最早毕业的项目之一（Go 编写）——诞生于 SoundCloud，现为 Kubernetes 生态默认监控方案，全球云原生监控的基石',
+    desc: '监控与告警领域的事实标准——CNCF 最早毕业的项目之一（Go 编写），Kubernetes 生态默认监控方案。拥有数千个 Exporter、与 Grafana 深度集成的庞大指标生态，Cloudflare/DigitalOcean 等大量公司生产使用',
     prs: [
       {
         title: 'web: ui: align literal and duration keyword parsing with PromQL (#20456)',
@@ -85,7 +85,7 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
-    desc: 'Yandex 研发、2014 开源的 C++ 列式 OLAP 数据库——实时分析领域的事实标准，Cloudflare/eBay/Spotify 等大量头部公司生产使用，单节点每秒可扫描数亿行',
+    desc: 'Yandex 研发、2014 开源的 C++ 列式 OLAP 数据库——实时分析的事实标准，单节点每秒可扫描数亿行、支持 PB 级数据量；Cloudflare/eBay/Spotify 等大量头部公司生产使用',
     prs: [
       {
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
@@ -98,7 +98,7 @@ const repos = [
     name: 'volcengine / OpenViking',
     url: 'https://github.com/volcengine/OpenViking',
     stars: '42k+',
-    desc: '字节跳动旗下（火山引擎）开源的 AI Agent 自进化上下文数据库——统一 Agent 记忆、知识 RAG 与技能，曾登 GitHub Trending 日榜第 1',
+    desc: '字节跳动（火山引擎）开源的 AI Agent 自进化上下文数据库——统一 Agent 记忆、知识 RAG 与技能三层抽象，内置 VLM 多模态模块与 LiteLLM 多模型接入，曾登 GitHub Trending 日榜第 1',
     prs: [
       {
         title: 'fix(vlm): inherit configured reasoning effort in LiteLLM requests (#7703)',
@@ -111,7 +111,7 @@ const repos = [
     name: 'qdrant / qdrant',
     url: 'https://github.com/qdrant/qdrant',
     stars: '35k+',
-    desc: 'Rust 编写的高性能向量数据库 · GitHub 同类项目 Top 2，LangChain/LlamaIndex 官方集成，支撑亿级向量的 RAG 与语义检索场景',
+    desc: 'Rust 编写的高性能向量数据库 · GitHub 同类项目 Top 2——原生分布式架构、支持 HNSW/量化/稀疏混合检索，LangChain/LlamaIndex 官方集成，广泛用于企业级 RAG 与语义搜索',
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
@@ -129,7 +129,7 @@ const repos = [
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
-    desc: 'Python MCP 框架事实标准，由 Prefect 官方维护 · 曾登 GitHub Trending 日榜第 1——MCP 已成业界模型连接工具的协议标准，OpenAI/Google 均宣布支持',
+    desc: 'Python MCP 框架事实标准 · Prefect 官方维护——用装饰器将任意 Python 函数暴露为 MCP 工具/资源/提示模板，支持 stdio/HTTP/SSE 多传输方式；MCP 已被 OpenAI/Google 宣布支持',
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
@@ -142,7 +142,7 @@ const repos = [
     name: 'redis / go-redis',
     url: 'https://github.com/redis/go-redis',
     stars: '22k+',
-    desc: 'Go 后端访问 Redis 的事实标准客户端，由 Redis 官方接管维护——Argo CD、Gitea 等知名项目直接依赖，DragonflyDB 官方兼容性验证也用它',
+    desc: 'Go 生态 Redis 客户端事实标准 · Redis 官方接管维护——支持 Cluster/Sentinel/流水线/Pub-Sub 全特性，Argo CD/Gitea 等知名项目直接依赖，DragonflyDB 官方兼容性验证也用它',
     prs: [
       {
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
@@ -170,7 +170,7 @@ const repos = [
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
-    desc: 'Bytecode Alliance 出品的 WebAssembly 运行时（含 Cranelift 编译器）· Firefox、Cloudflare 等生产使用',
+    desc: 'Bytecode Alliance（Mozilla/Fastly/Intel 联合创立）出品的 WebAssembly 运行时——内含 Cranelift 编译器，支持 WASI 标准接口；Cloudflare Workers/Fastly 边缘计算与 Firefox 沙箱模块的底层引擎',
     prs: [
       {
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
@@ -188,7 +188,7 @@ const repos = [
     name: 'opensandbox-group / OpenSandbox',
     url: 'https://github.com/opensandbox-group/OpenSandbox',
     stars: '17k+',
-    desc: 'Agentic AI Foundation（AAIF）旗下项目 · 曾登 GitHub Trending 日榜第 1 · 通过 OpenSSF 最佳实践认证——面向 AI Agent 的安全沙箱运行时，智能体执行代码与工具调用的隔离底座',
+    desc: 'Agentic AI Foundation（AAIF）旗下 · 曾登 GitHub Trending 日榜第 1 · 通过 OpenSSF 最佳实践认证——AI Agent 的安全沙箱运行时：隔离执行不受信代码、运行工具调用、支撑多租户场景',
     prs: [
       {
         title: 'fix(python-sdk): normalize legacy SSE streams in linear time (#2845)',
@@ -201,7 +201,7 @@ const repos = [
     name: 'The-PR-Agent / pr-agent',
     url: 'https://github.com/The-PR-Agent/pr-agent',
     stars: '16k+',
-    desc: 'Qodo（原 CodiumAI，AI 代码完整性领域的头部公司）发起的开源 AI 代码评审 Agent——该赛道开创者，支持 GitHub/GitLab/Bitbucket/Azure DevOps 自动审查、变更分析与建议',
+    desc: 'Qodo（原 CodiumAI，AI 代码完整性头部公司）发起的开源 AI 代码评审 Agent——自动执行 PR 描述生成、代码审查、变更影响分析与建议回复，支持 GitHub/GitLab/Bitbucket/Azure DevOps 四大平台',
     prs: [
       {
         title: 'fix: guard GitLab ticket context with project issue visibility (#4932)',
@@ -227,7 +227,7 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
-    desc: 'Linux Foundation / CNCF 项目 · AI Agent 的 MCP/A2A 协议网关（Rust 实现），统一代理、鉴权与可观测性',
+    desc: 'Linux Foundation / CNCF 项目 · 面向 Agent 流量的新一代数据平面（Rust 实现）——统一代理 MCP 与 A2A 智能体协议，内置鉴权、限流与可观测性',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
@@ -263,7 +263,7 @@ const repos = [
     name: 'modelcontextprotocol / rust-sdk',
     url: 'https://github.com/modelcontextprotocol/rust-sdk',
     stars: '4.1k+',
-    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起、业界公认的模型-工具连接标准，覆盖服务端/客户端双端实现',
+    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起的模型-工具连接标准——支持 stdio/Streamable-HTTP 双传输、服务端与客户端双端实现，类型安全且异步优先',
     prs: [
       {
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',

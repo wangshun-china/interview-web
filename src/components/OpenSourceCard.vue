@@ -167,6 +167,19 @@ const repos = [
     ],
   },
   {
+    name: 'pypa / pipx',
+    url: 'https://github.com/pypa/pipx',
+    stars: '13k+',
+    desc: 'Python 应用隔离安装与运行的事实标准工具——pipx 让 CLI 工具各享独立虚拟环境',
+    prs: [
+      {
+        title: 'docs(environment): explain what --value prints for unset variables (#2450)',
+        note: '补充 environment 模块文档：说明 --value 对未设置变量的输出行为，消除使用者歧义',
+        url: 'https://github.com/pypa/pipx/pull/2450',
+      },
+    ],
+  },
+  {
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
@@ -256,6 +269,11 @@ const repos = [
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
         note: '资源生命周期缺陷：streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活——定位连接关闭与任务取消的信号传递断点并修复',
         url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
+      },
+      {
+        title: 'fix: reject unadvertised capability methods by default (#1446)',
+        note: '安全加固：默认拒绝未声明的能力方法调用，防止客户端绕过服务端能力协商直接调用未暴露接口',
+        url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1446',
       },
     ],
   },

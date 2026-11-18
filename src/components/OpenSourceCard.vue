@@ -183,6 +183,11 @@ const repos = [
         url: 'https://github.com/redis/go-redis/pull/4322',
       },
       {
+        title: 'fix: reselect after endpoint dial exhaustion (#4331)',
+        note: '可用性修复：endpoint dial 耗尽后 reselect 切换节点时的状态残留问题——定位并修正重选后的连接池重置逻辑，由官方维护者合并',
+        url: 'https://github.com/redis/go-redis/pull/4331',
+      },
+      {
         title: 'fix(retry): stop replaying failed dial sequences (#4304)',
         note: '重试缺陷：连接失败的 dial 序列被错误重放，导致重复连接与资源浪费（+927/−37）；修正重试策略的状态管理并补齐回归测试',
         url: 'https://github.com/redis/go-redis/pull/4304',

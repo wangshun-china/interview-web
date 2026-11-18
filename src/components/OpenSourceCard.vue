@@ -95,6 +95,19 @@ const repos = [
     ],
   },
   {
+    name: 'HKUDS / LightRAG',
+    url: 'https://github.com/HKUDS/LightRAG',
+    stars: '40k+',
+    desc: 'EMNLP2025 论文项目 · 图增强 RAG 框架的开源标杆——融合知识图谱与向量检索，被大量 Agent 项目采用',
+    prs: [
+      {
+        title: 'fix(chunker): verify token-window positions before attaching provenance (#4463)',
+        note: '正确性缺陷：chunker 在附加上下文溯源标记前未校验 token 窗口位置，导致 provenance 信息错挂——从解析逻辑定位根因并修复',
+        url: 'https://github.com/HKUDS/LightRAG/pull/4463',
+      },
+    ],
+  },
+  {
     name: 'volcengine / OpenViking',
     url: 'https://github.com/volcengine/OpenViking',
     stars: '42k+',
@@ -168,6 +181,11 @@ const repos = [
         title: 'fix(pool): return acquired idle connections (#4322)',
         note: '连接池生命周期修复：获取到的空闲连接未正确归还连接池，长期运行下造成连接泄漏（+81/−1）；补齐归还路径与回归测试，由官方维护者合并',
         url: 'https://github.com/redis/go-redis/pull/4322',
+      },
+      {
+        title: 'fix(retry): stop replaying failed dial sequences (#4304)',
+        note: '重试缺陷：连接失败的 dial 序列被错误重放，导致重复连接与资源浪费（+927/−37）；修正重试策略的状态管理并补齐回归测试',
+        url: 'https://github.com/redis/go-redis/pull/4304',
       },
     ],
   },

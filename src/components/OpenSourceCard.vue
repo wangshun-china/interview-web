@@ -98,7 +98,7 @@ const repos = [
     name: 'HKUDS / LightRAG',
     url: 'https://github.com/HKUDS/LightRAG',
     stars: '40k+',
-    desc: 'EMNLP2025 论文项目 · 图增强 RAG 框架的开源标杆——融合知识图谱与向量检索，被大量 Agent 项目采用',
+    desc: 'EMNLP2025 论文 · GitHub Trending 日榜第 2 · GitHub 全球排名 #753 · PyPI 月下载 2M+——图增强 RAG 框架的开源标杆，融合知识图谱与向量检索',
     prs: [
       {
         title: 'fix(chunker): verify token-window positions before attaching provenance (#4463)',

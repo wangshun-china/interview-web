@@ -72,7 +72,7 @@ const repos = [
     name: 'prometheus / prometheus',
     url: 'https://github.com/prometheus/prometheus',
     stars: '67k+',
-    desc: '监控与告警领域的事实标准——CNCF 最早毕业的项目之一（Go 编写），Kubernetes 生态默认监控方案。拥有数千个 Exporter、与 Grafana 深度集成的庞大指标生态，Cloudflare/DigitalOcean 等大量公司生产使用',
+    desc: 'CNCF 最早毕业的项目之一 · 监控与告警领域的事实标准——Kubernetes 默认监控方案，数千个 Exporter 覆盖全栈指标，与 Grafana 深度集成形成云原生可观测性事实标准；Cloudflare/DigitalOcean 等大量公司生产使用',
     prs: [
       {
         title: 'web: ui: align literal and duration keyword parsing with PromQL (#20456)',
@@ -85,7 +85,7 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
-    desc: 'Yandex 研发、2014 开源的 C++ 列式 OLAP 数据库——实时分析的事实标准，单节点每秒可扫描数亿行、支持 PB 级数据量；Cloudflare/eBay/Spotify 等大量头部公司生产使用',
+    desc: 'Yandex 研发、2014 开源的 C++ 列式 OLAP 数据库——实时分析领域的事实标准，GitHub 数据基础设施类 Top 3；单节点每秒可扫描数亿行、支持 PB 级数据量，Cloudflare/eBay/Spotify 等大量头部公司生产使用',
     prs: [
       {
         title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
@@ -142,7 +142,7 @@ const repos = [
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
-    desc: 'Python MCP 框架事实标准 · Prefect 官方维护——用装饰器将任意 Python 函数暴露为 MCP 工具/资源/提示模板，支持 stdio/HTTP/SSE 多传输方式；MCP 已被 OpenAI/Google 宣布支持',
+    desc: 'Python MCP 框架事实标准 · Prefect 官方维护——用装饰器将任意 Python 函数暴露为 MCP 工具/资源/提示模板，支持 stdio/HTTP/SSE 多传输；MCP 已被 OpenAI/Google 宣布支持',
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',

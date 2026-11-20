@@ -69,6 +69,32 @@ import { GitPullRequest, Star } from 'lucide-vue-next'
 
 const repos = [
   {
+    name: 'caddyserver / caddy',
+    url: 'https://github.com/caddyserver/caddy',
+    stars: '79k+',
+    desc: 'Go 编写的跨平台 Web 服务器与反向代理，支持 HTTP/1.1、HTTP/2、HTTP/3，内置自动 HTTPS 和模块化扩展机制',
+    prs: [
+      {
+        title: 'fix: prevent read_body deadline from truncating long responses (#8400)',
+        note: '修复读取请求体的空闲超时在清理 deadline 时被误设为硬截止时间，导致长请求的响应提前截断；通过回归测试验证超时与连接生命周期边界',
+        url: 'https://github.com/caddyserver/caddy/pull/8400',
+      },
+    ],
+  },
+  {
+    name: 'docling-project / docling',
+    url: 'https://github.com/docling-project/docling',
+    stars: '70k+',
+    desc: '面向生成式 AI 的文档解析与结构化转换框架，支持 PDF、DOCX、PPTX 等格式，服务于 RAG 与文档理解流程',
+    prs: [
+      {
+        title: 'fix: avoid OpenCV FIPS aborts with Databricks opt-out setting (#5430)',
+        note: '修复 Databricks Serverless 环境中 OPENSSL_FORCE_FIPS_MODE=0 触发 OpenCV 底层 OpenSSL 意外终止（SIGABRT）的问题；只处理明确的关闭值，并添加进程级回归验证',
+        url: 'https://github.com/docling-project/docling/pull/5430',
+      },
+    ],
+  },
+  {
     name: 'prometheus / prometheus',
     url: 'https://github.com/prometheus/prometheus',
     stars: '67k+',
@@ -252,6 +278,19 @@ const repos = [
     ],
   },
   {
+    name: 'pydantic / monty',
+    url: 'https://github.com/pydantic/monty',
+    stars: '8.9k+',
+    desc: 'Pydantic 生态的 Rust 实现 Python 沙箱，面向 AI 生成代码提供受控执行与资源隔离',
+    prs: [
+      {
+        title: 'fix: preflight JSON integer indentation allocations (#1367)',
+        note: '修复 json.dumps/json.dump 遇到极大整数缩进时绕过沙箱内存预算、可能终止工作进程的问题；改为受内存配额检查的字符串构造，并验证错误后 worker 可继续复用',
+        url: 'https://github.com/pydantic/monty/pull/1367',
+      },
+    ],
+  },
+  {
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
@@ -302,6 +341,19 @@ const repos = [
         title: 'fix: reject unadvertised capability methods by default (#1446)',
         note: '安全加固：默认拒绝未声明的能力方法调用，防止客户端绕过服务端能力协商直接调用未暴露接口',
         url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1446',
+      },
+    ],
+  },
+  {
+    name: 'agronholm / anyio',
+    url: 'https://github.com/agronholm/anyio',
+    stars: '2.5k+',
+    desc: 'Python 高层异步并发与网络框架，提供兼容 asyncio、Trio 的统一接口，广泛用于异步应用与测试生态',
+    prs: [
+      {
+        title: 'fix: preserve asyncio callback context in pytest exception notes (#1482)',
+        note: '修复 pytest 异步运行器收集回调异常时丢失回调名称与错误上下文的问题；为原异常保留事件循环诊断 note，并补充内置 callback 失败的回归测试',
+        url: 'https://github.com/agronholm/anyio/pull/1482',
       },
     ],
   },

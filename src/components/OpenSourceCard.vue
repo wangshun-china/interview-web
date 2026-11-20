@@ -291,6 +291,19 @@ const repos = [
     ],
   },
   {
+    name: 'prometheus / alertmanager',
+    url: 'https://github.com/prometheus/alertmanager',
+    stars: '8.7k+',
+    desc: 'Prometheus 监控生态的告警管理组件——负责告警去重、分组与路由，云原生可观测性的关键一环',
+    prs: [
+      {
+        title: 'app: outlast Prometheus client idle connections (#5744)',
+        note: '修复 Alertmanager 在 Prometheus 客户端连接空闲后被断开的问题，保证告警链路持续可达',
+        url: 'https://github.com/prometheus/alertmanager/pull/5744',
+      },
+    ],
+  },
+  {
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',

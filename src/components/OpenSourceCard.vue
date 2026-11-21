@@ -144,6 +144,11 @@ const repos = [
         note: '修复 VLM 模块经 LiteLLM 发起请求时未继承已配置 reasoning effort 的问题',
         url: 'https://github.com/volcengine/OpenViking/pull/7703',
       },
+      {
+        title: 'fix(acl): reject principals outside the resource account (#8117)',
+        note: '安全加固：ACL 拒绝资源账号之外的访问主体，防止跨账号越权访问（+169/−0）',
+        url: 'https://github.com/volcengine/OpenViking/pull/8117',
+      },
     ],
   },
   {
@@ -248,6 +253,11 @@ const repos = [
         title: 'fix(python-sdk): normalize legacy SSE streams in linear time (#2845)',
         note: '修复 Python SDK 对旧版 SSE 流的解析退化为非线性处理的问题，长会话下不再随流增长而卡顿',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2845',
+      },
+      {
+        title: 'feat(server): optionally sync metadata labels to dedicated Pods (#2869)',
+        note: '新功能：支持将沙箱元数据标签同步至专用 Pod，增强多租户场景的可观测性与资源管理能力（+435/−13）',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2869',
       },
     ],
   },

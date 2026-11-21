@@ -332,6 +332,19 @@ const repos = [
     ],
   },
   {
+    name: 'python / typeshed',
+    url: 'https://github.com/python/typeshed',
+    stars: '5k+',
+    desc: 'Python 官方类型存根仓库——mypy/pyright/pyre 等所有主流类型检查器的标准库类型来源',
+    prs: [
+      {
+        title: 'Narrow real math and cmath constants to float (#16886)',
+        note: '收窄 math/cmath 数学常量的类型标注为 float，修正调用方推断出过宽类型的问题（+10/−11）',
+        url: 'https://github.com/python/typeshed/pull/16886',
+      },
+    ],
+  },
+  {
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4.7k+',

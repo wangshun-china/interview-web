@@ -17,7 +17,7 @@ jobs:
     name: Renew certificates on Aliyun
     runs-on: [self-hosted, aliyun]
     env:
-      GATEWAY_DEPLOY_DIR: /opt/wangshun-portfolio
+      GATEWAY_DATA_DIR: /data/wangshun-portfolio-data
       CERTBOT_IMAGE: certbot/certbot:v5.7.0
     steps:
       - name: Renew certificates and reload nginx
@@ -26,12 +26,12 @@ jobs:
         shell: bash
         # No actions/checkout on purpose: this runner frequently cannot reach
         # github.com, and renewal only needs state that already lives on this
-        # host (/opt/wangshun-portfolio + the local certbot image).
+        # host (/data/wangshun-portfolio-data + the local certbot image).
         run: |
           set -Eeuo pipefail
 
-          DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:?GATEWAY_DEPLOY_DIR is required}"
-          CERT_PATH="$DEPLOY_DIR/certbot/conf/live/wangshun.work/fullchain.pem"
+          DATA_DIR="${GATEWAY_DATA_DIR:?GATEWAY_DATA_DIR is required}"
+          CERT_PATH="$DATA_DIR/certbot/conf/live/wangshun.work/fullchain.pem"
           : "${OPS_AGENT_TOKEN:?OPS_AGENT_TOKEN is required}"
 
           report_job() {
@@ -59,10 +59,10 @@ jobs:
           }
 
           docker run --rm \
-            -v "$DEPLOY_DIR/certbot/conf:/etc/letsencrypt" \
-            -v "$DEPLOY_DIR/certbot/lib:/var/lib/letsencrypt" \
-            -v "$DEPLOY_DIR/certbot/log:/var/log/letsencrypt" \
-            -v "$DEPLOY_DIR/certbot/www:/var/www/certbot" \
+            -v "$DATA_DIR/certbot/conf:/etc/letsencrypt" \
+            -v "$DATA_DIR/certbot/lib:/var/lib/letsencrypt" \
+            -v "$DATA_DIR/certbot/log:/var/log/letsencrypt" \
+            -v "$DATA_DIR/certbot/www:/var/www/certbot" \
             "$CERTBOT_IMAGE" renew \
               --non-interactive \
               --webroot \

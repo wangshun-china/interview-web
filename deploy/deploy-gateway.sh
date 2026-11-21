@@ -4,6 +4,7 @@ set -Eeuo pipefail
 
 SOURCE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:?GATEWAY_DEPLOY_DIR is required}"
+DATA_DIR=/data/wangshun-portfolio-data
 CERT_NAME="wangshun.work"
 # Pinned tag; the image is pre-pulled on the Aliyun runner so cert issuance
 # never depends on reaching docker.io at deploy time.
@@ -36,13 +37,13 @@ GATEWAY_LATEST="${GATEWAY_LATEST:-}"
 
 install -d -m 700 "$DEPLOY_DIR"
 install -d -m 755 \
-  "$DEPLOY_DIR/certbot/conf" \
-  "$DEPLOY_DIR/certbot/lib" \
-  "$DEPLOY_DIR/certbot/log" \
-  "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge" \
-  "$DEPLOY_DIR/nginx-logs" \
-  "$DEPLOY_DIR/routes"
-install -d -m 700 "$DEPLOY_DIR/ops-data"
+  "$DATA_DIR/certbot/conf" \
+  "$DATA_DIR/certbot/lib" \
+  "$DATA_DIR/certbot/log" \
+  "$DATA_DIR/certbot/www/.well-known/acme-challenge" \
+  "$DATA_DIR/nginx-logs" \
+  "$DATA_DIR/routes"
+install -d -m 700 "$DATA_DIR/ops-data"
 # Keep the pre-migration single-service compose for rollback until the new
 # topology has passed health checks; captured only while the gateway has
 # never existed, so .previous always holds the true legacy topology.
@@ -85,7 +86,7 @@ umask 077
 } > "$DEPLOY_DIR/.env.next"
 mv "$DEPLOY_DIR/.env.next" "$DEPLOY_DIR/.env"
 
-CERT_PATH="$DEPLOY_DIR/certbot/conf/live/$CERT_NAME/fullchain.pem"
+CERT_PATH="$DATA_DIR/certbot/conf/live/$CERT_NAME/fullchain.pem"
 if [[ -f "$CERT_PATH" ]]; then
   certificate_was_present=true
   certificate_needs_update=false
@@ -173,9 +174,9 @@ fi
 if [[ "$certificate_needs_update" == true ]]; then
   challenge_token="gateway-$GITHUB_RUN_ID"
   printf '%s\n' "$challenge_token" > \
-    "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge/$challenge_token"
+    "$DATA_DIR/certbot/www/.well-known/acme-challenge/$challenge_token"
   chmod 644 \
-    "$DEPLOY_DIR/certbot/www/.well-known/acme-challenge/$challenge_token"
+    "$DATA_DIR/certbot/www/.well-known/acme-challenge/$challenge_token"
 
   for domain in "${DOMAINS[@]}"; do
     curl -fsS --retry 10 --retry-delay 2 --retry-all-errors \
@@ -202,10 +203,10 @@ if [[ "$certificate_needs_update" == true ]]; then
   fi
 
   docker run --rm \
-    -v "$DEPLOY_DIR/certbot/conf:/etc/letsencrypt" \
-    -v "$DEPLOY_DIR/certbot/lib:/var/lib/letsencrypt" \
-    -v "$DEPLOY_DIR/certbot/log:/var/log/letsencrypt" \
-    -v "$DEPLOY_DIR/certbot/www:/var/www/certbot" \
+    -v "$DATA_DIR/certbot/conf:/etc/letsencrypt" \
+    -v "$DATA_DIR/certbot/lib:/var/lib/letsencrypt" \
+    -v "$DATA_DIR/certbot/log:/var/log/letsencrypt" \
+    -v "$DATA_DIR/certbot/www:/var/www/certbot" \
     "$CERTBOT_IMAGE" certonly \
       --non-interactive \
       --webroot \

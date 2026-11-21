@@ -133,7 +133,6 @@ jobs:
 
       - name: Deploy
         env:
-          GATEWAY_DEPLOY_DIR: /opt/wangshun-portfolio
           ALIYUN_ACR_REGISTRY: ${{ env.ALIYUN_ACR_REGISTRY }}
           ALIYUN_ACR_USERNAME: ${{ env.ALIYUN_ACR_USERNAME }}
           ALIYUN_ACR_PASSWORD: ${{ env.ALIYUN_ACR_PASSWORD }}

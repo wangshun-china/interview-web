@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 SOURCE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:?GATEWAY_DEPLOY_DIR is required}"
+DEPLOY_DIR="${GATEWAY_DEPLOY_DIR:-$HOME/deployments/wangshun-portfolio}"
 DATA_DIR=/data/wangshun-portfolio-data
 CERT_NAME="wangshun.work"
 # Pinned tag; the image is pre-pulled on the Aliyun runner so cert issuance

@@ -259,6 +259,11 @@ const repos = [
         note: '新功能：支持将沙箱元数据标签同步至专用 Pod，增强多租户场景的可观测性与资源管理能力（+435/−13）',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2869',
       },
+      {
+        title: 'fix(python-sdk): log propagated failures at debug level (#2996)',
+        note: '日志分级修复：传播型失败从错误级降为 debug 级，避免上游已处理的失败被重复告警',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2996',
+      },
     ],
   },
   {
@@ -403,6 +408,19 @@ const repos = [
         title: 'fix: Code-motion mutation retains a full syntax-tree clone at every nesting level (#2825)',
         note: '修复代码移动变换在每层嵌套都保留完整语法树克隆导致的内存爆炸问题',
         url: 'https://github.com/bytecodealliance/wasm-tools/pull/2825',
+      },
+    ],
+  },
+  {
+    name: 'oceanbase / powercontext',
+    url: 'https://github.com/oceanbase/powercontext',
+    stars: '1.7k+',
+    desc: 'OceanBase 开源的 Agent 长期记忆与记忆交接框架——支持 Claude Code 与 Codex 等编码智能体',
+    prs: [
+      {
+        title: 'fix(gateway): preserve distinct terminal turn captures (#2717)',
+        note: '修复网关合并存储时覆盖不同 terminal turn 捕获内容的问题，保证多条会话轮次的记忆完整留存（+161/−16）',
+        url: 'https://github.com/oceanbase/powercontext/pull/2717',
       },
     ],
   },

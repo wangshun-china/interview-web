@@ -267,6 +267,19 @@ const repos = [
     ],
   },
   {
+    name: 'apache / rocketmq',
+    url: 'https://github.com/apache/rocketmq',
+    stars: '22.6k+',
+    desc: 'Apache 顶级项目 · 云原生消息队列——低延迟、万亿级消息吞吐，金融级交易链路广泛采用',
+    prs: [
+      {
+        title: 'fix: CompressionType.of fails under the Turkish locale (#11514)',
+        note: '国际化缺陷：CompressionType.of 在土耳其语 locale 下因大小写转换规则差异而失败（经典的 i/İ 问题）；改用 locale 无关的方式解析压缩类型，并补齐多 locale 回归测试',
+        url: 'https://github.com/apache/rocketmq/pull/11514',
+      },
+    ],
+  },
+  {
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',

@@ -69,6 +69,19 @@ import { GitPullRequest, Star } from 'lucide-vue-next'
 
 const repos = [
   {
+    name: 'infiniflow / ragflow',
+    url: 'https://github.com/infiniflow/ragflow',
+    stars: '94k+',
+    desc: 'GitHub 9 万+ Star 的开源 RAG 引擎，已演进为面向 Agent 的上下文基础设施——深度文档理解、可追溯检索，被大量企业知识库与 Agent 系统采用',
+    prs: [
+      {
+        title: 'Preserve UTF-8 when truncating synced filenames (+73/-11)',
+        note: '国际化缺陷：同步文件名按字节截断时可能切断多字节 UTF-8 字符，导致中文等文件名损坏；改为按字符边界截断，保证非 ASCII 文件名完整',
+        url: 'https://github.com/infiniflow/ragflow/pull/22645',
+      },
+    ],
+  },
+  {
     name: 'caddyserver / caddy',
     url: 'https://github.com/caddyserver/caddy',
     stars: '79k+',
@@ -91,6 +104,11 @@ const repos = [
         title: 'fix: avoid OpenCV FIPS aborts with Databricks opt-out setting (#5430)',
         note: '修复 Databricks Serverless 环境中 OPENSSL_FORCE_FIPS_MODE=0 触发 OpenCV 底层 OpenSSL 意外终止（SIGABRT）的问题；只处理明确的关闭值，并添加进程级回归验证',
         url: 'https://github.com/docling-project/docling/pull/5430',
+      },
+      {
+        title: 'fix: serialize PDFium rendering in Office backends (+247/-93)',
+        note: '并发安全修复：Office 格式后端并发调用 PDFium 渲染时存在线程安全问题；将渲染串行化并重构相关调用路径，消除并发转换文档时的崩溃风险',
+        url: 'https://github.com/docling-project/docling/pull/5377',
       },
     ],
   },
@@ -121,19 +139,6 @@ const repos = [
     ],
   },
   {
-    name: 'HKUDS / LightRAG',
-    url: 'https://github.com/HKUDS/LightRAG',
-    stars: '40k+',
-    desc: 'EMNLP2025 论文 · GitHub Trending 日榜第 2 · GitHub 全球排名 #753 · PyPI 月下载 2M+——图增强 RAG 框架的开源标杆，融合知识图谱与向量检索',
-    prs: [
-      {
-        title: 'fix(chunker): verify token-window positions before attaching provenance (#4463)',
-        note: '正确性缺陷：chunker 在附加上下文溯源标记前未校验 token 窗口位置，导致 provenance 信息错挂——从解析逻辑定位根因并修复',
-        url: 'https://github.com/HKUDS/LightRAG/pull/4463',
-      },
-    ],
-  },
-  {
     name: 'volcengine / OpenViking',
     url: 'https://github.com/volcengine/OpenViking',
     stars: '42k+',
@@ -148,6 +153,37 @@ const repos = [
         title: 'fix(acl): reject principals outside the resource account (#8117)',
         note: '安全加固：ACL 拒绝资源账号之外的访问主体，防止跨账号越权访问（+169/−0）',
         url: 'https://github.com/volcengine/OpenViking/pull/8117',
+      },
+    ],
+  },
+  {
+    name: 'HKUDS / LightRAG',
+    url: 'https://github.com/HKUDS/LightRAG',
+    stars: '40k+',
+    desc: 'EMNLP2025 论文 · GitHub Trending 日榜第 2 · GitHub 全球排名 #753 · PyPI 月下载 2M+——图增强 RAG 框架的开源标杆，融合知识图谱与向量检索',
+    prs: [
+      {
+        title: 'fix(chunker): verify token-window positions before attaching provenance (#4463)',
+        note: '正确性缺陷：chunker 在附加上下文溯源标记前未校验 token 窗口位置，导致 provenance 信息错挂——从解析逻辑定位根因并修复',
+        url: 'https://github.com/HKUDS/LightRAG/pull/4463',
+      },
+      {
+        title: 'Use shared boolean parsing for reranking and JSON extraction defaults (+73/-2)',
+        note: '一致性修复：rerank 与 JSON 抽取的布尔配置项此前各用一套解析逻辑、取值口径不一致；统一到共享的布尔解析函数，消除同一配置在不同模块行为不同的问题',
+        url: 'https://github.com/HKUDS/LightRAG/pull/4600',
+      },
+    ],
+  },
+  {
+    name: 'Tencent / WeKnora',
+    url: 'https://github.com/Tencent/WeKnora',
+    stars: '38k+',
+    desc: '腾讯开源的 LLM 知识库平台——把原始文档转化为可查询的 RAG、可自主推理的 Agent 与自维护的 Wiki',
+    prs: [
+      {
+        title: 'fix: stream TOS files without unsupported seeking (+85/-1)',
+        note: '对象存储兼容性修复：从腾讯云 TOS 流式读取文件时使用了不受支持的 seek 操作，导致读取失败；改为纯流式读取',
+        url: 'https://github.com/Tencent/WeKnora/pull/5732',
       },
     ],
   },
@@ -179,6 +215,11 @@ const repos = [
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
         note: '定位注册阶段依赖注入的报错路径：资源/资源模板声明 UserSession 会话依赖时直接抛异常。修复后，会话级鉴权与 MCP 资源声明可作为一等用法组合，打通带鉴权的工具/资源场景',
         url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
+      },
+      {
+        title: 'fix: from_openapi: cookie parameters with array/object values send Python repr strings (+242/-8)',
+        note: '协议正确性缺陷：经 from_openapi 生成的服务端，数组或对象类型的 cookie 参数此前直接发送 Python repr 字符串而非合法的 cookie 编码；修正序列化逻辑并补充回归测试',
+        url: 'https://github.com/PrefectHQ/fastmcp/pull/6171',
       },
     ],
   },
@@ -264,6 +305,31 @@ const repos = [
         note: '日志分级修复：传播型失败从错误级降为 debug 级，避免上游已处理的失败被重复告警',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2996',
       },
+      {
+        title: 'fix(egress): resolve exchange credentials from admitted snapshots (+775/-106)',
+        note: '出口凭证修复：出口流量的交换凭证此前可能取自未准入的状态；改为仅从已准入的快照解析凭证，收紧网络出口的信任边界',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2930',
+      },
+      {
+        title: 'fix(kubernetes): exclude missing allocated pods from pool scaling (+83/-5)',
+        note: '资源池伸缩修复：已分配但实际缺失的 Pod 此前被计入扩缩容统计，导致池容量判断失真；将其排除，使伸缩决策基于真实可用节点',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2991',
+      },
+      {
+        title: 'fix(sdk-kotlin): surface execution handler failures (+119/-18)',
+        note: 'Kotlin SDK 修复：执行处理器内部的失败此前被吞掉、调用方无法感知；补齐失败上抛路径，让调用方能正确处理执行异常',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2994',
+      },
+      {
+        title: 'fix(server): let operators pin the execd isolation config path (+194/-11)',
+        note: '安全加固：允许运维人员显式固定 execd 隔离配置的加载路径，防止配置被非预期来源覆盖，增强沙箱隔离的可控性',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/3021',
+      },
+      {
+        title: 'fix(execd): serve the whole file for multiple byte ranges (+79/-7)',
+        note: '协议正确性修复：HTTP 请求携带多个 Range 时，execd 此前返回整个文件而非分段内容；按 RFC 正确处理多区间请求',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/3034',
+      },
     ],
   },
   {
@@ -289,6 +355,32 @@ const repos = [
         title: 'docs(environment): explain what --value prints for unset variables (#2450)',
         note: '补充 environment 模块文档：说明 --value 对未设置变量的输出行为，消除使用者歧义',
         url: 'https://github.com/pypa/pipx/pull/2450',
+      },
+    ],
+  },
+  {
+    name: 'lancedb / lancedb',
+    url: 'https://github.com/lancedb/lancedb',
+    stars: '12k+',
+    desc: '面向多模态 AI 的开源嵌入式检索库——向量、全文与 SQL 混合检索，开发者无需自建向量数据库基础设施',
+    prs: [
+      {
+        title: 'fix(java): keep Maven coordinates in sync with release tags (+104/-28)',
+        note: '发布流程修复：Java SDK 的 Maven 坐标与 release tag 此前会不同步，导致发布产物版本错位；修正坐标生成逻辑，使发布版本与 tag 保持一致',
+        url: 'https://github.com/lancedb/lancedb/pull/5151',
+      },
+    ],
+  },
+  {
+    name: 'mark3labs / mcp-go',
+    url: 'https://github.com/mark3labs/mcp-go',
+    stars: '9.2k+',
+    desc: 'MCP 协议的 Go 语言实现——让 Go 应用便捷接入模型上下文协议，连接外部数据源与工具',
+    prs: [
+      {
+        title: 'Isolate stateless Streamable HTTP GET streams (+129/-9)',
+        note: '并发安全修复：无状态模式下 Streamable HTTP 的 GET 事件流之间共享状态、相互干扰；将各流的会话状态隔离，消除跨请求串扰',
+        url: 'https://github.com/mark3labs/mcp-go/pull/1328',
       },
     ],
   },

@@ -369,6 +369,11 @@ const repos = [
         note: '补充 environment 模块文档：说明 --value 对未设置变量的输出行为，消除使用者歧义',
         url: 'https://github.com/pypa/pipx/pull/2450',
       },
+      {
+        title: 'fix(run): honor binary format resets with uv (#2483)',
+        note: '修复 run 在 uv 环境下未遵循二进制格式重置的问题，避免已切换的解释器/环境被忽略',
+        url: 'https://github.com/pypa/pipx/pull/2483',
+      },
     ],
   },
   {
@@ -526,6 +531,19 @@ const repos = [
         title: 'fix(gateway): preserve distinct terminal turn captures (#2717)',
         note: '修复网关合并存储时覆盖不同 terminal turn 捕获内容的问题，保证多条会话轮次的记忆完整留存（+161/−16）',
         url: 'https://github.com/oceanbase/powercontext/pull/2717',
+      },
+    ],
+  },
+  {
+    name: 'pydantic / logfire',
+    url: 'https://github.com/pydantic/logfire',
+    stars: '4.5k+',
+    desc: 'Pydantic 官方可观测性平台——为 LLM 应用与 Agent 提供结构化日志、追踪与评估',
+    prs: [
+      {
+        title: 'Render non-object model serializer output in the verbose console (#2870)',
+        note: '完善 verbose 控制台对非对象类型模型输出的渲染，补齐观测信息的完整性',
+        url: 'https://github.com/pydantic/logfire/pull/2870',
       },
     ],
   },

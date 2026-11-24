@@ -26,9 +26,8 @@
 
     <div class="oss-body">
       <p class="oss-blurb">
-        长期向上游项目回馈维护级修复：每个 PR 均包含复现路径、根因分析与回归测试，
-        覆盖驱动兼容、检索正确性、连接生命周期、运行时内核与跨平台崩溃等疑难场景，
-        已在 Prometheus、ClickHouse、OpenViking、Redis Go 客户端、FastMCP、Wasmtime 等上游项目合并 {{ mergedCount }} 个 PR。
+        已有 {{ mergedCount }} 个 PR 被上游合并。代表性贡献包括 ClickHouse 的 MySQL 协议包兼容修复、
+        go-redis 的连接池与故障切换修复，以及 Wasmtime 的垃圾回收和内存转储修复。
       </p>
 
       <section v-for="repo in repos" :key="repo.url" class="oss-repo">
@@ -72,11 +71,11 @@ const repos = [
     name: 'infiniflow / ragflow',
     url: 'https://github.com/infiniflow/ragflow',
     stars: '94k+',
-    desc: 'GitHub 9 万+ Star 的开源 RAG 引擎，已演进为面向 Agent 的上下文基础设施——深度文档理解、可追溯检索，被大量企业知识库与 Agent 系统采用',
+    desc: '开源 RAG 引擎，为知识库和 AI Agent 提供文档解析、索引与可追溯检索。负责把原始文档转成模型能检索、也能回查来源的上下文。',
     prs: [
       {
         title: 'Preserve UTF-8 when truncating synced filenames (+73/-11)',
-        note: '国际化缺陷：同步文件名按字节截断时可能切断多字节 UTF-8 字符，导致中文等文件名损坏；改为按字符边界截断，保证非 ASCII 文件名完整',
+        note: '同步长 Confluence 页面名时，按字节截断可能切断 UTF-8 字符，生成 MySQL 无法写入的文件名。复用按字符边界截断的工具，同时保留扩展名和 255 字节限制。',
         url: 'https://github.com/infiniflow/ragflow/pull/22645',
       },
     ],
@@ -85,11 +84,11 @@ const repos = [
     name: 'caddyserver / caddy',
     url: 'https://github.com/caddyserver/caddy',
     stars: '79k+',
-    desc: 'Go 编写的跨平台 Web 服务器与反向代理，支持 HTTP/1.1、HTTP/2、HTTP/3，内置自动 HTTPS 和模块化扩展机制',
+    desc: 'Go 编写的跨平台 Web 服务器与反向代理，支持 HTTP/1.1、HTTP/2 和 HTTP/3。内置自动 HTTPS，可用于站点入口和后端服务转发。',
     prs: [
       {
         title: 'fix: prevent read_body deadline from truncating long responses (#8400)',
-        note: '修复读取请求体的空闲超时在清理 deadline 时被误设为硬截止时间，导致长请求的响应提前截断；通过回归测试验证超时与连接生命周期边界',
+        note: '读取请求体的空闲超时被错误保留为连接上的硬截止时间，导致长响应还在传输就被截断。修正超时清理，并用回归测试验证修复前后及两种配置分支的行为。',
         url: 'https://github.com/caddyserver/caddy/pull/8400',
       },
     ],
@@ -98,16 +97,16 @@ const repos = [
     name: 'docling-project / docling',
     url: 'https://github.com/docling-project/docling',
     stars: '70k+',
-    desc: '面向生成式 AI 的文档解析与结构化转换框架，支持 PDF、DOCX、PPTX 等格式，服务于 RAG 与文档理解流程',
+    desc: '面向生成式 AI 的文档解析与转换框架，覆盖 PDF、Word、PowerPoint 等格式。保留文档结构，为知识库检索和文档问答准备输入。',
     prs: [
       {
         title: 'fix: avoid OpenCV FIPS aborts with Databricks opt-out setting (#5430)',
-        note: '修复 Databricks Serverless 环境中 OPENSSL_FORCE_FIPS_MODE=0 触发 OpenCV 底层 OpenSSL 意外终止（SIGABRT）的问题；只处理明确的关闭值，并添加进程级回归验证',
+        note: 'Databricks Serverless 将 FIPS 设为明确关闭时，OpenCV 的底层依赖仍可能在 OCR 注册阶段触发 SIGABRT，连关闭 OCR 的任务也受影响。仅在原生依赖加载前处理显式关闭值，并添加进程级回归验证。',
         url: 'https://github.com/docling-project/docling/pull/5430',
       },
       {
         title: 'fix: serialize PDFium rendering in Office backends (+247/-93)',
-        note: '并发安全修复：Office 格式后端并发调用 PDFium 渲染时存在线程安全问题；将渲染串行化并重构相关调用路径，消除并发转换文档时的崩溃风险',
+        note: 'Office 图形与图表转换共用非线程安全的 PDFium，并发处理时可能崩溃。按维护者反馈将六条渲染路径迁移到 docling-parse，保留 RGB 输出，并验证各路径的渲染和异常行为。',
         url: 'https://github.com/docling-project/docling/pull/5377',
       },
     ],
@@ -116,11 +115,11 @@ const repos = [
     name: 'prometheus / prometheus',
     url: 'https://github.com/prometheus/prometheus',
     stars: '67k+',
-    desc: 'CNCF 最早毕业的项目之一 · 监控与告警领域的事实标准——Kubernetes 默认监控方案，数千个 Exporter 覆盖全栈指标，与 Grafana 深度集成形成云原生可观测性事实标准；Cloudflare/DigitalOcean 等大量公司生产使用',
+    desc: 'CNCF 毕业项目，用于采集和存储时序指标，并通过 PromQL 查询和定义告警规则。常与 Kubernetes、各类 Exporter 和 Grafana 配合使用。',
     prs: [
       {
         title: 'web: ui: align literal and duration keyword parsing with PromQL (#20456)',
-        note: '修复 Web UI 的 PromQL 解析与真实 PromQL 语义不一致的问题——字面量与持续时间关键字解析对齐',
+        note: 'Prometheus 查询编辑器会把后端可执行的十六进制字面量、尾点浮点数或大写时长关键字误报为语法错误。对齐前端解析器与 Go 后端，并测试合法写法、非法输入及普通函数的大小写规则。',
         url: 'https://github.com/prometheus/prometheus/pull/20456',
       },
     ],
@@ -129,11 +128,11 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
-    desc: 'Yandex 研发、2014 开源的 C++ 列式 OLAP 数据库——实时分析领域的事实标准，GitHub 数据基础设施类 Top 3；单节点每秒可扫描数亿行、支持 PB 级数据量，Cloudflare/eBay/Spotify 等大量头部公司生产使用',
+    desc: 'C++ 列式 OLAP 数据库，面向大规模数据的实时聚合与分析。事件、日志和明细查询之外，也通过 MySQL 接口兼容已有的驱动和工具。',
     prs: [
       {
-        title: 'fix: MySQL interface — Connector/J 9.x fails on connect (#129709)',
-        note: '生产级连接故障排查：用户升级 MySQL JDBC 驱动到 Connector/J 9.x 后全量无法连接（"Buffer length is less than expected payload length"，回退 5.1.49 才恢复）。独立定位到 MySQL 接口对新驱动握手行为的兼容性缺陷并修复，恢复与 5.1.49 一致的行为，附驱动兼容性回归验证',
+        title: 'fix: MySQL OK packet size accounting and optional field parsing (#129709)',
+        note: '排查 Connector/J 9.x 兼容问题时发现 MySQL OK 包的两个独立缺陷。修正多字节 last_insert_id 的长度计算，以及可选字段缺省时的越界读取，并分别添加协议级测试。',
         url: 'https://github.com/ClickHouse/ClickHouse/pull/129709',
       },
     ],
@@ -142,16 +141,16 @@ const repos = [
     name: 'volcengine / OpenViking',
     url: 'https://github.com/volcengine/OpenViking',
     stars: '42k+',
-    desc: '字节跳动（火山引擎）开源的 AI Agent 自进化上下文数据库——统一 Agent 记忆、知识 RAG 与技能三层抽象，内置 VLM 多模态模块与 LiteLLM 多模型接入，曾登 GitHub Trending 日榜第 1',
+    desc: '火山引擎开源的 Agent 上下文数据库，统一管理记忆、知识和技能。它为 Agent 提供上下文检索，也通过 LiteLLM 等组件接入模型。',
     prs: [
       {
         title: 'fix(vlm): inherit configured reasoning effort in LiteLLM requests (#7703)',
-        note: '修复 VLM 模块经 LiteLLM 发起请求时未继承已配置 reasoning effort 的问题',
+        note: 'VLM 调用经 LiteLLM 发出时，缺省请求参数会让已配置的推理强度失效，模型转而使用自己的默认值。在共享请求构造逻辑中补齐配置继承，并保留调用方显式覆盖的优先级。',
         url: 'https://github.com/volcengine/OpenViking/pull/7703',
       },
       {
         title: 'fix(acl): reject principals outside the resource account (#8117)',
-        note: '安全加固：ACL 拒绝资源账号之外的访问主体，防止跨账号越权访问（+169/−0）',
+        note: '跨账号 ACL 操作曾返回成功，但账号隔离使这些授权实际无法生效。统一校验授权主体的账号归属，让无效配置在写入前返回明确错误，并保持本账号授权语义。',
         url: 'https://github.com/volcengine/OpenViking/pull/8117',
       },
     ],
@@ -160,16 +159,16 @@ const repos = [
     name: 'HKUDS / LightRAG',
     url: 'https://github.com/HKUDS/LightRAG',
     stars: '40k+',
-    desc: 'EMNLP2025 论文 · GitHub Trending 日榜第 2 · GitHub 全球排名 #753 · PyPI 月下载 2M+——图增强 RAG 框架的开源标杆，融合知识图谱与向量检索',
+    desc: '结合知识图谱与向量检索的 RAG 框架。向量匹配帮助找到语义相关的文本，图谱让查询还能沿实体关系查找相关信息。',
     prs: [
       {
         title: 'fix(chunker): verify token-window positions before attaching provenance (#4463)',
-        note: '正确性缺陷：chunker 在附加上下文溯源标记前未校验 token 窗口位置，导致 provenance 信息错挂——从解析逻辑定位根因并修复',
+        note: '固定 token 窗口跨越 UTF-8 边界时，重复文本可能让来源标记指向错误位置。先校验窗口的解码锚点和映射，再写入溯源区间，无法可靠定位时省略区间。',
         url: 'https://github.com/HKUDS/LightRAG/pull/4463',
       },
       {
         title: 'Use shared boolean parsing for reranking and JSON extraction defaults (+73/-2)',
-        note: '一致性修复：rerank 与 JSON 抽取的布尔配置项此前各用一套解析逻辑、取值口径不一致；统一到共享的布尔解析函数，消除同一配置在不同模块行为不同的问题',
+        note: '重排和 JSON 实体抽取曾只接受 true，导致设置为 1、yes 或 on 时功能依然关闭。改用项目共享的布尔解析逻辑，并测试常用值和错误值告警。',
         url: 'https://github.com/HKUDS/LightRAG/pull/4600',
       },
     ],
@@ -178,11 +177,11 @@ const repos = [
     name: 'Tencent / WeKnora',
     url: 'https://github.com/Tencent/WeKnora',
     stars: '38k+',
-    desc: '腾讯开源的 LLM 知识库平台——把原始文档转化为可查询的 RAG、可自主推理的 Agent 与自维护的 Wiki',
+    desc: '腾讯开源的 LLM 知识库平台，涵盖文档入库、检索问答、Agent 和 Wiki。对象存储接入直接影响文档预览、下载与后续使用。',
     prs: [
       {
         title: 'fix: stream TOS files without unsupported seeking (+85/-1)',
-        note: '对象存储兼容性修复：从腾讯云 TOS 流式读取文件时使用了不受支持的 seek 操作，导致读取失败；改为纯流式读取',
+        note: '对象存储 SDK 声明了 Seek，但底层响应流不能跳转，文件预览因而返回 HTTP 500。接入既有流式响应路径，保留校验和资源清理，并用实际 SDK 验证预览和下载行为。',
         url: 'https://github.com/Tencent/WeKnora/pull/5732',
       },
     ],
@@ -191,16 +190,16 @@ const repos = [
     name: 'qdrant / qdrant',
     url: 'https://github.com/qdrant/qdrant',
     stars: '35k+',
-    desc: 'Rust 编写的高性能向量数据库 · GitHub 同类项目 Top 2——原生分布式架构、支持 HNSW/量化/稀疏混合检索，LangChain/LlamaIndex 官方集成，广泛用于企业级 RAG 与语义搜索',
+    desc: 'Rust 编写的分布式向量数据库，支持 HNSW、量化和稀疏混合检索，可结合元数据过滤、分组与推荐，用于语义搜索和 RAG。',
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
-        note: '生产 RAG 最危险的静默丢数据类缺陷：不支持的 payload 值耗尽候选预算时，group-by 不报错、直接返回空结果。从 issue 复现路径独立定位到该失败分支并修复，附边界条件回归测试',
+        note: '遇到不支持的 payload 值时，分组检索可能耗尽候选预算并返回空结果，调用方会误以为没有命中。定位候选处理的失败分支，补上修复前失败、修复后通过的回归用例。',
         url: 'https://github.com/qdrant/qdrant/pull/11370',
       },
       {
         title: 'fix: RecommendBestScore applies score_threshold in the wrong direction (#11350)',
-        note: '正确性缺陷：score_threshold 的比较逻辑未随距离度量方向适配——Euclid 距离（越小越优）下阈值方向用反，导致有效推荐结果被批量错误过滤；修正度量感知的判定逻辑',
+        note: '推荐排序在欧氏距离下仍使用相似度的阈值方向，导致本应通过的结果被过滤。让比较方向取决于距离度量，并通过回归测试验证阈值边界。',
         url: 'https://github.com/qdrant/qdrant/pull/11350',
       },
     ],
@@ -209,16 +208,16 @@ const repos = [
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
-    desc: 'Python MCP 框架事实标准 · Prefect 官方维护——用装饰器将任意 Python 函数暴露为 MCP 工具/资源/提示模板，支持 stdio/HTTP/SSE 多传输；MCP 已被 OpenAI/Google 宣布支持',
+    desc: 'Prefect 维护的 Python MCP 框架，通过装饰器把应用能力注册为工具、资源和提示模板，也支持从 OpenAPI 描述生成工具。',
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
-        note: '定位注册阶段依赖注入的报错路径：资源/资源模板声明 UserSession 会话依赖时直接抛异常。修复后，会话级鉴权与 MCP 资源声明可作为一等用法组合，打通带鉴权的工具/资源场景',
+        note: '带 UserSession 依赖的 MCP 资源和资源模板会在注册阶段报错。修复资源注册与会话依赖注入的衔接，让这些资源可以正常注册，并在调用时访问会话上下文。',
         url: 'https://github.com/PrefectHQ/fastmcp/pull/6198',
       },
       {
         title: 'fix: from_openapi: cookie parameters with array/object values send Python repr strings (+242/-8)',
-        note: '协议正确性缺陷：经 from_openapi 生成的服务端，数组或对象类型的 cookie 参数此前直接发送 Python repr 字符串而非合法的 cookie 编码；修正序列化逻辑并补充回归测试',
+        note: '从 OpenAPI 生成的工具把数组和对象 Cookie 参数发成 Python 对象的显示文本，后端难以按协议解析。修正结构化参数的序列化，补上请求回归测试。',
         url: 'https://github.com/PrefectHQ/fastmcp/pull/6171',
       },
     ],
@@ -227,11 +226,11 @@ const repos = [
     name: 'apache / rocketmq',
     url: 'https://github.com/apache/rocketmq',
     stars: '22.6k+',
-    desc: 'Apache 顶级项目 · 云原生消息队列——低延迟、万亿级消息吞吐，金融级交易链路广泛采用',
+    desc: 'Apache 顶级项目，用于在服务之间可靠传递消息。常用于异步解耦和突发流量缓冲，客户端配置在不同运行环境下的一致性会影响消息链路。',
     prs: [
       {
         title: 'fix: CompressionType.of fails under the Turkish locale (#11514)',
-        note: '国际化缺陷：CompressionType.of 在土耳其语 locale 下因大小写转换规则差异而失败（经典的 i/İ 问题）；改用 locale 无关的方式解析压缩类型，并补齐多 locale 回归测试',
+        note: 'RocketMQ 用系统地区规则转换压缩算法名称，土耳其语环境会把合法的 zlib 识别为未知类型。改用固定地区规则，并用土耳其语环境验证修复。',
         url: 'https://github.com/apache/rocketmq/pull/11514',
       },
     ],
@@ -240,41 +239,41 @@ const repos = [
     name: 'redis / go-redis',
     url: 'https://github.com/redis/go-redis',
     stars: '22k+',
-    desc: 'Go 生态 Redis 客户端事实标准 · Redis 官方接管维护——支持 Cluster/Sentinel/流水线/Pub-Sub 全特性，Argo CD/Gitea 等知名项目直接依赖，DragonflyDB 官方兼容性验证也用它',
+    desc: 'Redis 官方维护的 Go 客户端，支持 Cluster、Sentinel、流水线和发布订阅。连接池、协议解析和故障切换是上层应用访问 Redis 的基础。',
     prs: [
       {
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
-        note: '安全加固：定位 RESP3 聚合回复递归解析无深度限制的 DoS 面——恶意服务端可打爆客户端 Go 栈（+383/−32，跨 5 文件）。引入嵌套深度追踪、补齐 reader_depth_test.go 回归测试，并附修复前后性能基准对比（无回退），由官方维护者合并',
+        note: '为 go-redis 的 RESP3 回复解析增加嵌套深度上限，保护客户端处理异常输入时的稳定性。补齐深度边界回归测试，并对比修复前后的解析性能。',
         url: 'https://github.com/redis/go-redis/pull/4296',
       },
       {
         title: 'fix(pool): wait for idle reauthentication (#4313)',
-        note: '并发缺陷：空闲连接在后台重认证完成前即可被取出使用，导致认证信息不完整（+481/−5）；补齐等待-认证完成的生命周期同步与回归测试',
+        note: '凭据轮换期间，暂不可用的空闲连接在池已满时会触发连接池耗尽错误。只有在硬上限已满时才等待重认证，仍有容量时继续拨号，保留常规获取路径。',
         url: 'https://github.com/redis/go-redis/pull/4313',
       },
       {
         title: 'fix(tx): discard uncleared transaction state (#4316)',
-        note: '状态机缺陷：事务异常路径下残留的 transaction state 未被清理，污染后续命令执行（+204/−1）；定位残留状态的存活路径并补齐清理与回归测试',
+        note: '事务退出时若无法确认清理成功，连接留在池中会污染后续请求。明确检查事务清理结果，并将状态无法确认的连接移出连接池，保留原始事务错误。',
         url: 'https://github.com/redis/go-redis/pull/4316',
       },
       {
         title: 'fix: multidb — FD outcomes settle into the window after a reselect of the active member (#4283)',
-        note: '可用性核心修复：MultiDB 重选活跃节点后，迟到的全双工结果会错误结算进新熔断窗口与故障检测期（+176/−81，涉及安全与可用性关键路径）；先在基线复现失败再验证补丁通过，由官方维护者合并',
+        note: 'MultiDB 切换活跃节点后，旧请求的迟到结果可能被计入新一轮熔断和故障检测。把异步结果与发起时的故障切换周期关联，避免旧结果干扰当前节点的健康判断。',
         url: 'https://github.com/redis/go-redis/pull/4283',
       },
       {
         title: 'fix(pool): return acquired idle connections (#4322)',
-        note: '连接池生命周期修复：获取到的空闲连接未正确归还连接池，长期运行下造成连接泄漏（+81/−1）；补齐归还路径与回归测试，由官方维护者合并',
+        note: '空闲连接扫描在最后一次尝试已拿到可用连接时，仍可能误报连接池耗尽，并让连接滞留在占用状态。获取成功即返回，回归覆盖 FIFO、LIFO 和两种获取入口。',
         url: 'https://github.com/redis/go-redis/pull/4322',
       },
       {
         title: 'fix: reselect after endpoint dial exhaustion (#4331)',
-        note: '可用性修复：endpoint dial 耗尽后 reselect 切换节点时的状态残留问题——定位并修正重选后的连接池重置逻辑，由官方维护者合并',
+        note: '单个地址拨号耗尽后，集群路由曾提前退出，错过拓扑更新后已经可用的候选节点。保留有界的重选机会，并按只读路由规则选择 SCAN 的候选副本。',
         url: 'https://github.com/redis/go-redis/pull/4331',
       },
       {
         title: 'fix(retry): stop replaying failed dial sequences (#4304)',
-        note: '重试缺陷：连接失败的 dial 序列被错误重放，导致重复连接与资源浪费（+927/−37）；修正重试策略的状态管理并补齐回归测试',
+        note: '命令或路由的外层重试会反复启动同一地址已耗尽的拨号序列，放大连接失败时的等待。按连接获取过程记录已耗尽的地址，同时保留尝试其他节点的机会。',
         url: 'https://github.com/redis/go-redis/pull/4304',
       },
     ],
@@ -283,16 +282,16 @@ const repos = [
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
-    desc: 'Bytecode Alliance（Mozilla/Fastly/Intel 联合创立）出品的 WebAssembly 运行时——内含 Cranelift 编译器，支持 WASI 标准接口；Cloudflare Workers/Fastly 边缘计算与 Firefox 沙箱模块的底层引擎',
+    desc: 'Bytecode Alliance 开发的 WebAssembly 运行时，提供 Cranelift 编译器和 WASI 接口。负责 Wasm 模块的执行、内存管理和故障诊断。',
     prs: [
       {
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
-        note: '运行时内核级修复：复制式 GC 的增长-回收启发式错误地按整个堆而非活动半空间比较，导致内存峰值误判——从 GC 触发条件的语义入手定位并修正',
+        note: '复制式 GC 判断该扩堆还是回收时，将阈值与整个堆比较，偏离了实际可用的活动半空间容量。按活动半空间修正判断，并验证触发条件的边界。',
         url: 'https://github.com/bytecodealliance/wasmtime/pull/15207',
       },
       {
         title: 'fix: Core dumps of custom-page-size memories truncate their data and declare the wrong size (#15275)',
-        note: '修复自定义页大小 memory 的 core dump 截断数据且声明尺寸错误的问题',
+        note: '自定义页大小的 Wasm 内存在生成 core dump 时会丢失尾部数据，转储中的尺寸声明也不准确。补齐页大小元数据与末尾数据，回归覆盖自定义页大小。',
         url: 'https://github.com/bytecodealliance/wasmtime/pull/15275',
       },
     ],
@@ -301,46 +300,46 @@ const repos = [
     name: 'opensandbox-group / OpenSandbox',
     url: 'https://github.com/opensandbox-group/OpenSandbox',
     stars: '17k+',
-    desc: 'Agentic AI Foundation（AAIF）旗下 · 曾登 GitHub Trending 日榜第 1 · 通过 OpenSSF 最佳实践认证——AI Agent 的安全沙箱运行时：隔离执行不受信代码、运行工具调用、支撑多租户场景',
+    desc: '面向 AI Agent 的隔离执行平台，支持在 Docker 和 Kubernetes 上运行代码与工具。服务端管理沙箱生命周期，SDK 负责传递执行事件和结果。',
     prs: [
       {
         title: 'fix(python-sdk): normalize legacy SSE streams in linear time (#2845)',
-        note: '修复 Python SDK 对旧版 SSE 流的解析退化为非线性处理的问题，长会话下不再随流增长而卡顿',
+        note: '旧版 SSE 事件分块到达时，SDK 会反复扫描或复制已有缓冲区，大事件的 CPU 开销随长度呈二次增长。用扫描游标和批量清理改为线性处理，并测试跨块边界和 CPU 增长。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2845',
       },
       {
         title: 'feat(server): optionally sync metadata labels to dedicated Pods (#2869)',
-        note: '新功能：支持将沙箱元数据标签同步至专用 Pod，增强多租户场景的可观测性与资源管理能力（+435/−13）',
+        note: '专用 Pod 的标签曾不会随沙箱元数据更新，依赖这些标签的 Kubernetes NetworkPolicy 可能读到旧值。新增默认关闭的同步选项，覆盖标签更新、删除与 Pod 重建。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2869',
       },
       {
         title: 'fix(python-sdk): log propagated failures at debug level (#2996)',
-        note: '日志分级修复：传播型失败从错误级降为 debug 级，避免上游已处理的失败被重复告警',
+        note: 'Python SDK 文件读取失败时会抛出结构化异常并重复写 ERROR，即使调用方已捕获也可能触发告警。把已向上传递的错误日志改为 DEBUG，保留原有异常与 HTTP 细节。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2996',
       },
       {
         title: 'fix(egress): resolve exchange credentials from admitted snapshots (+775/-106)',
-        note: '出口凭证修复：出口流量的交换凭证此前可能取自未准入的状态；改为仅从已准入的快照解析凭证，收紧网络出口的信任边界',
+        note: '出口凭证交换与准入快照的处理不一致时，凭证配置虽然创建成功，沙箱仍无法通过就绪检查。让凭证解析绑定已准入的快照和身份，统一就绪判断与运行时行为。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2930',
       },
       {
         title: 'fix(kubernetes): exclude missing allocated pods from pool scaling (+83/-5)',
-        note: '资源池伸缩修复：已分配但实际缺失的 Pod 此前被计入扩缩容统计，导致池容量判断失真；将其排除，使伸缩决策基于真实可用节点',
+        note: '沙箱预留的 Pod 已经消失时，原有计数仍可能触发多创建一个空闲 Pod。让目标容量和当前容量使用同一组实际存在的 Pod，同时保留预留记录供状态统计。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2991',
       },
       {
         title: 'fix(sdk-kotlin): surface execution handler failures (+119/-18)',
-        note: 'Kotlin SDK 修复：执行处理器内部的失败此前被吞掉、调用方无法感知；补齐失败上抛路径，让调用方能正确处理执行异常',
+        note: 'Kotlin SDK 会吞掉事件回调的异常，导致应用收到看似正常结束的执行结果。把回调故障交给现有异常转换逻辑，停止后续事件处理并保留原始错误原因。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/2994',
       },
       {
         title: 'fix(server): let operators pin the execd isolation config path (+194/-11)',
-        note: '安全加固：允许运维人员显式固定 execd 隔离配置的加载路径，防止配置被非预期来源覆盖，增强沙箱隔离的可控性',
+        note: '为 Docker、Kubernetes 和预热池提供一致的 execd 隔离配置路径选项。启用后由运维指定的路径优先，便于跨部署方式统一下发隔离策略。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/3021',
       },
       {
         title: 'fix(execd): serve the whole file for multiple byte ranges (+79/-7)',
-        note: '协议正确性修复：HTTP 请求携带多个 Range 时，execd 此前返回整个文件而非分段内容；按 RFC 正确处理多区间请求',
+        note: '客户端请求多个可满足的字节区间时，下载接口曾返回 206 却只发送第一个区间。修复后回退到 HTTP 200 并发送完整文件，覆盖常规和隔离会话下载路径。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/3034',
       },
     ],
@@ -349,11 +348,11 @@ const repos = [
     name: 'The-PR-Agent / pr-agent',
     url: 'https://github.com/The-PR-Agent/pr-agent',
     stars: '16k+',
-    desc: 'Qodo（原 CodiumAI，AI 代码完整性头部公司）发起的开源 AI 代码评审 Agent——自动执行 PR 描述生成、代码审查、变更影响分析与建议回复，支持 GitHub/GitLab/Bitbucket/Azure DevOps 四大平台',
+    desc: 'Qodo 发起的开源 AI 代码评审工具，接入 GitHub、GitLab 等平台，可生成 PR 描述和审查建议。它会读取代码变更及关联工单作为上下文。',
     prs: [
       {
         title: 'fix: guard GitLab ticket context with project issue visibility (#4932)',
-        note: '修复 GitLab ticket 上下文未校验项目 issue 可见性的越权读取问题',
+        note: 'GitLab 评审中的工单上下文读取增加项目可见性检查。读取前核对工单的可见范围是否覆盖合并请求的受众，避免受限内容被带入评审输出。',
         url: 'https://github.com/The-PR-Agent/pr-agent/pull/4932',
       },
     ],
@@ -362,16 +361,16 @@ const repos = [
     name: 'pypa / pipx',
     url: 'https://github.com/pypa/pipx',
     stars: '13k+',
-    desc: 'Python 应用隔离安装与运行的事实标准工具——pipx 让 CLI 工具各享独立虚拟环境',
+    desc: 'PyPA 维护的 Python CLI 安装与运行工具，为每个应用创建独立的虚拟环境。多个命令行工具可以共存，并各自保留所需的依赖版本。',
     prs: [
       {
         title: 'docs(environment): explain what --value prints for unset variables (#2450)',
-        note: '补充 environment 模块文档：说明 --value 对未设置变量的输出行为，消除使用者歧义',
+        note: '完善 CLI 帮助和文档，说明 --value 何时读取原始环境变量、何时返回推导值。用户排查配置时可以区分空输出与 pipx 实际采用的默认行为。',
         url: 'https://github.com/pypa/pipx/pull/2450',
       },
       {
         title: 'fix(run): honor binary format resets with uv (#2483)',
-        note: '修复 pipx run 使用 uv 后端时未正确处理 --only-binary/--no-binary 的 :none: 重置；现在按参数顺序更新格式限制，使源码包构建与后续覆盖设置正常生效',
+        note: 'uv 后端曾忽略安装选项中的 :none: 重置，导致用户解除限制后仍无法从源码包安装。按传入顺序处理格式选项，让应用和脚本的后续覆盖都正确生效。',
         url: 'https://github.com/pypa/pipx/pull/2483',
       },
     ],
@@ -380,11 +379,11 @@ const repos = [
     name: 'lancedb / lancedb',
     url: 'https://github.com/lancedb/lancedb',
     stars: '12k+',
-    desc: '面向多模态 AI 的开源嵌入式检索库——向量、全文与 SQL 混合检索，开发者无需自建向量数据库基础设施',
+    desc: '面向多模态数据的嵌入式检索库，支持向量和全文检索。应用可以把检索集成在进程内，并通过 SDK 接入现有服务。',
     prs: [
       {
         title: 'fix(java): keep Maven coordinates in sync with release tags (+104/-28)',
-        note: '发布流程修复：Java SDK 的 Maven 坐标与 release tag 此前会不同步，导致发布产物版本错位；修正坐标生成逻辑，使发布版本与 tag 保持一致',
+        note: 'Java SDK 的两个 POM 曾停留在上一个预发布版本，导致 Maven 产物坐标与发布标签错位。将两处版本纳入共享升版配置，让预发布与正式发布使用相同的版本来源。',
         url: 'https://github.com/lancedb/lancedb/pull/5151',
       },
     ],
@@ -393,11 +392,11 @@ const repos = [
     name: 'mark3labs / mcp-go',
     url: 'https://github.com/mark3labs/mcp-go',
     stars: '9.2k+',
-    desc: 'MCP 协议的 Go 语言实现——让 Go 应用便捷接入模型上下文协议，连接外部数据源与工具',
+    desc: 'MCP 的 Go 语言实现，可在 Go 应用中构建 MCP 客户端和服务端，通过统一协议访问工具与外部数据。',
     prs: [
       {
         title: 'Isolate stateless Streamable HTTP GET streams (+129/-9)',
-        note: '并发安全修复：无状态模式下 Streamable HTTP 的 GET 事件流之间共享状态、相互干扰；将各流的会话状态隔离，消除跨请求串扰',
+        note: '无状态模式下，并发 GET 事件流会竞争同一个通知通道，一条连接关闭还可能注销另一条。为每条匿名流分配独立内部标识，让广播和断开清理按连接执行。',
         url: 'https://github.com/mark3labs/mcp-go/pull/1328',
       },
     ],
@@ -406,11 +405,11 @@ const repos = [
     name: 'pydantic / monty',
     url: 'https://github.com/pydantic/monty',
     stars: '8.9k+',
-    desc: 'Pydantic 生态的 Rust 实现 Python 沙箱，面向 AI 生成代码提供受控执行与资源隔离',
+    desc: 'Pydantic 开发的 Rust 实现 Python 沙箱，用于受控执行 AI 生成的代码。运行时负责限制资源用量，并把执行结果或异常交还给宿主。',
     prs: [
       {
         title: 'fix: preflight JSON integer indentation allocations (#1367)',
-        note: '修复 json.dumps/json.dump 遇到极大整数缩进时绕过沙箱内存预算、可能终止工作进程的问题；改为受内存配额检查的字符串构造，并验证错误后 worker 可继续复用',
+        note: '修复 JSON 格式化的内存分配未受会话配额约束的问题，让超出预算的操作返回 MemoryError。子进程回归覆盖两种 JSON API，并验证错误后仍能复用工作进程。',
         url: 'https://github.com/pydantic/monty/pull/1367',
       },
     ],
@@ -419,11 +418,11 @@ const repos = [
     name: 'prometheus / alertmanager',
     url: 'https://github.com/prometheus/alertmanager',
     stars: '8.7k+',
-    desc: 'Prometheus 监控生态的告警管理组件——负责告警去重、分组与路由，云原生可观测性的关键一环',
+    desc: 'Prometheus 生态的告警管理组件。它接收告警事件，执行去重、分组和路由，再把通知送到配置的接收方。',
     prs: [
       {
         title: 'app: outlast Prometheus client idle connections (#5744)',
-        note: '修复 Alertmanager 在 Prometheus 客户端连接空闲后被断开的问题，保证告警链路持续可达',
+        note: 'Prometheus 重发告警的周期恰好撞上服务端空闲超时，连接关闭与告警 POST 并发时可能出现 EOF。协调客户端和服务端的空闲超时顺序，并为两个监听端口补上验证。',
         url: 'https://github.com/prometheus/alertmanager/pull/5744',
       },
     ],
@@ -432,16 +431,16 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
-    desc: 'Linux Foundation / CNCF 项目 · 面向 Agent 流量的新一代数据平面（Rust 实现）——统一代理 MCP 与 A2A 智能体协议，内置鉴权、限流与可观测性',
+    desc: '面向 AI Agent 的 Rust 网关，统一代理 MCP 和 A2A 流量，集中处理鉴权、限流和可观测性。',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
-        note: '定位 Windows 平台版本探测逻辑误将布尔值作为版本信息输出的类型处理缺陷并修正，保证多平台 CLI 行为一致',
+        note: 'Windows 上的版本探测可能把布尔值当作版本输出，影响 CLI 与调用脚本读取版本。修正类型处理，并用回归用例验证修复前后的结果。',
         url: 'https://github.com/agentgateway/agentgateway/pull/4276',
       },
       {
         title: "fix: resolve the user's home directory on Windows (#4264)",
-        note: '修复 Windows 平台用户主目录解析错误导致的配置定位失败，补齐跨平台路径解析验证',
+        note: 'Windows 上沿用 Unix 的 HOME 查找方式会让默认配置文件无法定位。按平台选择主目录来源并跳过空值，用户可直接使用默认的配置发现流程。',
         url: 'https://github.com/agentgateway/agentgateway/pull/4264',
       },
     ],
@@ -450,11 +449,11 @@ const repos = [
     name: 'python / typeshed',
     url: 'https://github.com/python/typeshed',
     stars: '5k+',
-    desc: 'Python 官方类型存根仓库——mypy/pyright/pyre 等所有主流类型检查器的标准库类型来源',
+    desc: 'Python 的公共类型存根仓库。mypy、Pyright 等类型检查器读取其中的标准库注解，用于分析调用方代码和提供 IDE 诊断。',
     prs: [
       {
         title: 'Narrow real math and cmath constants to float (#16886)',
-        note: '收窄 math/cmath 数学常量的类型标注为 float，修正调用方推断出过宽类型的问题（+10/−11）',
+        note: '类型检查器曾把 math 和 cmath 的 pi、inf 等常量推断为 float | int。依据 CPython 的实际初始化行为改为 Final[float]，让调用方可直接使用浮点类型的方法。',
         url: 'https://github.com/python/typeshed/pull/16886',
       },
     ],
@@ -463,16 +462,16 @@ const repos = [
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4.7k+',
-    desc: 'Rust 向量数据库 · HNSW 引擎，支持 WASM 浏览器运行与嵌入式部署，覆盖本地推理与边缘设备场景',
+    desc: 'Rust 编写的向量检索引擎，支持 HNSW、嵌入式部署和 WebAssembly。可运行于浏览器、本地进程和边缘设备。',
     prs: [
       {
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
-        note: '跨平台编译兼容：修复 ARMv8.2 无 LRCPC 平台（Jetson AGX Xavier、树莓派 4）原生模块启动即 SIGILL 崩溃的问题，恢复边缘设备可用性',
+        note: '部分 ARMv8.2 边缘设备缺少原生模块所用的 LRCPC 指令，模块启动时会触发 SIGILL。修正编译兼容性，让匹配该架构的模块能在这些设备上运行。',
         url: 'https://github.com/ruvnet/RuVector/pull/1384',
       },
       {
         title: 'fix: @ruvector/core 0.1.30 HNSW misses results on very small graphs (#1299)',
-        note: '定位 HNSW 在极小图场景下的层遍历边界缺陷——0.1.30 版本检索结果大面积漏召回；修复并补齐小图场景的召回率验证',
+        note: '0.1.30 版 HNSW 在节点极少时存在遍历边界错误，索引正常仍可能漏掉应返回的结果。修正层遍历条件，并用小规模图验证召回。',
         url: 'https://github.com/ruvnet/RuVector/pull/1299',
       },
     ],
@@ -481,11 +480,11 @@ const repos = [
     name: 'pydantic / logfire',
     url: 'https://github.com/pydantic/logfire',
     stars: '4.5k+',
-    desc: 'Pydantic 官方可观测性平台——为 LLM 应用与 Agent 提供结构化日志、追踪与评估',
+    desc: 'Pydantic 的可观测性平台，为应用与 Agent 记录结构化日志和调用追踪，供开发者关联请求、模型调用与报错。',
     prs: [
       {
         title: 'Render non-object model serializer output in the verbose console (#2870)',
-        note: '修复 Pydantic 自定义序列化器返回字符串或列表时，verbose 控制台错误调用 .items() 导致整条记录的属性丢失；改为根据返回类型安全渲染',
+        note: 'Pydantic 自定义序列化器返回字符串或列表时，verbose 控制台会把值当字典处理，导致整条记录的属性被丢弃。按返回类型渲染，保留异常排查所需的日志上下文。',
         url: 'https://github.com/pydantic/logfire/pull/2870',
       },
     ],
@@ -494,16 +493,16 @@ const repos = [
     name: 'modelcontextprotocol / rust-sdk',
     url: 'https://github.com/modelcontextprotocol/rust-sdk',
     stars: '4.1k+',
-    desc: 'MCP 协议官方 Rust SDK · Anthropic 发起的模型-工具连接标准——支持 stdio/Streamable-HTTP 双传输、服务端与客户端双端实现，类型安全且异步优先',
+    desc: 'MCP 官方 Rust SDK，支持客户端和服务端实现，以及 stdio 和 Streamable HTTP 传输，负责能力协商与会话生命周期。',
     prs: [
       {
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
-        note: '资源生命周期缺陷：streamable-http 有状态会话在 shutdown 后仍忽略 cancellation_token、worker 残留存活——定位连接关闭与任务取消的信号传递断点并修复',
+        note: 'Streamable HTTP 的有状态会话在关闭后会残留后台 worker。补齐取消信号从服务端到会话任务的传递，并用回归用例验证关闭时能回收任务。',
         url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1427',
       },
       {
         title: 'fix: reject unadvertised capability methods by default (#1446)',
-        note: '安全加固：默认拒绝未声明的能力方法调用，防止客户端绕过服务端能力协商直接调用未暴露接口',
+        note: '默认处理器曾对服务端未声明的能力返回空成功，容易误导客户端的能力发现。按能力声明返回成功或标准的 JSON-RPC 方法不存在错误，并补充跨语言回归验证。',
         url: 'https://github.com/modelcontextprotocol/rust-sdk/pull/1446',
       },
     ],
@@ -512,11 +511,11 @@ const repos = [
     name: 'tox-dev / tox',
     url: 'https://github.com/tox-dev/tox',
     stars: '3.9k+',
-    desc: 'Python 测试环境与任务自动化工具，可在隔离环境中运行测试、代码检查和构建任务，常用于多版本 Python 的 CI 验证',
+    desc: 'Python 测试环境与任务自动化工具。它创建隔离环境、安装项目依赖并运行测试，常用于在 CI 中验证多个 Python 版本。',
     prs: [
       {
         title: 'fix(install): accept uppercase hash digests (#4463)',
-        note: '修复 tox 在调用 pip 前误拒绝含大写十六进制摘要的依赖文件的问题，支持 SHA-256、SHA-384、SHA-512 摘要的大小写混用。统一按小写比较摘要，避免仅改变大小写时重建环境，并补充解析与安装回归测试',
+        note: '依赖文件中的 SHA-256、SHA-384 和 SHA-512 摘要包含大写字符时，tox 会在调用 pip 前拒绝安装。接受混合大小写，并在比较时统一形式，避免仅改变大小写便重建测试环境。补充解析和安装回归测试。',
         url: 'https://github.com/tox-dev/tox/pull/4463',
       },
     ],
@@ -525,11 +524,11 @@ const repos = [
     name: 'agronholm / anyio',
     url: 'https://github.com/agronholm/anyio',
     stars: '2.5k+',
-    desc: 'Python 高层异步并发与网络框架，提供兼容 asyncio、Trio 的统一接口，广泛用于异步应用与测试生态',
+    desc: '面向 Python 的异步并发和网络库，统一 asyncio 与 Trio 的接口，也提供 pytest 插件来运行和诊断异步测试。',
     prs: [
       {
         title: 'fix: preserve asyncio callback context in pytest exception notes (#1482)',
-        note: '修复 pytest 异步运行器收集回调异常时丢失回调名称与错误上下文的问题；为原异常保留事件循环诊断 note，并补充内置 callback 失败的回归测试',
+        note: '异步 pytest 测试中，回调异常缺少回调名称，尤其难以定位内置回调。把事件循环的诊断消息附到原始异常上，并覆盖内置回调失败场景。',
         url: 'https://github.com/agronholm/anyio/pull/1482',
       },
     ],
@@ -538,11 +537,11 @@ const repos = [
     name: 'bytecodealliance / wasm-tools',
     url: 'https://github.com/bytecodealliance/wasm-tools',
     stars: '1.8k+',
-    desc: 'Wasmtime 生态的 WebAssembly 工具链仓库（wit-bindgen、wasm-compose 等），Wasm 组件模型的标准工具集',
+    desc: 'Bytecode Alliance 的 WebAssembly 工具集，覆盖模块与组件的处理。wasm-mutate 用于生成变体，帮助测试运行时与工具链的边界行为。',
     prs: [
       {
         title: 'fix: Code-motion mutation retains a full syntax-tree clone at every nesting level (#2825)',
-        note: '修复代码移动变换在每层嵌套都保留完整语法树克隆导致的内存爆炸问题',
+        note: '代码变换递归遍历语法树时，每深入一层都会保留一份完整副本，深层模块使活跃内存呈二次增长。改为借用节点遍历，并补充深层嵌套回归测试。',
         url: 'https://github.com/bytecodealliance/wasm-tools/pull/2825',
       },
     ],
@@ -551,11 +550,11 @@ const repos = [
     name: 'oceanbase / powercontext',
     url: 'https://github.com/oceanbase/powercontext',
     stars: '1.7k+',
-    desc: 'OceanBase 开源的 Agent 长期记忆与记忆交接框架——支持 Claude Code 与 Codex 等编码智能体',
+    desc: 'OceanBase 开源的 Agent 长期记忆和上下文交接框架，支持 Claude Code 与 Codex。它负责从会话中留存信息，供后续任务接续。',
     prs: [
       {
         title: 'fix(gateway): preserve distinct terminal turn captures (#2717)',
-        note: '修复网关合并存储时覆盖不同 terminal turn 捕获内容的问题，保证多条会话轮次的记忆完整留存（+161/−16）',
+        note: '同一用户轮次的多次最终回复曾共享一条记忆来源标识，导致后一次回复被判为冲突。按回复内容区分来源、保持相同内容幂等，测试串行重试和并发回复。',
         url: 'https://github.com/oceanbase/powercontext/pull/2717',
       },
     ],
@@ -564,11 +563,11 @@ const repos = [
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',
-    desc: 'Pydantic（下载量亿级的校验库）官方 Agent Harness 子项目 · 承载工具输出摘要、限额与事件流的演进',
+    desc: 'Pydantic 的 Agent 运行框架，负责执行过程中工具输出、事件和用量限额等管理逻辑。',
     prs: [
       {
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
-        note: 'API 演进期维护：为废弃的单键 get/add 补充迁移告警，同步更新全部内部调用点并完善单元与集成测试',
+        note: '为内存和 Redis 用量存储中的旧单键接口补上弃用告警，明确批量接口和移除版本，并迁移内部调用点。应用可在升级前发现仍需迁移的调用。',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
       },
     ],

@@ -109,6 +109,11 @@ const repos = [
         note: 'Office 图形与图表转换共用非线程安全的 PDFium，并发处理时可能崩溃。按维护者反馈将六条渲染路径迁移到 docling-parse，保留 RGB 输出，并验证各路径的渲染和异常行为。',
         url: 'https://github.com/docling-project/docling/pull/5377',
       },
+      {
+        title: 'fix(pdf): report missing pages in the native pipeline (#5554)',
+        note: '修复 PDF 后端提前结束时漏页却报告成功的问题。逐页报告缺失页，保留已完成页面及其原始页码和来源信息，零页时让 CLI 返回失败且不写输出。回归覆盖完整、部分和零页三种交付情况，并验证 CLI 的 HTML 输出和退出码。',
+        url: 'https://github.com/docling-project/docling/pull/5554',
+      },
     ],
   },
   {
@@ -569,6 +574,19 @@ const repos = [
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
         note: '为内存和 Redis 用量存储中的旧单键接口补上弃用告警，明确批量接口和移除版本，并迁移内部调用点。应用可在升级前发现仍需迁移的调用。',
         url: 'https://github.com/pydantic/pydantic-ai-harness/pull/747',
+      },
+    ],
+  },
+  {
+    name: 'sparklyi / SOJ',
+    url: 'https://github.com/sparklyi/SOJ',
+    stars: '8',
+    desc: '可单机部署的 Go 在线评测系统后端，通过 REST API 接收提交，并在异步判题流水线中处理评测和重判。',
+    prs: [
+      {
+        title: 'test(submission): cover rejudge reason byte limits (#278)',
+        note: '受项目维护者 @sparklyi 邀请参与贡献，为创建和取消重判补充 Go 回归测试。验证去除首尾空白后，恰好 500 字节的 UTF-8 理由可传给持久化层，501 字节会在写入前被拒绝，并覆盖取消理由只含空白的情况。',
+        url: 'https://github.com/sparklyi/SOJ/pull/278',
       },
     ],
   },

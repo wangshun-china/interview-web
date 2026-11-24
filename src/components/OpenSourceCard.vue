@@ -509,6 +509,19 @@ const repos = [
     ],
   },
   {
+    name: 'tox-dev / tox',
+    url: 'https://github.com/tox-dev/tox',
+    stars: '3.9k+',
+    desc: 'Python 测试环境与任务自动化工具，可在隔离环境中运行测试、代码检查和构建任务，常用于多版本 Python 的 CI 验证',
+    prs: [
+      {
+        title: 'fix(install): accept uppercase hash digests (#4463)',
+        note: '修复 tox 在调用 pip 前误拒绝含大写十六进制摘要的依赖文件的问题，支持 SHA-256、SHA-384、SHA-512 摘要的大小写混用。统一按小写比较摘要，避免仅改变大小写时重建环境，并补充解析与安装回归测试',
+        url: 'https://github.com/tox-dev/tox/pull/4463',
+      },
+    ],
+  },
+  {
     name: 'agronholm / anyio',
     url: 'https://github.com/agronholm/anyio',
     stars: '2.5k+',

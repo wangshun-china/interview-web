@@ -40,7 +40,10 @@
             {{ repo.stars }}
           </span>
         </div>
-        <p class="oss-repo-desc">{{ repo.desc }}</p>
+        <p class="oss-repo-desc">
+          {{ repo.desc }}
+          <span class="oss-repo-forks"> · {{ repo.forks.toLocaleString('en-US') }} Fork</span>
+        </p>
         <a
           v-for="pr in repo.prs"
           :key="pr.url"
@@ -71,7 +74,8 @@ const repos = [
     name: 'infiniflow / ragflow',
     url: 'https://github.com/infiniflow/ragflow',
     stars: '94k+',
-    desc: '开源 RAG 引擎，为知识库和 AI Agent 提供文档解析、索引与可追溯检索。负责把原始文档转成模型能检索、也能回查来源的上下文。',
+    forks: 11380,
+    desc: '开源 RAG 引擎，负责文档解析、索引与可追溯检索。可同步 Atlassian Confluence、Microsoft SharePoint 和 Google Drive 等数据源，供知识库和 Agent 查询。',
     prs: [
       {
         title: 'Preserve UTF-8 when truncating synced filenames (+73/-11)',
@@ -84,7 +88,8 @@ const repos = [
     name: 'caddyserver / caddy',
     url: 'https://github.com/caddyserver/caddy',
     stars: '79k+',
-    desc: 'Go 编写的跨平台 Web 服务器与反向代理，支持 HTTP/1.1、HTTP/2 和 HTTP/3。内置自动 HTTPS，可用于站点入口和后端服务转发。',
+    forks: 5323,
+    desc: 'Go 编写的跨平台 Web 服务器与反向代理，支持 HTTP/1.1、HTTP/2 和 HTTP/3，可自动签发与续期 TLS 证书，并与 Tailscale 集成，为 .ts.net 域名获取证书。',
     prs: [
       {
         title: 'fix: prevent read_body deadline from truncating long responses (#8400)',
@@ -97,7 +102,8 @@ const repos = [
     name: 'docling-project / docling',
     url: 'https://github.com/docling-project/docling',
     stars: '70k+',
-    desc: '面向生成式 AI 的文档解析与转换框架，覆盖 PDF、Word、PowerPoint 等格式。保留文档结构，为知识库检索和文档问答准备输入。',
+    forks: 5403,
+    desc: 'IBM Research 开源的文档解析与转换框架，覆盖 PDF、Word、PowerPoint 等格式。IBM 与 Red Hat 的 InstructLab 团队曾用 Docling 从 PDF 提取模型训练资料。',
     prs: [
       {
         title: 'fix: avoid OpenCV FIPS aborts with Databricks opt-out setting (#5430)',
@@ -115,7 +121,8 @@ const repos = [
     name: 'prometheus / prometheus',
     url: 'https://github.com/prometheus/prometheus',
     stars: '67k+',
-    desc: 'CNCF 毕业项目，用于采集和存储时序指标，并通过 PromQL 查询和定义告警规则。常与 Kubernetes、各类 Exporter 和 Grafana 配合使用。',
+    forks: 11039,
+    desc: '源于 SoundCloud，2018 年成为继 Kubernetes 之后第二个从 CNCF 毕业的项目。用于时序监控和告警，CNCF 毕业公告列出的采用者包括 DigitalOcean 与 Uber。',
     prs: [
       {
         title: 'web: ui: align literal and duration keyword parsing with PromQL (#20456)',
@@ -128,11 +135,12 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
-    desc: 'C++ 列式 OLAP 数据库，面向大规模数据的实时聚合与分析。事件、日志和明细查询之外，也通过 MySQL 接口兼容已有的驱动和工具。',
+    forks: 9312,
+    desc: '面向实时分析的 C++ 列式 OLAP 数据库。Cloudflare 的工程案例披露，其基于 ClickHouse 的 Ready Analytics 系统截至 2024 年 12 月已存储超过 2 PiB，写入速率达每秒数百万行。',
     prs: [
       {
         title: 'fix: MySQL OK packet size accounting and optional field parsing (#129709)',
-        note: '排查 Connector/J 9.x 兼容问题时发现 MySQL OK 包的两个独立缺陷。修正多字节 last_insert_id 的长度计算，以及可选字段缺省时的越界读取，并分别添加协议级测试。',
+        note: '排查 Connector/J 9.x 兼容问题时发现 MySQL OK 包的两个独立缺陷。修正多字节 last_insert_id 的长度计算，以及可选字段缺省时的越界读取，各补一条协议测试。上游合并记录标注纳入 26.11。',
         url: 'https://github.com/ClickHouse/ClickHouse/pull/129709',
       },
     ],
@@ -141,7 +149,8 @@ const repos = [
     name: 'volcengine / OpenViking',
     url: 'https://github.com/volcengine/OpenViking',
     stars: '42k+',
-    desc: '火山引擎开源的 Agent 上下文数据库，统一管理记忆、知识和技能。它为 Agent 提供上下文检索，也通过 LiteLLM 等组件接入模型。',
+    forks: 3552,
+    desc: '由字节跳动火山引擎 Viking 团队发起并维护的 Agent 上下文数据库，统一管理记忆、知识和技能三类上下文，并通过 LiteLLM 等组件接入模型。',
     prs: [
       {
         title: 'fix(vlm): inherit configured reasoning effort in LiteLLM requests (#7703)',
@@ -159,7 +168,8 @@ const repos = [
     name: 'HKUDS / LightRAG',
     url: 'https://github.com/HKUDS/LightRAG',
     stars: '40k+',
-    desc: '结合知识图谱与向量检索的 RAG 框架。向量匹配帮助找到语义相关的文本，图谱让查询还能沿实体关系查找相关信息。',
+    forks: 5805,
+    desc: '结合知识图谱与向量检索的 RAG 框架，对应论文收录于 Findings of EMNLP 2025。查询既能匹配语义相近的文本，也可沿实体关系检索相关信息。',
     prs: [
       {
         title: 'fix(chunker): verify token-window positions before attaching provenance (#4463)',
@@ -177,7 +187,8 @@ const repos = [
     name: 'Tencent / WeKnora',
     url: 'https://github.com/Tencent/WeKnora',
     stars: '38k+',
-    desc: '腾讯开源的 LLM 知识库平台，涵盖文档入库、检索问答、Agent 和 Wiki。对象存储接入直接影响文档预览、下载与后续使用。',
+    forks: 5343,
+    desc: '腾讯开源的 LLM 知识库平台，涵盖文档入库、检索问答、Agent 和 Wiki。项目发布记录披露，v0.5.2 的 Wiki 文档入库可处理 4 万份文档规模的知识库。',
     prs: [
       {
         title: 'fix: stream TOS files without unsupported seeking (+85/-1)',
@@ -190,7 +201,8 @@ const repos = [
     name: 'qdrant / qdrant',
     url: 'https://github.com/qdrant/qdrant',
     stars: '35k+',
-    desc: 'Rust 编写的分布式向量数据库，支持 HNSW、量化和稀疏混合检索，可结合元数据过滤、分组与推荐，用于语义搜索和 RAG。',
+    forks: 2842,
+    desc: 'Rust 编写的分布式向量数据库，支持混合检索、过滤和分组。HubSpot 工程团队披露，其承载逾 200 亿条向量的检索平台使用 Qdrant 执行语义搜索。',
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
@@ -208,7 +220,8 @@ const repos = [
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
-    desc: 'Prefect 维护的 Python MCP 框架，通过装饰器把应用能力注册为工具、资源和提示模板，也支持从 OpenAPI 描述生成工具。',
+    forks: 2648,
+    desc: 'Prefect 维护的 Python MCP 框架，支持发布工具、资源和提示模板。Prefect 曾披露 FastMCP 2.0 每周下载超 100 万次，1.0 已被 Anthropic 纳入官方 MCP Python SDK。',
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
@@ -226,7 +239,8 @@ const repos = [
     name: 'apache / rocketmq',
     url: 'https://github.com/apache/rocketmq',
     stars: '22.6k+',
-    desc: 'Apache 顶级项目，用于在服务之间可靠传递消息。常用于异步解耦和突发流量缓冲，客户端配置在不同运行环境下的一致性会影响消息链路。',
+    forks: 12045,
+    desc: '源于阿里巴巴高并发电商业务的 Apache 顶级项目。官方文档将万亿级消息规模列为设计目标，用于异步解耦和突发流量缓冲。',
     prs: [
       {
         title: 'fix: CompressionType.of fails under the Turkish locale (#11514)',
@@ -239,11 +253,12 @@ const repos = [
     name: 'redis / go-redis',
     url: 'https://github.com/redis/go-redis',
     stars: '22k+',
-    desc: 'Redis 官方维护的 Go 客户端，支持 Cluster、Sentinel、流水线和发布订阅。连接池、协议解析和故障切换是上层应用访问 Redis 的基础。',
+    forks: 2651,
+    desc: 'Redis 官方支持的 Go 客户端，支持 Cluster、Sentinel、流水线和发布订阅。连接池、协议解析和故障切换直接影响上层应用访问 Redis 的可靠性。',
     prs: [
       {
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
-        note: '为 go-redis 的 RESP3 回复解析增加嵌套深度上限，保护客户端处理异常输入时的稳定性。补齐深度边界回归测试，并对比修复前后的解析性能。',
+        note: '为 go-redis 的 RESP3 回复解析增加嵌套深度上限，保护客户端处理异常输入时的稳定性。补齐深度边界测试，修复前后对比的 6 类解析基准中，每次操作的内存分配量与次数相同。',
         url: 'https://github.com/redis/go-redis/pull/4296',
       },
       {
@@ -263,7 +278,7 @@ const repos = [
       },
       {
         title: 'fix(pool): return acquired idle connections (#4322)',
-        note: '空闲连接扫描在最后一次尝试已拿到可用连接时，仍可能误报连接池耗尽，并让连接滞留在占用状态。获取成功即返回，回归覆盖 FIFO、LIFO 和两种获取入口。',
+        note: '空闲连接扫描在最后一次尝试已拿到可用连接时，仍可能误报连接池耗尽，并让连接滞留在占用状态。获取成功即返回，测试覆盖 FIFO、LIFO 两种策略和 Get、TryGet 两个入口。',
         url: 'https://github.com/redis/go-redis/pull/4322',
       },
       {
@@ -282,7 +297,8 @@ const repos = [
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
-    desc: 'Bytecode Alliance 开发的 WebAssembly 运行时，提供 Cranelift 编译器和 WASI 接口。负责 Wasm 模块的执行、内存管理和故障诊断。',
+    forks: 1946,
+    desc: 'Bytecode Alliance 开发的 WebAssembly 运行时，提供 Cranelift 编译器和 WASI 接口。据 1.0 发布公告，Shopify 和 Fastly 已在生产中采用，Fastly 当时已用它处理万亿级请求。',
     prs: [
       {
         title: 'fix: Copying collector grow-vs-collect heuristic compares against the whole heap (#15207)',
@@ -300,7 +316,8 @@ const repos = [
     name: 'opensandbox-group / OpenSandbox',
     url: 'https://github.com/opensandbox-group/OpenSandbox',
     stars: '17k+',
-    desc: '面向 AI Agent 的隔离执行平台，支持在 Docker 和 Kubernetes 上运行代码与工具。服务端管理沙箱生命周期，SDK 负责传递执行事件和结果。',
+    forks: 1721,
+    desc: '阿里巴巴捐献给 Linux Foundation 旗下 AAIF 的 Agent 隔离执行平台，支持在 Docker 和 Kubernetes 上运行代码与工具，提供 Python、TypeScript、Java、Go 等 SDK。',
     prs: [
       {
         title: 'fix(python-sdk): normalize legacy SSE streams in linear time (#2845)',
@@ -348,7 +365,8 @@ const repos = [
     name: 'The-PR-Agent / pr-agent',
     url: 'https://github.com/The-PR-Agent/pr-agent',
     stars: '16k+',
-    desc: 'Qodo 发起的开源 AI 代码评审工具，接入 GitHub、GitLab 等平台，可生成 PR 描述和审查建议。它会读取代码变更及关联工单作为上下文。',
+    forks: 2242,
+    desc: 'Qodo 发起的开源 AI 代码评审工具，支持 GitHub、GitLab、Bitbucket、Microsoft Azure DevOps 和 AWS CodeCommit 等平台，可根据代码变更与关联工单生成审查建议。',
     prs: [
       {
         title: 'fix: guard GitLab ticket context with project issue visibility (#4932)',
@@ -361,7 +379,8 @@ const repos = [
     name: 'pypa / pipx',
     url: 'https://github.com/pypa/pipx',
     stars: '13k+',
-    desc: 'PyPA 维护的 Python CLI 安装与运行工具，为每个应用创建独立的虚拟环境。多个命令行工具可以共存，并各自保留所需的依赖版本。',
+    forks: 762,
+    desc: 'PyPA 维护的 Python 命令行工具安装器，为每个应用创建独立虚拟环境。Ubuntu 24.04 的软件仓库提供 pipx，macOS 和 Windows 也有官方安装指引。',
     prs: [
       {
         title: 'docs(environment): explain what --value prints for unset variables (#2450)',
@@ -379,7 +398,8 @@ const repos = [
     name: 'lancedb / lancedb',
     url: 'https://github.com/lancedb/lancedb',
     stars: '12k+',
-    desc: '面向多模态数据的嵌入式检索库，支持向量和全文检索。应用可以把检索集成在进程内，并通过 SDK 接入现有服务。',
+    forks: 1177,
+    desc: '面向多模态数据的检索库，支持向量和全文检索。LanceDB 在 2026 年 11 月披露开源库累计下载超 1.2 亿次，旗下商业平台的客户包括 Netflix、Microsoft AI 和 Midjourney。',
     prs: [
       {
         title: 'fix(java): keep Maven coordinates in sync with release tags (+104/-28)',
@@ -392,7 +412,8 @@ const repos = [
     name: 'mark3labs / mcp-go',
     url: 'https://github.com/mark3labs/mcp-go',
     stars: '9.2k+',
-    desc: 'MCP 的 Go 语言实现，可在 Go 应用中构建 MCP 客户端和服务端，通过统一协议访问工具与外部数据。',
+    forks: 963,
+    desc: 'MCP 的 Go 实现，支持 stdio 和 Streamable HTTP 等传输，提供客户端与服务端能力。Grafana Labs 的分布式追踪项目 Tempo 在公开依赖清单中引用了 mcp-go。',
     prs: [
       {
         title: 'Isolate stateless Streamable HTTP GET streams (+129/-9)',
@@ -405,7 +426,8 @@ const repos = [
     name: 'pydantic / monty',
     url: 'https://github.com/pydantic/monty',
     stars: '8.9k+',
-    desc: 'Pydantic 开发的 Rust 实现 Python 沙箱，用于受控执行 AI 生成的代码。运行时负责限制资源用量，并把执行结果或异常交还给宿主。',
+    forks: 506,
+    desc: 'Pydantic 开发的 Rust 实现 Python 沙箱，用于受控执行 AI 生成的代码。提供 Python、JavaScript 和 Rust 接口，并可按会话限制内存等资源。',
     prs: [
       {
         title: 'fix: preflight JSON integer indentation allocations (#1367)',
@@ -418,11 +440,12 @@ const repos = [
     name: 'prometheus / alertmanager',
     url: 'https://github.com/prometheus/alertmanager',
     stars: '8.7k+',
-    desc: 'Prometheus 生态的告警管理组件。它接收告警事件，执行去重、分组和路由，再把通知送到配置的接收方。',
+    forks: 2517,
+    desc: 'Prometheus 的告警管理组件，负责去重、分组和路由，集成 Slack、Microsoft Teams 和 PagerDuty 等通知渠道。',
     prs: [
       {
         title: 'app: outlast Prometheus client idle connections (#5744)',
-        note: 'Prometheus 重发告警的周期恰好撞上服务端空闲超时，连接关闭与告警 POST 并发时可能出现 EOF。协调客户端和服务端的空闲超时顺序，并为两个监听端口补上验证。',
+        note: '告警每 90 秒重发一次时，恰好撞上服务端原有的 90 秒空闲超时，告警 POST 可能出现 EOF。将服务端超时调至 6 分钟，晚于客户端的 5 分钟，并验证两个监听器的超时设置。',
         url: 'https://github.com/prometheus/alertmanager/pull/5744',
       },
     ],
@@ -431,7 +454,8 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
-    desc: '面向 AI Agent 的 Rust 网关，统一代理 MCP 和 A2A 流量，集中处理鉴权、限流和可观测性。',
+    forks: 1130,
+    desc: '由 Solo.io 发起、现为 Linux Foundation 旗下 AAIF 项目的 Rust 网关，统一代理 MCP 与 A2A 流量，集中处理鉴权、限流和可观测性。',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
@@ -449,7 +473,8 @@ const repos = [
     name: 'python / typeshed',
     url: 'https://github.com/python/typeshed',
     stars: '5k+',
-    desc: 'Python 的公共类型存根仓库。mypy、Pyright 等类型检查器读取其中的标准库注解，用于分析调用方代码和提供 IDE 诊断。',
+    forks: 2155,
+    desc: 'Python 的公共类型存根仓库，为标准库和第三方包提供注解。Microsoft Pyright 随工具分发一份 Typeshed 标准库存根，供静态分析和编辑器诊断使用。',
     prs: [
       {
         title: 'Narrow real math and cmath constants to float (#16886)',
@@ -462,7 +487,8 @@ const repos = [
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4.7k+',
-    desc: 'Rust 编写的向量检索引擎，支持 HNSW、嵌入式部署和 WebAssembly。可运行于浏览器、本地进程和边缘设备。',
+    forks: 631,
+    desc: 'Rust 编写的向量检索引擎，支持 HNSW、嵌入式部署和 WebAssembly。相关原生模块修复覆盖 NVIDIA Jetson AGX Xavier 和树莓派 4 等 ARM 边缘设备。',
     prs: [
       {
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
@@ -480,7 +506,8 @@ const repos = [
     name: 'pydantic / logfire',
     url: 'https://github.com/pydantic/logfire',
     stars: '4.5k+',
-    desc: 'Pydantic 的可观测性平台，为应用与 Agent 记录结构化日志和调用追踪，供开发者关联请求、模型调用与报错。',
+    forks: 381,
+    desc: 'Pydantic 的 OpenTelemetry 可观测性平台，为应用与 Agent 记录日志和追踪。官方文档提供 OpenAI、Anthropic、Google ADK 等集成路径。',
     prs: [
       {
         title: 'Render non-object model serializer output in the verbose console (#2870)',
@@ -493,7 +520,8 @@ const repos = [
     name: 'modelcontextprotocol / rust-sdk',
     url: 'https://github.com/modelcontextprotocol/rust-sdk',
     stars: '4.1k+',
-    desc: 'MCP 官方 Rust SDK，支持客户端和服务端实现，以及 stdio 和 Streamable HTTP 传输，负责能力协商与会话生命周期。',
+    forks: 727,
+    desc: 'MCP 的官方 Rust SDK，支持 stdio 和 Streamable HTTP 两类传输，覆盖客户端和服务端。MCP 由 Anthropic 发起，并于 2025 年捐献给 Linux Foundation 旗下 AAIF。',
     prs: [
       {
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
@@ -511,11 +539,12 @@ const repos = [
     name: 'tox-dev / tox',
     url: 'https://github.com/tox-dev/tox',
     stars: '3.9k+',
-    desc: 'Python 测试环境与任务自动化工具。它创建隔离环境、安装项目依赖并运行测试，常用于在 CI 中验证多个 Python 版本。',
+    forks: 756,
+    desc: 'Python 测试环境与任务自动化工具，用于隔离安装依赖并运行多版本测试。Django 仓库提供 tox 测试配置，JetBrains PyCharm 提供专门的 tox 运行配置。',
     prs: [
       {
         title: 'fix(install): accept uppercase hash digests (#4463)',
-        note: '依赖文件中的 SHA-256、SHA-384 和 SHA-512 摘要包含大写字符时，tox 会在调用 pip 前拒绝安装。接受混合大小写，并在比较时统一形式，避免仅改变大小写便重建测试环境。补充解析和安装回归测试。',
+        note: '依赖文件中的 SHA-256、SHA-384 和 SHA-512 摘要包含大写字符时，tox 会在调用 pip 前拒绝安装。允许混合大小写并统一比较形式，避免仅改变大小写便重建测试环境。补充解析与安装回归测试，PR 记录显示 31 项检查通过。',
         url: 'https://github.com/tox-dev/tox/pull/4463',
       },
     ],
@@ -524,7 +553,8 @@ const repos = [
     name: 'agronholm / anyio',
     url: 'https://github.com/agronholm/anyio',
     stars: '2.5k+',
-    desc: '面向 Python 的异步并发和网络库，统一 asyncio 与 Trio 的接口，也提供 pytest 插件来运行和诊断异步测试。',
+    forks: 363,
+    desc: 'Python 异步并发库，统一 asyncio 和 Trio 两套运行后端，并提供 pytest 插件。OpenAI 与 Anthropic 的官方 Python SDK 都将 AnyIO 列为直接依赖。',
     prs: [
       {
         title: 'fix: preserve asyncio callback context in pytest exception notes (#1482)',
@@ -537,7 +567,8 @@ const repos = [
     name: 'bytecodealliance / wasm-tools',
     url: 'https://github.com/bytecodealliance/wasm-tools',
     stars: '1.8k+',
-    desc: 'Bytecode Alliance 的 WebAssembly 工具集，覆盖模块与组件的处理。wasm-mutate 用于生成变体，帮助测试运行时与工具链的边界行为。',
+    forks: 365,
+    desc: 'Bytecode Alliance 维护的 WebAssembly 工具集，覆盖模块与组件的解析、校验和变体生成。联盟由 Mozilla、Fastly、Intel 和 Red Hat 四家公司发起。',
     prs: [
       {
         title: 'fix: Code-motion mutation retains a full syntax-tree clone at every nesting level (#2825)',
@@ -550,11 +581,12 @@ const repos = [
     name: 'oceanbase / powercontext',
     url: 'https://github.com/oceanbase/powercontext',
     stars: '1.7k+',
-    desc: 'OceanBase 开源的 Agent 长期记忆和上下文交接框架，支持 Claude Code 与 Codex。它负责从会话中留存信息，供后续任务接续。',
+    forks: 681,
+    desc: 'OceanBase 开源的 Agent 长期记忆和上下文交接框架。项目主分支文档列出了 9 种 Agent 宿主适配，包括 OpenAI Codex 和 Anthropic Claude Code。',
     prs: [
       {
         title: 'fix(gateway): preserve distinct terminal turn captures (#2717)',
-        note: '同一用户轮次的多次最终回复曾共享一条记忆来源标识，导致后一次回复被判为冲突。按回复内容区分来源、保持相同内容幂等，测试串行重试和并发回复。',
+        note: '同一用户轮次的不同最终回复曾共享记忆来源标识，导致后一次回复被判为冲突。按回复内容区分来源、对重复内容保持幂等，覆盖串行重试和并发回复。PR 记录显示网关执行语义套件 86 项测试通过。',
         url: 'https://github.com/oceanbase/powercontext/pull/2717',
       },
     ],
@@ -563,7 +595,8 @@ const repos = [
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',
-    desc: 'Pydantic 的 Agent 运行框架，负责执行过程中工具输出、事件和用量限额等管理逻辑。',
+    forks: 153,
+    desc: 'Pydantic AI 的 Agent 执行扩展，继承其 OpenAI、Anthropic 等模型接入能力，并提供请求数、工具调用数、Token 和金额四类预算信息。',
     prs: [
       {
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
@@ -692,6 +725,10 @@ const starsCoverage = computed(() => {
   color: var(--color-text-secondary);
   font-size: 0.78rem;
   line-height: 1.5;
+}
+
+.oss-repo-forks {
+  white-space: nowrap;
 }
 
 .oss-repo-row {

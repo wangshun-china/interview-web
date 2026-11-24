@@ -40,10 +40,7 @@
             {{ repo.stars }}
           </span>
         </div>
-        <p class="oss-repo-desc">
-          {{ repo.desc }}
-          <span class="oss-repo-forks"> · {{ repo.forks.toLocaleString('en-US') }} Fork</span>
-        </p>
+        <p class="oss-repo-desc">{{ repo.desc }}</p>
         <a
           v-for="pr in repo.prs"
           :key="pr.url"
@@ -60,7 +57,7 @@
         </a>
       </section>
 
-      <p class="oss-footer">点击 PR 条目可查看完整 diff 与维护者讨论。</p>
+      <p class="oss-footer">下载与拉取量为 2026 年 11 月查询快照。点击 PR 可查看 diff 与维护者讨论。</p>
     </div>
   </article>
 </template>
@@ -74,8 +71,7 @@ const repos = [
     name: 'infiniflow / ragflow',
     url: 'https://github.com/infiniflow/ragflow',
     stars: '94k+',
-    forks: 11380,
-    desc: '开源 RAG 引擎，负责文档解析、索引与可追溯检索。可同步 Atlassian Confluence、Microsoft SharePoint 和 Google Drive 等数据源，供知识库和 Agent 查询。',
+    desc: '开源 RAG 引擎，负责文档解析、索引与可追溯检索。可同步 Atlassian Confluence、Microsoft SharePoint 和 Google Drive 等数据源，供知识库和 Agent 查询。2025 年 1 月 24 日登顶 GitHub Trending 日榜，项目统计的 Docker 镜像累计拉取超过 400 万次。',
     prs: [
       {
         title: 'Preserve UTF-8 when truncating synced filenames (+73/-11)',
@@ -88,8 +84,7 @@ const repos = [
     name: 'caddyserver / caddy',
     url: 'https://github.com/caddyserver/caddy',
     stars: '79k+',
-    forks: 5323,
-    desc: 'Go 编写的跨平台 Web 服务器与反向代理，支持 HTTP/1.1、HTTP/2 和 HTTP/3，可自动签发与续期 TLS 证书，并与 Tailscale 集成，为 .ts.net 域名获取证书。',
+    desc: 'Go 编写的跨平台 Web 服务器与反向代理，支持 HTTP/1.1、HTTP/2 和 HTTP/3，可自动签发与续期 TLS 证书，并与 Tailscale 集成，为 .ts.net 域名获取证书。Docker Hub 官方 Caddy 镜像累计拉取超 7.8 亿次。',
     prs: [
       {
         title: 'fix: prevent read_body deadline from truncating long responses (#8400)',
@@ -102,8 +97,7 @@ const repos = [
     name: 'docling-project / docling',
     url: 'https://github.com/docling-project/docling',
     stars: '70k+',
-    forks: 5403,
-    desc: 'IBM Research 开源的文档解析与转换框架，覆盖 PDF、Word、PowerPoint 等格式。IBM 与 Red Hat 的 InstructLab 团队曾用 Docling 从 PDF 提取模型训练资料。',
+    desc: 'IBM Research 开源的文档解析与转换框架，覆盖 PDF、Word、PowerPoint 等格式。IBM 与 Red Hat 的 InstructLab 团队曾用 Docling 从 PDF 提取模型训练资料。2026 年 9 月 20 日登顶 GitHub Trending 日榜，PyPI 近 30 天下载超 430 万次。',
     prs: [
       {
         title: 'fix: avoid OpenCV FIPS aborts with Databricks opt-out setting (#5430)',
@@ -121,8 +115,7 @@ const repos = [
     name: 'prometheus / prometheus',
     url: 'https://github.com/prometheus/prometheus',
     stars: '67k+',
-    forks: 11039,
-    desc: '源于 SoundCloud，2018 年成为继 Kubernetes 之后第二个从 CNCF 毕业的项目。用于时序监控和告警，CNCF 毕业公告列出的采用者包括 DigitalOcean 与 Uber。',
+    desc: '源于 SoundCloud，2018 年成为继 Kubernetes 之后第二个从 CNCF 毕业的项目。用于时序监控和告警，CNCF 毕业公告列出的采用者包括 DigitalOcean 与 Uber。CNCF 2025 年度调查中，77% 的相关受访者已在生产环境使用 Prometheus。',
     prs: [
       {
         title: 'web: ui: align literal and duration keyword parsing with PromQL (#20456)',
@@ -135,8 +128,7 @@ const repos = [
     name: 'ClickHouse / ClickHouse',
     url: 'https://github.com/ClickHouse/ClickHouse',
     stars: '50k+',
-    forks: 9312,
-    desc: '面向实时分析的 C++ 列式 OLAP 数据库。Cloudflare 的工程案例披露，其基于 ClickHouse 的 Ready Analytics 系统截至 2024 年 12 月已存储超过 2 PiB，写入速率达每秒数百万行。',
+    desc: '面向实时分析的 C++ 列式 OLAP 数据库。Cloudflare 的工程案例披露，其基于 ClickHouse 的 Ready Analytics 系统截至 2024 年 12 月已存储超过 2 PiB，写入速率达每秒数百万行。ClickHouse 官方还披露，其 Google Cloud 配置曾于 2026 年 3 月 11 日在 ClickBench 综合榜排名第 1。',
     prs: [
       {
         title: 'fix: MySQL OK packet size accounting and optional field parsing (#129709)',
@@ -149,8 +141,7 @@ const repos = [
     name: 'volcengine / OpenViking',
     url: 'https://github.com/volcengine/OpenViking',
     stars: '42k+',
-    forks: 3552,
-    desc: '由字节跳动火山引擎 Viking 团队发起并维护的 Agent 上下文数据库，统一管理记忆、知识和技能三类上下文，并通过 LiteLLM 等组件接入模型。',
+    desc: '由字节跳动火山引擎 Viking 团队发起并维护的 Agent 上下文数据库，统一管理记忆、知识和技能三类上下文，并通过 LiteLLM 等组件接入模型。2026 年 3 月 14 日登顶 GitHub Trending 日榜。项目在 LoCoMo 长对话记忆基准中，将 Claude Code 的准确率从 57.21% 提升到 80.32%。',
     prs: [
       {
         title: 'fix(vlm): inherit configured reasoning effort in LiteLLM requests (#7703)',
@@ -168,8 +159,7 @@ const repos = [
     name: 'HKUDS / LightRAG',
     url: 'https://github.com/HKUDS/LightRAG',
     stars: '40k+',
-    forks: 5805,
-    desc: '结合知识图谱与向量检索的 RAG 框架，对应论文收录于 Findings of EMNLP 2025。查询既能匹配语义相近的文本，也可沿实体关系检索相关信息。',
+    desc: '结合知识图谱与向量检索的 RAG 框架，对应论文收录于 Findings of EMNLP 2025。查询既能匹配语义相近的文本，也可沿实体关系检索相关信息。2025 年 4 月 8 日位列 GitHub Trending 日榜第 2，PyPI 的 lightrag-hku 包近 30 天下载超 16 万次。',
     prs: [
       {
         title: 'fix(chunker): verify token-window positions before attaching provenance (#4463)',
@@ -187,8 +177,7 @@ const repos = [
     name: 'Tencent / WeKnora',
     url: 'https://github.com/Tencent/WeKnora',
     stars: '38k+',
-    forks: 5343,
-    desc: '腾讯开源的 LLM 知识库平台，涵盖文档入库、检索问答、Agent 和 Wiki。项目发布记录披露，v0.5.2 的 Wiki 文档入库可处理 4 万份文档规模的知识库。',
+    desc: '腾讯开源的 LLM 知识库平台，涵盖文档入库、检索问答、Agent 和 Wiki。项目发布记录披露，v0.5.2 的 Wiki 文档入库可处理 4 万份文档规模的知识库。2025 年 11 月 1 日登顶 GitHub Trending 日榜。',
     prs: [
       {
         title: 'fix: stream TOS files without unsupported seeking (+85/-1)',
@@ -201,8 +190,7 @@ const repos = [
     name: 'qdrant / qdrant',
     url: 'https://github.com/qdrant/qdrant',
     stars: '35k+',
-    forks: 2842,
-    desc: 'Rust 编写的分布式向量数据库，支持混合检索、过滤和分组。HubSpot 工程团队披露，其承载逾 200 亿条向量的检索平台使用 Qdrant 执行语义搜索。',
+    desc: 'Rust 编写的分布式向量数据库，支持混合检索、过滤和分组。HubSpot 工程团队披露，其承载逾 200 亿条向量的检索平台使用 Qdrant 执行语义搜索。该平台服务于 HubSpot 的 38 个以上团队。',
     prs: [
       {
         title: 'fix: group-by silently returns empty results (#11370)',
@@ -220,8 +208,7 @@ const repos = [
     name: 'PrefectHQ / fastmcp',
     url: 'https://github.com/PrefectHQ/fastmcp',
     stars: '28k+',
-    forks: 2648,
-    desc: 'Prefect 维护的 Python MCP 框架，支持发布工具、资源和提示模板。Prefect 曾披露 FastMCP 2.0 每周下载超 100 万次，1.0 已被 Anthropic 纳入官方 MCP Python SDK。',
+    desc: 'Prefect 维护的 Python MCP 框架，支持发布工具、资源和提示模板。Anthropic 将 FastMCP 1.0 纳入官方 MCP Python SDK。2026 年 7 月 20 日位列 GitHub Trending 日榜第 8，PyPI 的 fastmcp 包近 30 天下载超 6,800 万次。',
     prs: [
       {
         title: 'fix: `session: UserSession` on a resource or resource template fails at registration (#6198)',
@@ -239,7 +226,6 @@ const repos = [
     name: 'apache / rocketmq',
     url: 'https://github.com/apache/rocketmq',
     stars: '22.6k+',
-    forks: 12045,
     desc: '源于阿里巴巴高并发电商业务的 Apache 顶级项目。官方文档将万亿级消息规模列为设计目标，用于异步解耦和突发流量缓冲。',
     prs: [
       {
@@ -253,8 +239,7 @@ const repos = [
     name: 'redis / go-redis',
     url: 'https://github.com/redis/go-redis',
     stars: '22k+',
-    forks: 2651,
-    desc: 'Redis 官方支持的 Go 客户端，支持 Cluster、Sentinel、流水线和发布订阅。连接池、协议解析和故障切换直接影响上层应用访问 Redis 的可靠性。',
+    desc: 'Redis 官方支持的 Go 客户端，支持 Cluster、Sentinel、流水线和发布订阅。连接池、协议解析和故障切换直接影响上层应用访问 Redis 的可靠性。Go Packages 收录的 v9 主包导入记录超过 1.6 万条。',
     prs: [
       {
         title: 'fix: proto — no nesting depth limit when reading RESP3 replies (#4296)',
@@ -297,7 +282,6 @@ const repos = [
     name: 'bytecodealliance / wasmtime',
     url: 'https://github.com/bytecodealliance/wasmtime',
     stars: '18k+',
-    forks: 1946,
     desc: 'Bytecode Alliance 开发的 WebAssembly 运行时，提供 Cranelift 编译器和 WASI 接口。据 1.0 发布公告，Shopify 和 Fastly 已在生产中采用，Fastly 当时已用它处理万亿级请求。',
     prs: [
       {
@@ -316,8 +300,7 @@ const repos = [
     name: 'opensandbox-group / OpenSandbox',
     url: 'https://github.com/opensandbox-group/OpenSandbox',
     stars: '17k+',
-    forks: 1721,
-    desc: '阿里巴巴捐献给 Linux Foundation 旗下 AAIF 的 Agent 隔离执行平台，支持在 Docker 和 Kubernetes 上运行代码与工具，提供 Python、TypeScript、Java、Go 等 SDK。',
+    desc: '阿里巴巴捐献给 Linux Foundation 旗下 AAIF 的 Agent 隔离执行平台，支持在 Docker 和 Kubernetes 上运行代码与工具，提供 Python、TypeScript、Java、Go 等 SDK。官方在阿里云 ACK 双节点环境进行串行验证，103 次运行时创建的中位耗时为 39.43 ms。',
     prs: [
       {
         title: 'fix(python-sdk): normalize legacy SSE streams in linear time (#2845)',
@@ -365,8 +348,7 @@ const repos = [
     name: 'The-PR-Agent / pr-agent',
     url: 'https://github.com/The-PR-Agent/pr-agent',
     stars: '16k+',
-    forks: 2242,
-    desc: 'Qodo 发起的开源 AI 代码评审工具，支持 GitHub、GitLab、Bitbucket、Microsoft Azure DevOps 和 AWS CodeCommit 等平台，可根据代码变更与关联工单生成审查建议。',
+    desc: 'Qodo 发起的开源 AI 代码评审工具，支持 GitHub、GitLab、Bitbucket、Microsoft Azure DevOps 和 AWS CodeCommit 等平台，可根据代码变更与关联工单生成审查建议。PyPI 的 pr-agent 包近 30 天下载超 9 万次。',
     prs: [
       {
         title: 'fix: guard GitLab ticket context with project issue visibility (#4932)',
@@ -379,8 +361,7 @@ const repos = [
     name: 'pypa / pipx',
     url: 'https://github.com/pypa/pipx',
     stars: '13k+',
-    forks: 762,
-    desc: 'PyPA 维护的 Python 命令行工具安装器，为每个应用创建独立虚拟环境。Ubuntu 24.04 的软件仓库提供 pipx，macOS 和 Windows 也有官方安装指引。',
+    desc: 'PyPA 维护的 Python 命令行工具安装器，为每个应用创建独立虚拟环境。Ubuntu 24.04 的软件仓库提供 pipx，macOS 和 Windows 也有官方安装指引。PyPI 近 30 天下载超 420 万次。',
     prs: [
       {
         title: 'docs(environment): explain what --value prints for unset variables (#2450)',
@@ -398,8 +379,7 @@ const repos = [
     name: 'lancedb / lancedb',
     url: 'https://github.com/lancedb/lancedb',
     stars: '12k+',
-    forks: 1177,
-    desc: '面向多模态数据的检索库，支持向量和全文检索。LanceDB 在 2026 年 11 月披露开源库累计下载超 1.2 亿次，旗下商业平台的客户包括 Netflix、Microsoft AI 和 Midjourney。',
+    desc: '面向多模态数据的检索库，支持向量和全文检索。LanceDB 在 2026 年 11 月披露开源库累计下载超 1.2 亿次，旗下商业平台的客户包括 Netflix、Microsoft AI 和 Midjourney。其 PyPI 包近 30 天下载超 650 万次。',
     prs: [
       {
         title: 'fix(java): keep Maven coordinates in sync with release tags (+104/-28)',
@@ -412,8 +392,7 @@ const repos = [
     name: 'mark3labs / mcp-go',
     url: 'https://github.com/mark3labs/mcp-go',
     stars: '9.2k+',
-    forks: 963,
-    desc: 'MCP 的 Go 实现，支持 stdio 和 Streamable HTTP 等传输，提供客户端与服务端能力。Grafana Labs 的分布式追踪项目 Tempo 在公开依赖清单中引用了 mcp-go。',
+    desc: 'MCP 的 Go 实现，支持 stdio 和 Streamable HTTP 等传输，提供客户端与服务端能力。Grafana Labs 的分布式追踪项目 Tempo 在公开依赖清单中引用了 mcp-go。Go Packages 记录其 server 包被超过 2,800 个 Go 模块引用。',
     prs: [
       {
         title: 'Isolate stateless Streamable HTTP GET streams (+129/-9)',
@@ -426,8 +405,7 @@ const repos = [
     name: 'pydantic / monty',
     url: 'https://github.com/pydantic/monty',
     stars: '8.9k+',
-    forks: 506,
-    desc: 'Pydantic 开发的 Rust 实现 Python 沙箱，用于受控执行 AI 生成的代码。提供 Python、JavaScript 和 Rust 接口，并可按会话限制内存等资源。',
+    desc: 'Pydantic 开发的 Rust 实现 Python 沙箱，用于受控执行 AI 生成的代码。提供 Python、JavaScript 和 Rust 接口，并可按会话限制内存等资源。按 Pydantic 官方基准，从预热池获取一个开源沙箱并运行 10 条 REPL 命令耗时约 1.2 ms。',
     prs: [
       {
         title: 'fix: preflight JSON integer indentation allocations (#1367)',
@@ -440,8 +418,7 @@ const repos = [
     name: 'prometheus / alertmanager',
     url: 'https://github.com/prometheus/alertmanager',
     stars: '8.7k+',
-    forks: 2517,
-    desc: 'Prometheus 的告警管理组件，负责去重、分组和路由，集成 Slack、Microsoft Teams 和 PagerDuty 等通知渠道。',
+    desc: 'Prometheus 的告警管理组件，负责去重、分组和路由，集成 Slack、Microsoft Teams 和 PagerDuty 等通知渠道。Docker Hub 的 prom/alertmanager 镜像累计拉取超 4.9 亿次。',
     prs: [
       {
         title: 'app: outlast Prometheus client idle connections (#5744)',
@@ -454,8 +431,7 @@ const repos = [
     name: 'agentgateway / agentgateway',
     url: 'https://github.com/agentgateway/agentgateway',
     stars: '6k+',
-    forks: 1130,
-    desc: '由 Solo.io 发起、现为 Linux Foundation 旗下 AAIF 项目的 Rust 网关，统一代理 MCP 与 A2A 流量，集中处理鉴权、限流和可观测性。',
+    desc: '由 Solo.io 发起、现为 Linux Foundation 旗下 AAIF 项目的 Rust 网关，统一代理 MCP 与 A2A 流量，集中处理鉴权、限流和可观测性。官方在 8 个 vLLM 后端的路由测试中观察到，首个 Token 的 p90 延迟从普通 Kubernetes Service 的 135.6 秒降至 0.2 秒。',
     prs: [
       {
         title: 'fix: Windows CLI shows version as True (#4276)',
@@ -473,8 +449,7 @@ const repos = [
     name: 'python / typeshed',
     url: 'https://github.com/python/typeshed',
     stars: '5k+',
-    forks: 2155,
-    desc: 'Python 的公共类型存根仓库，为标准库和第三方包提供注解。Microsoft Pyright 随工具分发一份 Typeshed 标准库存根，供静态分析和编辑器诊断使用。',
+    desc: 'Python 的公共类型存根仓库，为标准库和第三方包提供注解。Microsoft Pyright 随工具分发一份 Typeshed 标准库存根，供静态分析和编辑器诊断使用。由 Typeshed 维护并发布的 types-requests 存根包，PyPI 近 30 天下载超 8,100 万次。',
     prs: [
       {
         title: 'Narrow real math and cmath constants to float (#16886)',
@@ -487,8 +462,7 @@ const repos = [
     name: 'ruvnet / RuVector',
     url: 'https://github.com/ruvnet/RuVector',
     stars: '4.7k+',
-    forks: 631,
-    desc: 'Rust 编写的向量检索引擎，支持 HNSW、嵌入式部署和 WebAssembly。相关原生模块修复覆盖 NVIDIA Jetson AGX Xavier 和树莓派 4 等 ARM 边缘设备。',
+    desc: 'Rust 编写的向量检索引擎，支持 HNSW、嵌入式部署和 WebAssembly。相关原生模块修复覆盖 NVIDIA Jetson AGX Xavier 和树莓派 4 等 ARM 边缘设备。npm 上的 ruvector 包近 30 天下载超 78 万次。',
     prs: [
       {
         title: 'fix: native modules crash (SIGILL) on ARMv8.2 CPUs without LRCPC (#1384)',
@@ -506,8 +480,7 @@ const repos = [
     name: 'pydantic / logfire',
     url: 'https://github.com/pydantic/logfire',
     stars: '4.5k+',
-    forks: 381,
-    desc: 'Pydantic 的 OpenTelemetry 可观测性平台，为应用与 Agent 记录日志和追踪。官方文档提供 OpenAI、Anthropic、Google ADK 等集成路径。',
+    desc: 'Pydantic 的 OpenTelemetry 可观测性平台，为应用与 Agent 记录日志和追踪。官方文档提供 OpenAI、Anthropic、Google ADK 等集成路径。Pydantic 公布的 AutonomyAI 生产案例中，Logfire 在 3 周内接收超过 3,500 万条追踪 Span。',
     prs: [
       {
         title: 'Render non-object model serializer output in the verbose console (#2870)',
@@ -520,8 +493,7 @@ const repos = [
     name: 'modelcontextprotocol / rust-sdk',
     url: 'https://github.com/modelcontextprotocol/rust-sdk',
     stars: '4.1k+',
-    forks: 727,
-    desc: 'MCP 的官方 Rust SDK，支持 stdio 和 Streamable HTTP 两类传输，覆盖客户端和服务端。MCP 由 Anthropic 发起，并于 2025 年捐献给 Linux Foundation 旗下 AAIF。',
+    desc: 'MCP 的官方 Rust SDK，支持 stdio 和 Streamable HTTP 两类传输，覆盖客户端和服务端。MCP 由 Anthropic 发起，并于 2025 年捐献给 Linux Foundation 旗下 AAIF。crates.io 上的 rmcp 包累计下载超 5,400 万次。',
     prs: [
       {
         title: 'fix: stateful session workers ignore config.cancellation_token after shutdown (#1427)',
@@ -539,8 +511,7 @@ const repos = [
     name: 'tox-dev / tox',
     url: 'https://github.com/tox-dev/tox',
     stars: '3.9k+',
-    forks: 756,
-    desc: 'Python 测试环境与任务自动化工具，用于隔离安装依赖并运行多版本测试。Django 仓库提供 tox 测试配置，JetBrains PyCharm 提供专门的 tox 运行配置。',
+    desc: 'Python 测试环境与任务自动化工具，用于隔离安装依赖并运行多版本测试。Django 仓库提供 tox 测试配置，JetBrains PyCharm 提供专门的 tox 运行配置。PyPI 近 30 天下载超 1,800 万次。',
     prs: [
       {
         title: 'fix(install): accept uppercase hash digests (#4463)',
@@ -553,8 +524,7 @@ const repos = [
     name: 'agronholm / anyio',
     url: 'https://github.com/agronholm/anyio',
     stars: '2.5k+',
-    forks: 363,
-    desc: 'Python 异步并发库，统一 asyncio 和 Trio 两套运行后端，并提供 pytest 插件。OpenAI 与 Anthropic 的官方 Python SDK 都将 AnyIO 列为直接依赖。',
+    desc: 'Python 异步并发库，统一 asyncio 和 Trio 两套运行后端，并提供 pytest 插件。OpenAI 与 Anthropic 的官方 Python SDK 都将 AnyIO 列为直接依赖。PyPI 近 30 天下载超 10 亿次。',
     prs: [
       {
         title: 'fix: preserve asyncio callback context in pytest exception notes (#1482)',
@@ -567,8 +537,7 @@ const repos = [
     name: 'bytecodealliance / wasm-tools',
     url: 'https://github.com/bytecodealliance/wasm-tools',
     stars: '1.8k+',
-    forks: 365,
-    desc: 'Bytecode Alliance 维护的 WebAssembly 工具集，覆盖模块与组件的解析、校验和变体生成。联盟由 Mozilla、Fastly、Intel 和 Red Hat 四家公司发起。',
+    desc: 'Bytecode Alliance 维护的 WebAssembly 工具集，覆盖模块与组件的解析、校验和变体生成。联盟由 Mozilla、Fastly、Intel 和 Red Hat 四家公司发起。crates.io 上的 wasm-tools 包累计下载超 65 万次。',
     prs: [
       {
         title: 'fix: Code-motion mutation retains a full syntax-tree clone at every nesting level (#2825)',
@@ -581,8 +550,7 @@ const repos = [
     name: 'oceanbase / powercontext',
     url: 'https://github.com/oceanbase/powercontext',
     stars: '1.7k+',
-    forks: 681,
-    desc: 'OceanBase 开源的 Agent 长期记忆和上下文交接框架。项目主分支文档列出了 9 种 Agent 宿主适配，包括 OpenAI Codex 和 Anthropic Claude Code。',
+    desc: 'OceanBase 开源的 Agent 长期记忆和上下文交接框架。项目主分支文档列出了 9 种 Agent 宿主适配，包括 OpenAI Codex 和 Anthropic Claude Code。项目在 LoCoMo 的 1,540 道计分题上报告 90.78% 准确率，完整上下文重放基线为 52.9%。',
     prs: [
       {
         title: 'fix(gateway): preserve distinct terminal turn captures (#2717)',
@@ -595,8 +563,7 @@ const repos = [
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',
-    forks: 153,
-    desc: 'Pydantic AI 的 Agent 执行扩展，继承其 OpenAI、Anthropic 等模型接入能力，并提供请求数、工具调用数、Token 和金额四类预算信息。',
+    desc: 'Pydantic AI 的 Agent 执行扩展，继承其 OpenAI、Anthropic 等模型接入能力，并提供请求数、工具调用数、Token 和金额四类预算信息。Pydantic 公开了使用 Harness 的 CodeMode 对 8 个模型所做的内部对照评测，共 5,276 次评分运行。',
     prs: [
       {
         title: 'Warn on the deprecated single-key get/add of spend stores (#747)',
@@ -725,10 +692,6 @@ const starsCoverage = computed(() => {
   color: var(--color-text-secondary);
   font-size: 0.78rem;
   line-height: 1.5;
-}
-
-.oss-repo-forks {
-  white-space: nowrap;
 }
 
 .oss-repo-row {

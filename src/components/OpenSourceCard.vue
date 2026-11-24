@@ -381,6 +381,19 @@ const repos = [
     ],
   },
   {
+    name: 'Arize-ai / phoenix',
+    url: 'https://github.com/Arize-ai/phoenix',
+    stars: '12.3k+',
+    desc: 'Arize AI 开源的 LLM 与 Agent 可观测性及评估平台，基于 OpenTelemetry 采集调用链，可在 Playground 调试 OpenAI、Anthropic 等模型的提示词。PyPI 的 arize-phoenix 包近 30 天下载超 58 万次。',
+    prs: [
+      {
+        title: 'fix: make playground task timeout configurable (#16545)',
+        note: '高推理强度模型在流式输出的两段内容之间可能停顿超过 90 秒，触发 Playground 提前取消。新增环境变量配置等待下一段输出的超时时间，默认仍为 90 秒，并补齐参数校验、流式停顿回归测试和自托管配置文档。',
+        url: 'https://github.com/Arize-ai/phoenix/pull/16545',
+      },
+    ],
+  },
+  {
     name: 'lancedb / lancedb',
     url: 'https://github.com/lancedb/lancedb',
     stars: '12k+',

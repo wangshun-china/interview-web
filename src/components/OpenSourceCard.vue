@@ -94,6 +94,19 @@ const repos = [
     ],
   },
   {
+    name: 'nestjs / nest',
+    url: 'https://github.com/nestjs/nest',
+    stars: '77k+',
+    desc: '面向 Node.js 的 TypeScript 后端框架，通过模块、依赖注入和装饰器组织服务，支持 Express 与 Fastify。核心包 @nestjs/common 在 npm 近 30 天下载超 1 亿次。',
+    prs: [
+      {
+        title: 'fix(common): restore decorator signatures for applyDecorators (#18710)',
+        note: '组合装饰器的推断返回类型混合了构造函数和方法描述符，同一组权限守卫与元数据装饰器用于控制器或处理方法时会触发 TypeScript TS1270。为类、方法和属性声明各自的调用签名，保留装饰器替换类或方法的能力。补齐类型回归，PR 记录显示 7,584 项测试通过。',
+        url: 'https://github.com/nestjs/nest/pull/18710',
+      },
+    ],
+  },
+  {
     name: 'docling-project / docling',
     url: 'https://github.com/docling-project/docling',
     stars: '70k+',

@@ -420,6 +420,19 @@ const repos = [
     ],
   },
   {
+    name: 'google / adk-go',
+    url: 'https://github.com/google/adk-go',
+    stars: '9k+',
+    desc: 'Google 开源的 Go 版 Agent Development Kit，用于开发、评估与部署多 Agent 应用，可接入 Gemini 和 Vertex AI。Go 版于 2026 年发布 1.0，GitHub 已获超过 9,000 Star。',
+    prs: [
+      {
+        title: 'fix(agenttool): keep code artifacts out of structured replies (#2468)',
+        note: '子 Agent 同时生成结构化回答和代码执行产物时，AgentTool 会把两者拼在一起，导致合法 JSON 在 schema 校验前就解析失败。对声明了输出 schema 的回复按顺序重组回答文本，兼容 JSON 字段跨片段的情况。补齐 4 个回归用例，并对 6 个相关 Go 包运行竞态检测。',
+        url: 'https://github.com/google/adk-go/pull/2468',
+      },
+    ],
+  },
+  {
     name: 'pydantic / monty',
     url: 'https://github.com/pydantic/monty',
     stars: '8.9k+',
@@ -574,6 +587,26 @@ const repos = [
         title: 'fix(gateway): preserve distinct terminal turn captures (#2717)',
         note: '同一用户轮次的不同最终回复曾共享记忆来源标识，导致后一次回复被判为冲突。按回复内容区分来源、对重复内容保持幂等，覆盖串行重试和并发回复。PR 记录显示网关执行语义套件 86 项测试通过。',
         url: 'https://github.com/oceanbase/powercontext/pull/2717',
+      },
+      {
+        title: 'fix(gateway): record completed turns from Chat SSE (#2812)',
+        note: 'Chat Completions 流式回复可正常送达，但网关曾把 SSE 当成单个 JSON 解析，导致已完成轮次丢失记忆记录。按顺序重组主候选回复的文本增量，等待轮次完成再记录。进程级回归验证流式与等价 JSON 回复生成一致的会话记录。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2812',
+      },
+      {
+        title: 'fix(gateway): strip replayed plugin context before model admission (#2809)',
+        note: '修复从插件切换到网关后，Codex 与 OpenCode 的历史会话可能无法继续的问题。网关识别并规范化历史中的旧插件上下文，保留原有发送和发布校验。两种客户端均补上回归，PR 记录显示网关工作区有 290 项测试通过。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2809',
+      },
+      {
+        title: 'fix(knowledge-base): clear the import spinner when retries settle (#2802)',
+        note: '知识库导入重试结束后，旧的加载动画可能改变按钮的无障碍名称，使后续重试无法定位控件。用请求的实际状态控制动画与按钮的忙碌状态，并端到端验证动画被中断后仍可重试，原始文件内容和幂等键正确复用。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2802',
+      },
+      {
+        title: 'fix(gateway): omit unsupported Codex subscription options (#2798)',
+        note: '部分客户端传入 Codex 订阅端点不支持的采样和缓存选项时，网关请求会返回 HTTP 400。按上游类型处理参数，保留 API Key 路径的配置。通过网关进程级回归验证两类请求的实际出站内容。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2798',
       },
     ],
   },

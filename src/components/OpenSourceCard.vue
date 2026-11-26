@@ -342,6 +342,11 @@ const repos = [
         note: '命令或路由的外层重试会反复启动同一地址已耗尽的拨号序列，放大连接失败时的等待。按连接获取过程记录已耗尽的地址，同时保留尝试其他节点的机会。',
         url: 'https://github.com/redis/go-redis/pull/4304',
       },
+      {
+        title: 'fix(scan): resume Vals from the iterator position (#4428)',
+        note: '修复先调用 Next 或提前退出 range 后，再调用 Vals 会从当前页开头重复返回键的问题。统一迭代位置并在交付每个键前推进游标，保证续扫从下一项开始。补齐两种续扫场景的回归测试，并在 Redis 8.12 集群环境验证。',
+        url: 'https://github.com/redis/go-redis/pull/4428',
+      },
     ],
   },
   {

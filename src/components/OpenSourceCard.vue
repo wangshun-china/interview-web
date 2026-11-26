@@ -78,6 +78,24 @@ const repos = [
         note: '同步长 Confluence 页面名时，按字节截断可能切断 UTF-8 字符，生成 MySQL 无法写入的文件名。复用按字符边界截断的工具，同时保留扩展名和 255 字节限制。',
         url: 'https://github.com/infiniflow/ragflow/pull/22645',
       },
+      {
+        title: 'Use the Jin10 REST API in Go agent tools (#22814)',
+        note: '将此前无法调用的金十数据工具接入 HTTPS API，支持快讯、财经日历、品种、行情与新闻五类查询。保留现有 Agent 的工具名和默认快讯调用，并验证从工具注册到发起 REST 请求的路径。',
+        url: 'https://github.com/infiniflow/ragflow/pull/22814',
+      },
+    ],
+  },
+  {
+    name: 'bytedance / deer-flow',
+    url: 'https://github.com/bytedance/deer-flow',
+    stars: '85k+',
+    desc: '字节跳动开源的长程 Agent 框架，通过沙箱、记忆、工具和子 Agent 执行研究、编程与内容生成任务。2026 年 2 月 26 日登顶 GitHub Trending 日榜。',
+    prs: [
+      {
+        title: 'fix(agents): pair tool results with malformed IDs when a sibling shares the name (#7822)',
+        note: '模型返回的工具调用缺少 ID 时，同名但未执行的无效调用会妨碍正常结果配对。修正历史消息中的匹配逻辑，并用回归测试验证有效结果能关联到对应调用。',
+        url: 'https://github.com/bytedance/deer-flow/pull/7822',
+      },
     ],
   },
   {
@@ -171,6 +189,11 @@ const repos = [
         note: '跨账号 ACL 操作曾返回成功，但账号隔离使这些授权实际无法生效。统一校验授权主体的账号归属，让无效配置在写入前返回明确错误，并保持本账号授权语义。',
         url: 'https://github.com/volcengine/OpenViking/pull/8117',
       },
+      {
+        title: 'fix(gateway): recover from malformed streamed Anthropic tool arguments (#8142)',
+        note: 'Anthropic 流式工具参数包含非法 JSON 转义时，网关原先会中断整条响应。为网关托管的工具调用增加解析恢复，仍无法解析时将错误交回模型，并在既有工具调用限额内继续处理。',
+        url: 'https://github.com/volcengine/OpenViking/pull/8142',
+      },
     ],
   },
   {
@@ -201,6 +224,31 @@ const repos = [
         title: 'fix: stream TOS files without unsupported seeking (+85/-1)',
         note: '对象存储 SDK 声明了 Seek，但底层响应流不能跳转，文件预览因而返回 HTTP 500。接入既有流式响应路径，保留校验和资源清理，并用实际 SDK 验证预览和下载行为。',
         url: 'https://github.com/Tencent/WeKnora/pull/5732',
+      },
+      {
+        title: 'fix(docreader): stabilize XLSX percent-format comparisons (#5999)',
+        note: '修复 XLSX 百分比测试因两次保存时间不同而误报的问题。重写后的文件按 ZIP 成员与内容比较，忽略修改时间，并保留对原始分数值和未改写文件的严格断言。',
+        url: 'https://github.com/Tencent/WeKnora/pull/5999',
+      },
+      {
+        title: 'fix: preserve MinerU image page locators through ingestion (#5558)',
+        note: '修复图文混排 PDF 入库后，后续页的图片可能被归到前一页的问题。将 MinerU 的显式页码贯穿解析、缓存和入库，并校正分段 PDF 合并时的页码偏移。',
+        url: 'https://github.com/Tencent/WeKnora/pull/5558',
+      },
+      {
+        title: 'fix: support KB-scoped knowledge reparse routes (#5538)',
+        note: '修复知识库内单文档和批量重解析接口返回 404 的问题。复用原有处理器和写权限校验，回归覆盖成功派发、知识库不匹配和只读用户被拒绝的场景。',
+        url: 'https://github.com/Tencent/WeKnora/pull/5538',
+      },
+      {
+        title: 'fix: rearm durable wiki work despite fresh retry spans (#5670)',
+        note: 'Wiki 导入的重试心跳可能掩盖已经丢失的唤醒信号，让任务持续挂起。先检查持久化任务状态，再决定是否重新触发消费，保留原有 48 小时过期规则与每个知识库的限流。',
+        url: 'https://github.com/Tencent/WeKnora/pull/5670',
+      },
+      {
+        title: 'fix: clarify DocReader SSRF allowlist errors for web imports (#5737)',
+        note: '完善网页导入被 DocReader 拒绝时的诊断信息，帮助运维区分配置来自哪个服务。两种 gRPC 读取接口均返回明确的拒绝原因，沿用既有安全校验。',
+        url: 'https://github.com/Tencent/WeKnora/pull/5737',
       },
     ],
   },
@@ -360,6 +408,11 @@ const repos = [
         note: '客户端请求多个可满足的字节区间时，下载接口曾返回 206 却只发送第一个区间。修复后回退到 HTTP 200 并发送完整文件，覆盖常规和隔离会话下载路径。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/3034',
       },
+      {
+        title: 'fix(execd): time out unacknowledged Jupyter executions (#3083)',
+        note: 'Jupyter 内核未确认请求时，执行流会一直占用会话。增加 5 秒确认超时，超时后结束响应并释放会话，已确认的长任务仍可继续运行。补齐单测与集成验证。',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/3083',
+      },
     ],
   },
   {
@@ -372,6 +425,11 @@ const repos = [
         title: 'fix: guard GitLab ticket context with project issue visibility (#4932)',
         note: 'GitLab 评审中的工单上下文读取增加项目可见性检查。读取前核对工单的可见范围是否覆盖合并请求的受众，避免受限内容被带入评审输出。',
         url: 'https://github.com/The-PR-Agent/pr-agent/pull/4932',
+      },
+      {
+        title: 'Use Markdown review identity markers on Bitbucket Server (#5136)',
+        note: 'Bitbucket Server 和 Data Center 上的持久化评审偶尔会显示本应隐藏的身份标记。改用兼容的 Markdown 标记，同时识别历史格式，让重复评审能继续更新原评论。',
+        url: 'https://github.com/The-PR-Agent/pr-agent/pull/5136',
       },
     ],
   },
@@ -620,6 +678,16 @@ const repos = [
         title: 'fix(gateway): omit unsupported Codex subscription options (#2798)',
         note: '部分客户端传入 Codex 订阅端点不支持的采样和缓存选项时，网关请求会返回 HTTP 400。按上游类型处理参数，保留 API Key 路径的配置。通过网关进程级回归验证两类请求的实际出站内容。',
         url: 'https://github.com/oceanbase/powercontext/pull/2798',
+      },
+      {
+        title: 'fix(gateway): replay context for headerless conversations (#2813)',
+        note: '缺少会话标识请求头时，网关可能漏掉上下文注入，或在工具续跑时重复准备同一轮上下文。为符合条件的会话建立进程内标识，复用本轮上下文并保留既有校验。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2813',
+      },
+      {
+        title: 'test(atomic-memory): preserve prior revisions during correction recovery (#2753)',
+        note: '为原子记忆的纠正恢复补回归测试，验证重试耗尽时仍保留较早的有效修订、证据与历史，并继续处理后续来源。更新分支上 226 项测试通过。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2753',
       },
     ],
   },

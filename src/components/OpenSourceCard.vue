@@ -697,6 +697,19 @@ const repos = [
     ],
   },
   {
+    name: 'modelcontextprotocol / php-sdk',
+    url: 'https://github.com/modelcontextprotocol/php-sdk',
+    stars: '1.6k+',
+    desc: '与 PHP Foundation 合作维护的 MCP 官方 PHP SDK，支持构建 MCP 客户端和服务端。Packagist 上的 mcp/sdk 月下载超 230 万次。',
+    prs: [
+      {
+        title: 'Make client request handler results covariant (#770)',
+        note: 'PHPStan 在最高检查级别会拒绝将交互请求、模型采样和根目录三类内置处理器注册到客户端。将仅用于返回值的泛型声明为协变，使具体结果类型符合客户端构建器的约束，保留现有运行时行为。补齐静态分析回归，PR 记录显示相关单元与集成测试共 1,459 项通过。',
+        url: 'https://github.com/modelcontextprotocol/php-sdk/pull/770',
+      },
+    ],
+  },
+  {
     name: 'pydantic / pydantic-ai-harness',
     url: 'https://github.com/pydantic/pydantic-ai-harness',
     stars: '900+',

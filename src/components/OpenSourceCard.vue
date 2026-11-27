@@ -511,6 +511,11 @@ const repos = [
         note: '子 Agent 同时生成结构化回答和代码执行产物时，AgentTool 会把两者拼在一起，导致合法 JSON 在 schema 校验前就解析失败。对声明了输出 schema 的回复按顺序重组回答文本，兼容 JSON 字段跨片段的情况。补齐 4 个回归用例，并对 6 个相关 Go 包运行竞态检测。',
         url: 'https://github.com/google/adk-go/pull/2468',
       },
+      {
+        title: 'fix(openaimodel): split reasoning from candidate token usage (#2511)',
+        note: '修复 OpenAI Chat Completions 和 Responses 适配器重复统计推理 Token 的问题。回归用例中，实际输出 50 个 Token（含 38 个推理 Token），修复前遥测误报为 88 个。统一拆分推理与非推理输出，覆盖流式及非流式响应，24 个测试用例通过。',
+        url: 'https://github.com/google/adk-go/pull/2511',
+      },
     ],
   },
   {

@@ -436,6 +436,11 @@ const repos = [
         note: 'Bitbucket Server 和 Data Center 上的持久化评审偶尔会显示本应隐藏的身份标记。改用兼容的 Markdown 标记，同时识别历史格式，让重复评审能继续更新原评论。',
         url: 'https://github.com/The-PR-Agent/pr-agent/pull/5136',
       },
+      {
+        title: 'test: make the GitHub comment history deadline test deterministic (#5171)',
+        note: '让 GitHub 评论历史的分页超时测试使用独立的受控时钟，避免 CI 调度延迟提前耗尽测试预算。保留分页顺序和超时断言，并验证每次请求收到的剩余时间。PR 记录显示 Python 3.14 下相关 181 项测试通过。',
+        url: 'https://github.com/The-PR-Agent/pr-agent/pull/5171',
+      },
     ],
   },
   {
@@ -606,6 +611,11 @@ const repos = [
         title: 'fix: constrain tools in Claude Code evaluations (#5286)',
         note: '修复 Claude Code 评测中工具清单未正确约束实际可用工具的问题。统一两个启动路径的工具映射，让默认隔离评测按指定工具集运行，减少宿主设置对评分的影响。PR 记录显示相关测试有 121 项通过。',
         url: 'https://github.com/gptme/gptme/pull/5286',
+      },
+      {
+        title: 'fix(codeblock): preserve six-backtick Markdown fences (#5330)',
+        note: '修复 Markdown 解析器把六反引号的开围栏当作三个反引号处理的问题，避免流式输出中的内嵌三反引号提前结束代码块或丢掉后续块。让代码提取与推理边界扫描采用一致的围栏规则。PR 记录显示 9 项专项用例和 620 项相关测试通过。',
+        url: 'https://github.com/gptme/gptme/pull/5330',
       },
     ],
   },

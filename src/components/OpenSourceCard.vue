@@ -597,6 +597,19 @@ const repos = [
     ],
   },
   {
+    name: 'gptme / gptme',
+    url: 'https://github.com/gptme/gptme',
+    stars: '4.4k+',
+    desc: '开源终端 Agent 框架，支持代码编辑、命令执行和网页访问，并提供可配置的模型与工具评测。PyPI 的 gptme 包近 30 天下载超 2.2 万次。',
+    prs: [
+      {
+        title: 'fix: constrain tools in Claude Code evaluations (#5286)',
+        note: '修复 Claude Code 评测中工具清单未正确约束实际可用工具的问题。统一两个启动路径的工具映射，让默认隔离评测按指定工具集运行，减少宿主设置对评分的影响。PR 记录显示相关测试有 121 项通过。',
+        url: 'https://github.com/gptme/gptme/pull/5286',
+      },
+    ],
+  },
+  {
     name: 'modelcontextprotocol / rust-sdk',
     url: 'https://github.com/modelcontextprotocol/rust-sdk',
     stars: '4.1k+',
@@ -624,6 +637,19 @@ const repos = [
         title: 'fix(install): accept uppercase hash digests (#4463)',
         note: '依赖文件中的 SHA-256、SHA-384 和 SHA-512 摘要包含大写字符时，tox 会在调用 pip 前拒绝安装。允许混合大小写并统一比较形式，避免仅改变大小写便重建测试环境。补充解析与安装回归测试，PR 记录显示 31 项检查通过。',
         url: 'https://github.com/tox-dev/tox/pull/4463',
+      },
+    ],
+  },
+  {
+    name: 'project-zot / zot',
+    url: 'https://github.com/project-zot/zot',
+    stars: '3k+',
+    desc: '遵循 OCI Distribution 规范的容器镜像和制品仓库，支持复制、保留策略和垃圾回收。2022 年加入 CNCF Sandbox，GitHub 已获超过 3,000 Star。',
+    prs: [
+      {
+        title: 'fix: protect recovered tags during the pull retention window (#4757)',
+        note: '重建镜像元数据时，丢失的拉取时间会被设为 Unix 纪元，导致垃圾回收可能立即误删近期用过的旧标签。为恢复标签从重建时刻起保留一个配置周期，覆盖 BoltDB、Redis 和 DynamoDB 三种后端，并补充回归验证。',
+        url: 'https://github.com/project-zot/zot/pull/4757',
       },
     ],
   },
@@ -693,6 +719,11 @@ const repos = [
         title: 'test(atomic-memory): preserve prior revisions during correction recovery (#2753)',
         note: '为原子记忆的纠正恢复补回归测试，验证重试耗尽时仍保留较早的有效修订、证据与历史，并继续处理后续来源。更新分支上 226 项测试通过。',
         url: 'https://github.com/oceanbase/powercontext/pull/2753',
+      },
+      {
+        title: 'Enable cost guidance and cached prefix reuse for Chat Completions (#2815)',
+        note: '补齐 Chat Completions 路径的成本提示和缓存前缀复用。符合条件的非流式会话可复用已记录的提示词前缀来提取记忆，并通过网关进程级测试验证两种行为。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2815',
       },
     ],
   },

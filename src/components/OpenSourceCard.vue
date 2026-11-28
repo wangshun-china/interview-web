@@ -289,6 +289,19 @@ const repos = [
     ],
   },
   {
+    name: 'rollup / rollup',
+    url: 'https://github.com/rollup/rollup',
+    stars: '26k+',
+    desc: '面向 JavaScript ES 模块的打包器，提供摇树优化、代码分割与多格式输出，是 Vite 7 生产构建使用的打包器。npm 的 rollup 包近 30 天下载超 7.1 亿次。',
+    prs: [
+      {
+        title: 'Preserve dependency reference order in chunk hashes (#6686)',
+        note: '调整间接依赖的导入顺序后，父 chunk 内容可能变化但文件名哈希不变，带来旧缓存命中的风险。将重复引用的位置和目标纳入哈希计算，并补齐间接依赖重排回归。PR 记录显示 5,685 项 Node 测试通过。',
+        url: 'https://github.com/rollup/rollup/pull/6686',
+      },
+    ],
+  },
+  {
     name: 'apache / rocketmq',
     url: 'https://github.com/apache/rocketmq',
     stars: '22.6k+',
@@ -418,6 +431,11 @@ const repos = [
         note: 'Jupyter 内核未确认请求时，执行流会一直占用会话。增加 5 秒确认超时，超时后结束响应并释放会话，已确认的长任务仍可继续运行。补齐单测与集成验证。',
         url: 'https://github.com/opensandbox-group/OpenSandbox/pull/3083',
       },
+      {
+        title: 'fix(kubernetes): add opt-in workload cache filters (#3158)',
+        note: '共享 Kubernetes 集群中，控制器默认缓存无关的 Pod 和 Job，可能在启动时耗尽内存。为两类工作负载增加可选标签过滤，并接入 Helm 配置。5 个启动用例验证了默认行为、命名空间范围和标签过滤。',
+        url: 'https://github.com/opensandbox-group/OpenSandbox/pull/3158',
+      },
     ],
   },
   {
@@ -458,6 +476,11 @@ const repos = [
         title: 'fix(run): honor binary format resets with uv (#2483)',
         note: 'uv 后端曾忽略安装选项中的 :none: 重置，导致用户解除限制后仍无法从源码包安装。按传入顺序处理格式选项，让应用和脚本的后续覆盖都正确生效。',
         url: 'https://github.com/pypa/pipx/pull/2483',
+      },
+      {
+        title: 'Validate PEP 723 script app names before installation (#2511)',
+        note: '安装 PEP 723 脚本时，文件名可能生成 pip 和 uv 无法接受的包名。安装前校验应用名，并提示用 --app 显式指定合法名称，补齐测试和文档。',
+        url: 'https://github.com/pypa/pipx/pull/2511',
       },
     ],
   },
@@ -515,6 +538,11 @@ const repos = [
         title: 'fix(openaimodel): split reasoning from candidate token usage (#2511)',
         note: '修复 OpenAI Chat Completions 和 Responses 适配器重复统计推理 Token 的问题。回归用例中，实际输出 50 个 Token（含 38 个推理 Token），修复前遥测误报为 88 个。统一拆分推理与非推理输出，覆盖流式及非流式响应，24 个测试用例通过。',
         url: 'https://github.com/google/adk-go/pull/2511',
+      },
+      {
+        title: 'fix(memory): preserve Vertex AI Memory Bank result metadata (#2577)',
+        note: '修复 Vertex AI Memory Bank 检索结果丢失作者和更新时间的问题，使预加载提示和结构化返回保留同一份元数据。3 个回归用例覆盖有时间、缺少时间和显式 Unix 纪元三种情况。',
+        url: 'https://github.com/google/adk-go/pull/2577',
       },
     ],
   },
@@ -604,6 +632,11 @@ const repos = [
         note: 'Pydantic 自定义序列化器返回字符串或列表时，verbose 控制台会把值当字典处理，导致整条记录的属性被丢弃。按返回类型渲染，保留异常排查所需的日志上下文。',
         url: 'https://github.com/pydantic/logfire/pull/2870',
       },
+      {
+        title: 'Normalize source paths in Logfire logging handlers (#2942)',
+        note: '统一 Python 标准库 logging 与 Loguru 导出的源文件路径，使同一文件的日志可按 code.filepath 归为一组。工作目录内使用相对路径，目录外保留绝对路径。PR 记录显示 199 项相关测试通过。',
+        url: 'https://github.com/pydantic/logfire/pull/2942',
+      },
     ],
   },
   {
@@ -621,6 +654,16 @@ const repos = [
         title: 'fix(codeblock): preserve six-backtick Markdown fences (#5330)',
         note: '修复 Markdown 解析器把六反引号的开围栏当作三个反引号处理的问题，避免流式输出中的内嵌三反引号提前结束代码块或丢掉后续块。让代码提取与推理边界扫描采用一致的围栏规则。PR 记录显示 9 项专项用例和 620 项相关测试通过。',
         url: 'https://github.com/gptme/gptme/pull/5330',
+      },
+      {
+        title: 'fix(prompts): tolerate undecodable agent files during startup (#5285)',
+        note: '旧编码的 Agent 指令文件可能在启动去重阶段触发解码异常，导致程序无法启动。对无法解码的文件保留附件和路径去重，跳过内容哈希，并覆盖用户配置与工作区两个入口。',
+        url: 'https://github.com/gptme/gptme/pull/5285',
+      },
+      {
+        title: 'fix(docs): restore stable release notes to the changelog (#5370)',
+        note: '补回因标签发布与文档构建分支不同步而缺失的 v0.36.0 和 v0.37.0 发布说明。修复 Sphinx 更新日志入口，并增加回归测试验证发布说明在生成站点中的链接。',
+        url: 'https://github.com/gptme/gptme/pull/5370',
       },
     ],
   },
@@ -739,6 +782,16 @@ const repos = [
         title: 'Enable cost guidance and cached prefix reuse for Chat Completions (#2815)',
         note: '补齐 Chat Completions 路径的成本提示和缓存前缀复用。符合条件的非流式会话可复用已记录的提示词前缀来提取记忆，并通过网关进程级测试验证两种行为。',
         url: 'https://github.com/oceanbase/powercontext/pull/2815',
+      },
+      {
+        title: 'feat(gateway): bind model requests to an explicit Scope (#2810)',
+        note: '让共享网关上的 Chat 和 Responses 请求按项目选择记忆范围，并将该范围贯穿检索、复用和记录，沿用原有访问校验。回归覆盖多项目经同一网关请求时的范围绑定。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2810',
+      },
+      {
+        title: 'fix(test): validate Scope-owned Topic Memory in supervisor acceptance (#2883)',
+        note: '修复验收工具把主题记忆误判为发布失败的问题。按 Scope 验证已发布主题、处理进度和混合检索，并用 CLI 回归覆盖 4 类记忆处理器。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2883',
       },
     ],
   },

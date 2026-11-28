@@ -793,6 +793,11 @@ const repos = [
         note: '修复验收工具把主题记忆误判为发布失败的问题。按 Scope 验证已发布主题、处理进度和混合检索，并用 CLI 回归覆盖 4 类记忆处理器。',
         url: 'https://github.com/oceanbase/powercontext/pull/2883',
       },
+      {
+        title: 'fix(gateway): keep harness reminders out of turn selection (#2771)',
+        note: '修复宿主追加的独立提醒被网关误当作本轮用户提问的问题，避免召回偏离原问题或漏记此前的工具步骤。让记忆召回、上下文复用和会话记录共用同一套用户提问识别规则，同时照常转发宿主提醒。PR 记录显示网关工作区有 278 项测试通过。',
+        url: 'https://github.com/oceanbase/powercontext/pull/2771',
+      },
     ],
   },
   {
